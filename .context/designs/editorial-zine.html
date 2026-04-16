@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Melissa Encarnacion — Issue 01 / 2026</title>
+<meta name="description" content="An editorial zine-style portfolio by Dominican Art Director Melissa Encarnacion." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0A0A0A',
+          bone: '#F5F0E8',
+          cream: '#EFE7DA',
+          volt: '#E8FF00',
+          mustard: '#FFB800',
+          rust: '#B8431E',
+        },
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+        maxWidth: { shell: '1440px' },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root {
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  html, body { background: #F5F0E8; }
+  body {
+    font-feature-settings: "ss01","cv11","liga","dlig";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* SERIF DISPLAY — optical size tuning */
+  .serif-display { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144, "wght" 300; letter-spacing: -0.03em; }
+  .serif-display-italic { font-family: 'Fraunces', serif; font-style: italic; font-variation-settings: "opsz" 144, "wght" 300; letter-spacing: -0.02em; }
+  .serif-body { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 14, "wght" 400; }
+
+  /* HEADLINE MASK REVEAL — 1100ms ease-out-quint */
+  .mask-reveal { overflow: hidden; }
+  .mask-reveal > span {
+    display: block;
+    transform: translateY(108%);
+    animation: mask-up 1100ms var(--ease-out-quint) forwards;
+  }
+  .mask-reveal.d1 > span { animation-delay: 150ms; }
+  .mask-reveal.d2 > span { animation-delay: 300ms; }
+  .mask-reveal.d3 > span { animation-delay: 450ms; }
+  @keyframes mask-up { to { transform: translateY(0); } }
+
+  /* MONO INFO-LINE — wipe in from left */
+  .info-wipe { position: relative; overflow: hidden; }
+  .info-wipe::after {
+    content: ""; position: absolute; inset: 0;
+    background: #F5F0E8;
+    transform: translateX(0);
+    animation: wipe-out 900ms 500ms var(--ease-out-quint) forwards;
+  }
+  @keyframes wipe-out { to { transform: translateX(100%); } }
+
+  /* GIANT NUMERAL — scroll-tied parallax feel via negative margin */
+  .big-numeral {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144, "wght" 300;
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+  }
+
+  /* FIGURE HOVER */
+  .zine-fig { overflow: hidden; }
+  .zine-fig img { transition: transform 1200ms var(--ease-out-quint), filter 800ms var(--ease-out-quint); }
+  .zine-fig:hover img { transform: scale(1.04); filter: saturate(1.1); }
+
+  /* FOOTNOTE MARKER */
+  .foot-ref {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-variation-settings: "opsz" 14, "wght" 400;
+    font-size: .65em; vertical-align: super; color: #B8431E;
+  }
+
+  /* PULL QUOTE */
+  .pull {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-variation-settings: "opsz" 144, "wght" 300;
+  }
+
+  /* LAZY FADE */
+  img.lazy-fade { opacity: 0; transition: opacity 900ms var(--ease-out-quint); }
+  img.lazy-fade.loaded { opacity: 1; }
+
+  /* HAIRLINE RULE */
+  .rule { border-top: 1px solid #0A0A0A; }
+  .rule-dashed { border-top: 1px dashed #0A0A0A; }
+
+  /* DROP CAP */
+  .dropcap::first-letter {
+    font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144, "wght" 500;
+    font-size: 5.2em; line-height: 0.85; float: left;
+    margin: 6px 10px 0 -4px; color: #B8431E;
+  }
+
+  /* ROTATING STAMP — slow spin */
+  .stamp { animation: spin 14s linear infinite; transform-origin: center; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="bg-bone text-ink antialiased">
+
+<!-- ============== MASTHEAD ============== -->
+<header class="border-b-2 border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-4 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em]">
+    <div>Issue N° 01</div>
+    <div class="hidden md:block">Vol. 10 — A Decade in Design</div>
+    <div>April 2026 — Santo Domingo</div>
+  </div>
+  <div class="max-w-shell mx-auto px-6 lg:px-10 flex items-end justify-between pb-4">
+    <h1 class="serif-display text-[56px] md:text-[96px] lg:text-[140px] leading-[0.85]">
+      Mellen<span class="text-rust">.</span>
+    </h1>
+    <nav class="hidden md:flex gap-8 font-mono text-[11px] uppercase tracking-[0.22em] pb-5">
+      <a href="#work" class="hover:text-rust transition">Index</a>
+      <a href="#case-01" class="hover:text-rust transition">01 Estelar</a>
+      <a href="#case-02" class="hover:text-rust transition">02 Alkasa</a>
+      <a href="#about" class="hover:text-rust transition">Colophon</a>
+      <a href="#contact" class="hover:text-rust transition">Letters</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============== COVER / EDITORIAL HERO ============== -->
+<section class="border-b border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 pt-16 lg:pt-28 pb-16 lg:pb-28 relative">
+
+    <!-- byline -->
+    <div class="grid grid-cols-12 gap-6 mb-10 lg:mb-16">
+      <div class="col-span-12 lg:col-span-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 info-wipe">
+        Cover Story · by M. Encarnacion
+      </div>
+      <div class="hidden lg:block lg:col-span-6 rule mt-2"></div>
+      <div class="col-span-12 lg:col-span-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
+        Pp. 004 — 064
+      </div>
+    </div>
+
+    <!-- giant headline -->
+    <h2 class="serif-display text-[52px] sm:text-[88px] lg:text-[144px] leading-[0.92]">
+      <span class="block mask-reveal"><span>Ten years of</span></span>
+      <span class="block mask-reveal d1"><span>making brands</span></span>
+      <span class="block mask-reveal d2"><span class="serif-display-italic text-rust">feel like home<span class="text-ink">.</span></span></span>
+    </h2>
+
+    <!-- sub / intro -->
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-14 lg:mt-20">
+      <div class="col-span-12 lg:col-span-6 lg:col-start-7">
+        <p class="serif-body text-[17px] lg:text-[20px] leading-[1.6] dropcap">
+          Melissa Encarnacion is a Dominican art director and designer based in Santo Domingo. She leads design at Liquid Digital Agency, shaping identities for brands across the Caribbean and the diaspora<span class="foot-ref">*</span>. This issue collects two recent projects — a salami that traveled from the DR to New York, and a construction company turning thirty — alongside notes on type, color, and the slow work of making brands feel like they belong.
+        </p>
+        <div class="rule mt-10"></div>
+        <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mt-4">
+          <span class="foot-ref">*</span>
+          <span class="normal-case italic serif-body">See pp. 040 for colophon &amp; credits.</span>
+          <span>Continued p. 008 →</span>
+        </div>
+      </div>
+
+      <!-- stamp -->
+      <div class="hidden lg:flex col-span-3 col-start-1 row-start-1 items-start">
+        <svg class="stamp w-[160px] h-[160px]" viewBox="0 0 200 200">
+          <defs>
+            <path id="circle-path" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" />
+          </defs>
+          <circle cx="100" cy="100" r="84" fill="none" stroke="#0A0A0A" stroke-width="1" />
+          <circle cx="100" cy="100" r="72" fill="none" stroke="#0A0A0A" stroke-width="1" />
+          <text font-family="JetBrains Mono" font-size="11" letter-spacing="3" fill="#0A0A0A">
+            <textPath href="#circle-path">ART DIRECTION · BRAND DESIGN · EDITORIAL · SANTO DOMINGO · </textPath>
+          </text>
+          <text x="100" y="96" text-anchor="middle" font-family="Fraunces" font-size="14" fill="#0A0A0A" font-style="italic">est.</text>
+          <text x="100" y="118" text-anchor="middle" font-family="Fraunces" font-size="28" fill="#B8431E" font-weight="500">2014</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TABLE OF CONTENTS ============== -->
+<section id="work" class="border-b border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-16 lg:py-24">
+    <div class="flex items-baseline justify-between mb-10">
+      <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">Contents</div>
+      <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">Issue 01 / 2026</div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+      <div class="col-span-12 md:col-span-6 space-y-5">
+        <a href="#case-01" class="flex items-baseline gap-6 group">
+          <span class="font-mono text-[11px] text-ink/50 w-10">008</span>
+          <span class="flex-1 serif-display text-[28px] lg:text-[36px] group-hover:text-rust transition">Estelar — a taste of home</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/50">Feature</span>
+        </a>
+        <div class="rule-dashed"></div>
+        <a href="#case-02" class="flex items-baseline gap-6 group">
+          <span class="font-mono text-[11px] text-ink/50 w-10">024</span>
+          <span class="flex-1 serif-display text-[28px] lg:text-[36px] group-hover:text-rust transition">Alkasa — thirty, confidently</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/50">Feature</span>
+        </a>
+        <div class="rule-dashed"></div>
+        <a href="#about" class="flex items-baseline gap-6 group">
+          <span class="font-mono text-[11px] text-ink/50 w-10">036</span>
+          <span class="flex-1 serif-display text-[28px] lg:text-[36px] group-hover:text-rust transition">On sabor &amp; systems</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/50">Essay</span>
+        </a>
+        <div class="rule-dashed"></div>
+        <a href="#contact" class="flex items-baseline gap-6 group">
+          <span class="font-mono text-[11px] text-ink/50 w-10">040</span>
+          <span class="flex-1 serif-display text-[28px] lg:text-[36px] group-hover:text-rust transition">Letters &amp; colophon</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/50">Back</span>
+        </a>
+      </div>
+
+      <div class="col-span-12 md:col-span-6">
+        <figure class="zine-fig border border-ink bg-ink aspect-[4/5] overflow-hidden">
+          <img class="lazy-fade w-full h-full object-cover"
+               src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/3666ab229654899.68685cc14afa5.jpg"
+               alt="Cover plate — Estelar package"
+               onload="this.classList.add('loaded')" />
+        </figure>
+        <figcaption class="flex justify-between mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/50">
+          <span>Plate i.</span>
+          <span class="italic serif-body normal-case">Estelar package, 2024</span>
+          <span>p. 008</span>
+        </figcaption>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FEATURE 01 — ESTELAR ============== -->
+<section id="case-01" class="border-b border-ink bg-ink text-bone">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-32">
+
+    <!-- page header -->
+    <div class="flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60 mb-8">
+      <span>008</span>
+      <span>Feature / 01</span>
+      <span>Mellen — Issue 01</span>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 items-end">
+      <div class="col-span-12 lg:col-span-3 big-numeral text-[180px] lg:text-[280px] text-rust">01</div>
+      <h3 class="col-span-12 lg:col-span-9 serif-display text-[48px] lg:text-[104px] leading-[0.92]">
+        A salami that<br/>crossed an <span class="serif-display-italic text-mustard">ocean.</span>
+      </h3>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-16 lg:mt-24">
+      <!-- meta sidebar -->
+      <aside class="col-span-12 lg:col-span-3 space-y-8 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/70 order-2 lg:order-1">
+        <div>
+          <div class="text-bone/40">Client</div>
+          <div class="mt-1 text-bone">Tú Sabe</div>
+        </div>
+        <div>
+          <div class="text-bone/40">Role</div>
+          <div class="mt-1 text-bone normal-case tracking-normal serif-body text-[14px]">Art Director · Graphic Designer</div>
+        </div>
+        <div>
+          <div class="text-bone/40">Scope</div>
+          <div class="mt-1 text-bone normal-case tracking-normal serif-body text-[14px]">Branding · Packaging · Brand Launch</div>
+        </div>
+        <div>
+          <div class="text-bone/40">Market</div>
+          <div class="mt-1 text-bone">DR → NY</div>
+        </div>
+        <div>
+          <div class="text-bone/40">Published</div>
+          <div class="mt-1 text-bone">November 2024</div>
+        </div>
+      </aside>
+
+      <!-- body copy -->
+      <div class="col-span-12 lg:col-span-5 order-1 lg:order-2 space-y-6 serif-body text-[17px] leading-[1.7]">
+        <p class="dropcap">
+          Estelar | Made by… Tú Sabe is the first artisanal Dominican salami to reach New York. A product that travels with a flavor, a history, and an identity rooted in home. Our task was to build a brand worthy of that crossing.
+        </p>
+        <p>
+          Every detail — from the warm color palette to the artisanal typography — evokes authenticity, tradition, and a bit of Dominican <em>sabor</em>. The system flexes from the shelf to the street: packaging, signage, campaign.
+        </p>
+        <div class="rule border-bone/30 my-8"></div>
+        <p class="pull text-[24px] lg:text-[32px] leading-[1.2] text-mustard">
+          "A proud moment for every Dominican represented on an American shelf."
+        </p>
+        <div class="rule border-bone/30 my-8"></div>
+        <p>
+          The project launched in Santo Domingo and New York simultaneously. Social campaign, vendor collateral, and retail-shelf photography followed. On-shelf presence tested against American category leaders — colors held, lockup read clean, category signals felt Dominican first.
+        </p>
+      </div>
+
+      <!-- lead plate -->
+      <figure class="col-span-12 lg:col-span-4 order-3 zine-fig border border-bone/20 aspect-[4/5]">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/4cc2c3229654899.68685cc14eafb.jpg"
+             alt="Estelar — lockup detail"
+             onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+
+    <!-- secondary plates -->
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-12 lg:mt-16">
+      <figure class="col-span-12 lg:col-span-7 zine-fig aspect-[21/9] border border-bone/20">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/f5169f229654899.68685cc14c409.jpg"
+             alt="Estelar — shelf photography" onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-12 lg:col-span-5 zine-fig aspect-[4/5] border border-bone/20">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/29e68e229654899.68685cc14d550.jpg"
+             alt="Estelar — product close-up" onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+
+    <div class="flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60 mt-8">
+      <span>Plates ii — iv</span>
+      <span>Continued p. 024 →</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FEATURE 02 — ALKASA ============== -->
+<section id="case-02" class="border-b border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-32">
+
+    <div class="flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-8">
+      <span>024</span>
+      <span>Feature / 02</span>
+      <span>Mellen — Issue 01</span>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 items-end">
+      <h3 class="col-span-12 lg:col-span-9 serif-display text-[48px] lg:text-[104px] leading-[0.92] order-2 lg:order-1">
+        Thirty years,<br/>one confident<br/><span class="serif-display-italic text-rust">mark.</span>
+      </h3>
+      <div class="col-span-12 lg:col-span-3 big-numeral text-[180px] lg:text-[280px] text-rust text-right order-1 lg:order-2">02</div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-16 lg:mt-24">
+
+      <figure class="col-span-12 lg:col-span-6 zine-fig aspect-[5/4] border border-ink">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6f22aa231578247.68d6abb0e599d.png"
+             alt="Alkasa — 30 años key visual"
+             onload="this.classList.add('loaded')" />
+      </figure>
+
+      <div class="col-span-12 lg:col-span-6 space-y-6 serif-body text-[17px] leading-[1.7]">
+        <div class="flex items-baseline gap-6 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
+          <span>Client</span><span class="text-ink">Alkasa</span>
+          <span class="text-ink/30">·</span>
+          <span>Year</span><span class="text-ink">2024</span>
+          <span class="text-ink/30">·</span>
+          <span>Role</span><span class="text-ink">Art Director</span>
+        </div>
+        <div class="rule-dashed mt-4"></div>
+
+        <p class="dropcap mt-6">
+          Alkasa has been building the Dominican Republic for thirty years. The brief: an anniversary identity that nods to the brand's past without getting stuck in it — a mark and a graphic system that could carry signage, print, and social, all while feeling like Alkasa.
+        </p>
+        <p>
+          The solution: a flexible "30" monogram, a deep brand-red anchored with cream, and a hand-drawn texture library that references construction sites, site plans, and hand-signed documents. A system built to adapt, not to impose.
+        </p>
+        <p class="pull text-[22px] lg:text-[28px] leading-[1.2] text-rust">
+          "A graphic language that honors three decades of building the country."
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-12 lg:mt-16">
+      <figure class="col-span-12 lg:col-span-4 zine-fig aspect-square border border-ink">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/1237e2231578247.68d6abb0e60f7.png"
+             alt="Alkasa — poster" onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-12 lg:col-span-4 zine-fig aspect-square border border-ink">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/7df345231578247.68d6a64941743.png"
+             alt="Alkasa — signage" onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-12 lg:col-span-4 zine-fig aspect-square border border-ink bg-rust flex items-center justify-center">
+        <div class="big-numeral text-bone text-[200px]">30</div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ESSAY / ABOUT ============== -->
+<section id="about" class="border-b border-ink bg-cream">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-32">
+
+    <div class="flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-8">
+      <span>036</span>
+      <span>Essay / 03</span>
+      <span>Mellen — Issue 01</span>
+    </div>
+
+    <h3 class="serif-display text-[48px] lg:text-[96px] leading-[0.92] max-w-[16ch]">
+      On <span class="serif-display-italic text-rust">sabor</span> &amp; systems.
+    </h3>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-16">
+      <div class="col-span-12 lg:col-span-4 order-2 lg:order-1">
+        <div class="zine-fig aspect-[4/5] bg-ink border border-ink flex items-end p-5">
+          <div class="w-full">
+            <div class="w-8 h-8 bg-volt mb-3"></div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/70">Portrait, Santo Domingo · 2024</div>
+          </div>
+        </div>
+        <div class="mt-6 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
+          Melissa Encarnacion<br/>Head of Design, Liquid Digital
+        </div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-8 order-1 lg:order-2 columns-1 md:columns-2 gap-10 serif-body text-[17px] leading-[1.75]">
+        <p class="dropcap">
+          Ten years in, the thing I keep returning to is warmth. A brand can be rigorous and systemic and still feel like a kitchen — like somebody put the coffee on. That's what I'm after.
+        </p>
+        <p>
+          At Liquid I lead a team of five designers. We work for clients across the Dominican Republic and in the US — financial, insurance, FMCG, cultural, small-and-mighty founders shipping their first product.
+        </p>
+        <p>
+          The work I'm proudest of usually has an ingredient you can't fake: it's specific. To a place, a moment, a voice. Estelar is Dominican and proud. Alkasa is thirty and it looks thirty. A brand that could be from anywhere is usually <em>from nowhere</em>.
+        </p>
+        <p>
+          I studied design in Santo Domingo, spent time observing New York, and chose to build my career back home. The Caribbean is a generous teacher. Color works harder here. Type has to breathe.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LETTERS / CONTACT ============== -->
+<section id="contact" class="border-b border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-32">
+
+    <div class="flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-8">
+      <span>040</span>
+      <span>Back matter</span>
+      <span>Letters &amp; colophon</span>
+    </div>
+
+    <h3 class="serif-display text-[56px] lg:text-[160px] leading-[0.9]">
+      Write<br/>a <span class="serif-display-italic text-rust">letter.</span>
+    </h3>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-16">
+      <div class="col-span-12 lg:col-span-7">
+        <a href="mailto:hello@melissaencarnacion.com" class="serif-display-italic text-[32px] lg:text-[56px] border-b border-ink pb-2 hover:text-rust hover:border-rust transition inline-block">
+          hello@melissaencarnacion.com →
+        </a>
+        <p class="serif-body text-[17px] leading-[1.7] mt-8 max-w-[48ch]">
+          For commissions, collaborations, speaking, or teaching — drop a note. I read everything and reply within a week (most of the time, honestly).
+        </p>
+      </div>
+
+      <aside class="col-span-12 lg:col-span-4 lg:col-start-9 bg-ink text-bone p-8">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/50 mb-4">Colophon</div>
+        <dl class="space-y-3 serif-body text-[14px] leading-[1.5]">
+          <div class="flex justify-between gap-4 border-b border-bone/20 pb-2">
+            <dt class="text-bone/60">Type</dt><dd>Fraunces · Inter · JetBrains Mono</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-bone/20 pb-2">
+            <dt class="text-bone/60">Palette</dt><dd>Ink · Bone · Rust · Mustard</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-bone/20 pb-2">
+            <dt class="text-bone/60">Grid</dt><dd>12-col · 96px baseline</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-bone/60">Photography</dt><dd>Behance / Liquid Digital</dd>
+          </div>
+        </dl>
+
+        <div class="mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/50">Elsewhere</div>
+        <ul class="mt-3 space-y-1 serif-body text-[14px]">
+          <li>Behance · @melissaencarn</li>
+          <li>Instagram · @mellen.design</li>
+          <li>LinkedIn · melissa-encarnacion</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="bg-bone">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between gap-6 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/70">
+    <div>© 2026 M. Encarnacion · Set in Fraunces &amp; Inter</div>
+    <div class="flex gap-6">
+      <span>Santo Domingo, DO</span>
+      <span>v1.0 · Editorial Zine</span>
+      <span>Printed in spirit</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

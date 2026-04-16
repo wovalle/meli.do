@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Melissa Encarnacion — Art Director & Designer</title>
+<meta name="description" content="Dominican Art Director. Head of Design at Liquid Digital Agency. Portfolio of brand, editorial, and digital work." />
+
+<!-- FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- TAILWIND via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0A0A0A',
+          bone: '#F5F0E8',
+          volt: '#E8FF00',
+          charcoal: '#2A2A2A',
+          mustard: '#FFB800',
+          line: '#1F1F1F',
+        },
+        fontFamily: {
+          display: ['"Archivo Black"', 'sans-serif'],
+          sans: ['Inter', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+        maxWidth: { 'shell': '1440px' },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root {
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  }
+  html { background: #F5F0E8; }
+  body { font-feature-settings: "ss01","cv11"; -webkit-font-smoothing: antialiased; }
+
+  /* HEADLINE REVEAL — clip-path mask up. 900ms ease-out-quint. staggered by line. */
+  .reveal-line { overflow: hidden; }
+  .reveal-line > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: line-up 900ms var(--ease-out-quint) forwards;
+  }
+  .reveal-line.d-100 > span { animation-delay: 100ms; }
+  .reveal-line.d-200 > span { animation-delay: 200ms; }
+  .reveal-line.d-300 > span { animation-delay: 300ms; }
+  @keyframes line-up { to { transform: translateY(0); } }
+
+  /* MARQUEE TICKER — infinite x-scroll, 40s linear */
+  .ticker-track {
+    animation: ticker 40s linear infinite;
+    will-change: transform;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* CASE CARD HOVER — image zoom 1 → 1.06 600ms, plus title slide-in */
+  .case-card .case-img { transition: transform 900ms var(--ease-out-quint); }
+  .case-card:hover .case-img { transform: scale(1.06); }
+  .case-card .case-arrow { transition: transform 400ms var(--ease-out-quint); }
+  .case-card:hover .case-arrow { transform: translate(8px,-8px); }
+
+  /* CURSOR BLINK */
+  .cursor-blink { animation: blink 1s steps(2,end) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* NUMBER TICK — counter-up on scroll. fallback: static shown. */
+  @keyframes count-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .metric-fade { animation: count-up 700ms 250ms var(--ease-out-quint) backwards; }
+
+  /* CUSTOM GRID LINE */
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(10,10,10,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10,10,10,.06) 1px, transparent 1px);
+    background-size: 96px 96px;
+  }
+
+  /* SECTION DIVIDER */
+  .hr-hair { border-top: 1px solid #0A0A0A; }
+
+  /* VOLT HIGHLIGHT BAR */
+  .volt-bar { position: relative; }
+  .volt-bar::before {
+    content: ""; position: absolute; inset: 0 -.08em -.05em -.08em;
+    background: #E8FF00; z-index: -1; transform: skewY(-1deg);
+  }
+
+  /* IMG LAZY FADE */
+  img.lazy-fade { opacity: 0; transition: opacity 600ms var(--ease-out-quint); }
+  img.lazy-fade.loaded { opacity: 1; }
+</style>
+</head>
+<body class="bg-bone text-ink font-sans antialiased">
+
+<!-- ============== NAV ============== -->
+<!-- anim: slides down from top 500ms on load, then sticky -->
+<header class="sticky top-0 z-50 bg-bone/90 backdrop-blur border-b border-ink/10">
+  <div class="max-w-shell mx-auto flex items-center justify-between px-6 lg:px-10 h-16">
+    <a href="#" class="font-display text-[20px] tracking-tight">MELLEN<span class="text-mustard">.</span></a>
+    <nav class="hidden md:flex gap-10 font-mono text-[12px] uppercase tracking-[0.18em]">
+      <a href="#work" class="hover:text-mustard transition">Work</a>
+      <a href="#about" class="hover:text-mustard transition">About</a>
+      <a href="#services" class="hover:text-mustard transition">Services</a>
+      <a href="#contact" class="hover:text-mustard transition">Contact</a>
+    </nav>
+    <a href="#contact" class="hidden md:inline-flex items-center gap-2 bg-ink text-bone px-4 py-2 font-mono text-[12px] uppercase tracking-[0.18em] hover:bg-volt hover:text-ink transition">
+      Let's talk <span aria-hidden="true">→</span>
+    </a>
+    <button class="md:hidden font-mono text-[12px] uppercase" aria-label="Open menu">Menu</button>
+  </div>
+</header>
+
+<!-- ============== HERO / DASHBOARD ============== -->
+<!-- anim: headline clip-path reveal staggered 100/200/300ms. Metric cards fade+slide 250ms after -->
+<section class="relative border-b border-ink/10 overflow-hidden">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 pt-16 lg:pt-24 pb-16 lg:pb-20">
+
+    <!-- meta row -->
+    <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-10 lg:mb-16">
+      <span>Portfolio <span class="text-ink">/ 2026</span></span>
+      <span class="hidden sm:inline">Santo Domingo <span class="text-ink mx-2">—</span> Remote</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 bg-mustard rounded-full inline-block"></span>Open for work</span>
+    </div>
+
+    <!-- big headline -->
+    <h1 class="font-display leading-[0.92] tracking-[-0.02em] text-[64px] sm:text-[96px] lg:text-[148px]">
+      <span class="block reveal-line"><span>Melissa</span></span>
+      <span class="block reveal-line d-100"><span>Encarnacion</span><span class="cursor-blink text-mustard ml-2">_</span></span>
+    </h1>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-10 lg:mt-16">
+      <p class="col-span-12 lg:col-span-7 text-[20px] lg:text-[28px] font-light leading-snug tracking-tight max-w-[28ch]">
+        Dominican <span class="volt-bar inline-block">Art Director</span> & designer building brand systems, editorial identities, and digital products that feel considered, warm, and human.
+      </p>
+
+      <!-- METRIC DASHBOARD -->
+      <div class="col-span-12 lg:col-span-5 grid grid-cols-3 gap-0 border border-ink">
+        <div class="p-4 lg:p-6 border-r border-ink metric-fade">
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">Years</div>
+          <div class="font-display text-[36px] lg:text-[44px] leading-none mt-3">10<span class="text-mustard">+</span></div>
+        </div>
+        <div class="p-4 lg:p-6 border-r border-ink bg-ink text-bone metric-fade">
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-bone/60">Team</div>
+          <div class="font-display text-[36px] lg:text-[44px] leading-none mt-3">05</div>
+          <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-bone/60 mt-2">designers led</div>
+        </div>
+        <div class="p-4 lg:p-6 bg-volt metric-fade">
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/70">Brands</div>
+          <div class="font-display text-[36px] lg:text-[44px] leading-none mt-3">13</div>
+          <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/60 mt-2">across LATAM + US</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TICKER -->
+  <!-- anim: infinite 40s linear marquee. Pauses on hover (optional). -->
+  <div class="border-t border-ink bg-ink text-bone py-3 overflow-hidden">
+    <div class="ticker-track flex gap-10 whitespace-nowrap font-display text-[28px] lg:text-[44px] uppercase">
+      <span>Brand ★ Editorial ★ Packaging ★ Art Direction ★ Identity ★ Campaign ★</span>
+      <span>Brand ★ Editorial ★ Packaging ★ Art Direction ★ Identity ★ Campaign ★</span>
+      <span>Brand ★ Editorial ★ Packaging ★ Art Direction ★ Identity ★ Campaign ★</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SELECTED WORK ============== -->
+<section id="work" class="border-b border-ink/10">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+
+    <div class="flex items-end justify-between mb-12 lg:mb-16">
+      <div>
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 01 — Selected Work</div>
+        <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Two stories,<br/>told in full.</h2>
+      </div>
+      <a href="#" class="hidden md:inline-flex font-mono text-[12px] uppercase tracking-[0.18em] border-b border-ink pb-1 hover:text-mustard hover:border-mustard transition">
+        View archive (13) →
+      </a>
+    </div>
+
+    <!-- CASE 1 — ESTELAR -->
+    <!-- anim on scroll: image clip-path reveal bottom-to-top 1000ms. Meta fades in 300ms after. -->
+    <a href="#case-estelar" class="case-card group block border border-ink mb-8 lg:mb-12 overflow-hidden">
+      <div class="grid grid-cols-12">
+        <div class="col-span-12 lg:col-span-7 aspect-[4/3] lg:aspect-auto lg:min-h-[520px] overflow-hidden bg-ink">
+          <img class="case-img lazy-fade w-full h-full object-cover"
+               src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/3666ab229654899.68685cc14afa5.jpg"
+               alt="Estelar — Made by Tú Sabe. Package of artisanal Dominican salami."
+               onload="this.classList.add('loaded')" />
+        </div>
+        <div class="col-span-12 lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-8">
+              <span>Case 01</span>
+              <span>2024 · Nov</span>
+            </div>
+            <h3 class="font-display text-[40px] lg:text-[56px] leading-[0.95] tracking-tight">Estelar<br/><span class="text-ink/40">by Tú Sabe</span></h3>
+            <p class="mt-6 text-[16px] leading-relaxed text-ink/80 max-w-[36ch]">
+              Branding, packaging and art direction for the first Dominican salami in New York — an artisanal product that reaches America with flavor, history, and identity.
+            </p>
+          </div>
+          <div class="mt-10 flex items-end justify-between">
+            <ul class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/70 space-y-1">
+              <li>Branding</li>
+              <li>Packaging</li>
+              <li>Brand Launch</li>
+            </ul>
+            <span class="case-arrow font-display text-[40px] leading-none">→</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- CASE 2 — ALKASA -->
+    <a href="#case-alkasa" class="case-card group block border border-ink overflow-hidden">
+      <div class="grid grid-cols-12">
+        <div class="col-span-12 lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between order-2 lg:order-1 bg-volt">
+          <div>
+            <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/80 mb-8">
+              <span>Case 02</span>
+              <span>2024 · Oct</span>
+            </div>
+            <h3 class="font-display text-[40px] lg:text-[56px] leading-[0.95] tracking-tight">Alkasa<br/><span class="text-ink/50">30 Años</span></h3>
+            <p class="mt-6 text-[16px] leading-relaxed text-ink max-w-[36ch]">
+              A 30th anniversary visual system for Dominican construction leader Alkasa — a flexible graphic language that honors three decades of building the country.
+            </p>
+          </div>
+          <div class="mt-10 flex items-end justify-between">
+            <ul class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/80 space-y-1">
+              <li>Branding</li>
+              <li>Graphic System</li>
+              <li>Event Identity</li>
+            </ul>
+            <span class="case-arrow font-display text-[40px] leading-none">→</span>
+          </div>
+        </div>
+        <div class="col-span-12 lg:col-span-7 aspect-[4/3] lg:aspect-auto lg:min-h-[520px] overflow-hidden bg-ink order-1 lg:order-2">
+          <img class="case-img lazy-fade w-full h-full object-cover"
+               src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6f22aa231578247.68d6abb0e599d.png"
+               alt="Alkasa — 30 Años anniversary graphic system."
+               onload="this.classList.add('loaded')" />
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ============== FEATURED DETAIL — ESTELAR STRIP ============== -->
+<!-- anim: horizontal scroll-linked parallax (slower than scroll). 3 full-bleed images. -->
+<section id="case-estelar" class="bg-ink text-bone border-b border-ink/40">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mb-12 lg:mb-16">
+      <div class="col-span-12 lg:col-span-4 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">
+        / 02 — In focus
+      </div>
+      <h2 class="col-span-12 lg:col-span-8 font-display text-[40px] lg:text-[80px] leading-[0.95] tracking-tight">
+        A salami, a story,<br/><span class="text-mustard">a taste of home.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10">
+      <div class="col-span-12 lg:col-span-5 flex flex-col gap-4">
+        <dl class="font-mono text-[12px] uppercase tracking-[0.18em] border-t border-bone/20">
+          <div class="flex justify-between py-3 border-b border-bone/20">
+            <dt class="text-bone/50">Role</dt><dd>Art Director · Designer</dd>
+          </div>
+          <div class="flex justify-between py-3 border-b border-bone/20">
+            <dt class="text-bone/50">Client</dt><dd>Tú Sabe</dd>
+          </div>
+          <div class="flex justify-between py-3 border-b border-bone/20">
+            <dt class="text-bone/50">Market</dt><dd>DR / NY</dd>
+          </div>
+          <div class="flex justify-between py-3 border-b border-bone/20">
+            <dt class="text-bone/50">Year</dt><dd>2024</dd>
+          </div>
+        </dl>
+        <p class="text-[16px] leading-relaxed text-bone/80 mt-6 max-w-[40ch]">
+          Every detail — from the warm color palette to the artisanal typography — evokes authenticity, tradition, and a bit of Dominican sabor. A proud moment for the team and for every Dominican represented on an American shelf.
+        </p>
+      </div>
+
+      <figure class="col-span-12 lg:col-span-7 aspect-[4/3] overflow-hidden">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/4cc2c3229654899.68685cc14eafb.jpg"
+             alt="Estelar — Packaging system on-shelf."
+             onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 mt-6 lg:mt-10">
+      <figure class="col-span-12 lg:col-span-7 aspect-[21/9] overflow-hidden">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/f5169f229654899.68685cc14c409.jpg"
+             alt="Estelar — Lockup and label system."
+             onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-12 lg:col-span-5 aspect-[4/5] overflow-hidden">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/29e68e229654899.68685cc14d550.jpg"
+             alt="Estelar — Product photography."
+             onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SERVICES GRID ============== -->
+<section id="services" class="border-b border-ink/10 grid-bg">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <div class="flex items-end justify-between mb-12 lg:mb-16">
+      <div>
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 03 — What I do</div>
+        <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Services, stacked.</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-0 border border-ink bg-bone">
+      <!-- tile 1 -->
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 p-8 border-r border-b md:border-b-0 border-ink hover:bg-volt transition duration-300">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">01</div>
+        <div class="font-display text-[28px] leading-tight mt-4">Brand<br/>Identity</div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 mt-6">Logos · Systems · Guidelines</p>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 p-8 border-r border-b md:border-b-0 border-ink hover:bg-volt transition duration-300">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">02</div>
+        <div class="font-display text-[28px] leading-tight mt-4">Art<br/>Direction</div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 mt-6">Campaigns · Shoots · Films</p>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 p-8 border-r border-b md:border-b-0 border-ink hover:bg-volt transition duration-300">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">03</div>
+        <div class="font-display text-[28px] leading-tight mt-4">Editorial<br/>& Print</div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 mt-6">Books · Reports · Magazines</p>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 p-8 border-ink hover:bg-volt transition duration-300">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">04</div>
+        <div class="font-display text-[28px] leading-tight mt-4">Packaging<br/>& Product</div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 mt-6">FMCG · Food · Beverage</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT ============== -->
+<!-- anim: two-column reveal. Left portrait clip-path reveal. Right text line-up staggered. -->
+<section id="about" class="border-b border-ink/10 bg-ink text-bone">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <div class="grid grid-cols-12 gap-6 lg:gap-10">
+      <div class="col-span-12 lg:col-span-5">
+        <div class="aspect-[4/5] bg-charcoal border border-bone/20 overflow-hidden flex items-end p-6">
+          <!-- Placeholder for portrait. In production, swap to real image. -->
+          <div class="w-full">
+            <div class="w-full h-1 bg-volt mb-4"></div>
+            <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Portrait placeholder — Melissa, 2024</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-7">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60 mb-3">/ 04 — About</div>
+        <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Design<br/>with <span class="text-mustard">sabor.</span></h2>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 text-[16px] leading-relaxed text-bone/80">
+          <p>
+            Ten years ago I picked up design as a way to tell stories. Today I lead a team of five at Liquid Digital Agency in Santo Domingo, shaping identities for brands across the Dominican Republic and the diaspora.
+          </p>
+          <p>
+            My work sits between editorial craft and commercial rigor. I care about typography, color temperature, and the small moments of a brand that make people feel something real.
+          </p>
+        </div>
+
+        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-0 border border-bone/20">
+          <div class="p-5 border-r border-bone/20">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-bone/50">Based</div>
+            <div class="font-display text-[18px] mt-2">Santo Domingo</div>
+          </div>
+          <div class="p-5 border-r border-bone/20">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-bone/50">Role</div>
+            <div class="font-display text-[18px] mt-2">Head of Design</div>
+          </div>
+          <div class="p-5 border-r border-bone/20">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-bone/50">Agency</div>
+            <div class="font-display text-[18px] mt-2">Liquid Digital</div>
+          </div>
+          <div class="p-5 bg-volt text-ink">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/70">Languages</div>
+            <div class="font-display text-[18px] mt-2">ES / EN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CLIENT LOGOS / CREDITS ============== -->
+<section class="border-b border-ink/10">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-12 lg:py-16">
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/50 mb-6">Trusted by</div>
+    <div class="flex flex-wrap gap-x-10 gap-y-4 items-baseline font-display text-[22px] lg:text-[32px] text-ink/70">
+      <span>Estelar</span>
+      <span class="text-ink/20">·</span>
+      <span>Alkasa</span>
+      <span class="text-ink/20">·</span>
+      <span>Liquid Beer</span>
+      <span class="text-ink/20">·</span>
+      <span>Banco Popular</span>
+      <span class="text-ink/20">·</span>
+      <span>Humano Seguros</span>
+      <span class="text-ink/20">·</span>
+      <span>Bien Picaito</span>
+      <span class="text-ink/20">·</span>
+      <span>Tú Sabe</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT / CTA ============== -->
+<!-- anim: giant email slides up on view. Background rotates subtly. -->
+<section id="contact" class="bg-volt text-ink border-b border-ink">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-24 lg:py-36">
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/70 mb-6">/ 05 — Let's build something</div>
+    <h2 class="font-display text-[48px] sm:text-[96px] lg:text-[160px] leading-[0.9] tracking-[-0.02em]">
+      Say<br/>hola<span class="text-ink/50">.</span>
+    </h2>
+
+    <a href="mailto:hello@melissaencarnacion.com" class="inline-block mt-10 font-mono text-[14px] lg:text-[18px] uppercase tracking-[0.18em] border-b-2 border-ink pb-1 hover:text-ink/50 hover:border-ink/50 transition">
+      hello@melissaencarnacion.com →
+    </a>
+
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-[11px] uppercase tracking-[0.18em]">
+      <div><div class="text-ink/50">Behance</div><div class="mt-2">@melissaencarn</div></div>
+      <div><div class="text-ink/50">Instagram</div><div class="mt-2">@mellen.design</div></div>
+      <div><div class="text-ink/50">LinkedIn</div><div class="mt-2">melissa-encarnacion</div></div>
+      <div><div class="text-ink/50">Read</div><div class="mt-2">/resume.pdf</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="bg-ink text-bone">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between gap-6 font-mono text-[11px] uppercase tracking-[0.18em]">
+    <div>© 2026 Melissa Encarnacion · All rights reserved</div>
+    <div class="flex gap-6">
+      <span>Santo Domingo, DO</span>
+      <span>Remote · LATAM + US</span>
+      <span>v1.0 · Editorial Dashboard</span>
+    </div>
+  </div>
+</footer>
+
+<!-- micro-script: reveal on scroll via IntersectionObserver (progressive enhancement). -->
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

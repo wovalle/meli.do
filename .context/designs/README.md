@@ -1,6 +1,6 @@
 # meli.do — Portfolio Design Explorations
 
-Four static HTML prototypes for Melissa Encarnacion's portfolio landing page. Two style directions, two variations each. Each design is a single-file HTML + Tailwind (CDN) + Google Fonts prototype, desktop-first and mobile-responsive, using real Behance-sourced imagery for Estelar and Alkasa.
+Six static HTML prototypes for Melissa Encarnacion's portfolio landing page. Two style directions (Editorial + Y2K), with multiple variations per direction. Each design is a single-file HTML + Tailwind (CDN) + Google Fonts prototype, desktop-first and mobile-responsive, using real Behance-sourced imagery for Estelar and Alkasa.
 
 Goal: pick a direction, then port to the production stack (likely Next.js + Tailwind + Framer Motion / GSAP + Lottie).
 
@@ -10,13 +10,17 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 .context/designs/
 ├── editorial-dashboard.html      Direction A · Variation 1
 ├── editorial-zine.html           Direction A · Variation 2
-├── y2k-illustrated.html          Direction B · Variation 1
-├── y2k-maximalist.html           Direction B · Variation 2
+├── y2k-illustrated.html          Direction B · Variation 1 (lavender · playful)
+├── y2k-illustrated-v2.html       Direction B · Variation 1.b (peach · scrapbook)
+├── y2k-maximalist.html           Direction B · Variation 2 (red · punk-loud)
+├── y2k-maximalist-pink.html      Direction B · Variation 2.b (bubblegum · femme-loud)
 └── screenshots/
     ├── editorial-dashboard-full.png / -mobile.png
     ├── editorial-zine-full.png / -mobile.png
     ├── y2k-illustrated-full.png / -mobile.png
-    └── y2k-maximalist-full.png / -mobile.png
+    ├── y2k-illustrated-v2-full.png / -mobile.png
+    ├── y2k-maximalist-full.png / -mobile.png
+    └── y2k-maximalist-pink-full.png / -mobile.png
 ```
 
 ## Shared structure (across all 4)
@@ -151,6 +155,49 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | Hand-drawn underline | Inline SVG background image, pre-rendered | static | Upgrade: Rough.js at runtime OR Lottie stroke-in on view |
 | Contact star rotators | `spin-slow` 18s, one reversed | infinite | CSS |
 
+### B1.b — `y2k-illustrated-v2.html` — *scrapbook*
+
+Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose palette and reorganized as a scrapbook/letter. Centered polaroid hero with orbiting sticky-notes; case studies as taped polaroids; About section as a handwritten letter; Contact as a literal postcard.
+
+**Palette**
+| Token | Hex | Use |
+|---|---|---|
+| peach | `#FFE9D4` | Background |
+| cream | `#FFFBF2` | Cards |
+| cacao | `#2E1E14` | Primary text (warmer than navy) |
+| rose | `#E8528F` | Primary accent |
+| sage | `#7FB085` | Secondary accent |
+| tangerine | `#F4A261` | Tertiary |
+| lilac | `#C5B3F5` | Chip accents |
+| butter | `#FFEDA0` | Tape, highlights |
+| cherry | `#C44569` | Reserved |
+
+**Type**
+- Display: **Instrument Serif** (italic-heavy) — 40/56/96/136 px
+- Handwritten: **Caveat** — 20/22/26/32 px (heavier use than B1 — structural, not decorative)
+- Body: **Poppins** — 14/16/18 px
+
+**Layout beats**
+- Centered polaroid portrait with rotated yellow-tape corners
+- 4 sticky-note cards float around portrait (stats as handwritten notes)
+- Two case studies as taped polaroid cards, alternating rotations
+- "What I'm on this month" — a personality widget (listening / reading / eating / sketching)
+- About as an illustrated letter with "Dear reader, … con cariño, Melissa"
+- Contact as a literal postcard with stamp, address field, dashed divider
+
+**Animation intent**
+| Element | Behavior | Duration / Ease | Framework hint |
+|---|---|---|---|
+| Hero ornaments | `.f1 / .f2 / .f3` parallax floats, `translate + rotate`, different phases | 6–9s `ease-in-out` infinite | CSS custom-prop `--rot` so rotation animates around author-set angle |
+| Hand-drawn underline | Inline SVG path, rose stroke | static | Upgrade: Rough.js runtime OR Lottie stroke-in on view |
+| Polaroid cards | Rotate on load, `lift` on hover (`-6px, -.6deg`) | 500ms `ease-out-back` | CSS |
+| Contact postcard | `rotate(-1deg)` persistent, tape corners absolute | static | CSS; could add drag-release spring via Framer Motion |
+| Dot grid (`.dot-grid`) | Static | n/a | Background radial-gradient pattern |
+| Wave hand | Rotation keyframe on hero emoji | 2.6s infinite | CSS |
+| Letter-style About | Dashed borders, handwritten caption kickers | static | Semantic `<article>` with styled `<blockquote>` |
+
+---
+
 ### B2 — `y2k-maximalist.html`
 
 **Palette**
@@ -193,6 +240,36 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | Spin stars in contact | Slow rotate 14s, one reversed | infinite | CSS |
 | Text outline | `-webkit-text-stroke` on display | n/a | CSS (fallback: SVG) |
 | Ticker blink | .blink on "NEW" dot | 1s infinite | CSS |
+
+### B2.b — `y2k-maximalist-pink.html` — *bubblegum*
+
+Structurally identical to B2 (same stickers, marquees, noise, text-outline serifs) with the primary color swapped from hot-red `#E63946` to bubblegum `#FF3E9D` and a deeper magenta `#D400A8` replacing the electric-blue case-study section. Feels femme-loud instead of punk-loud.
+
+**Palette**
+| Token | Hex | Use |
+|---|---|---|
+| bubble | `#FF3E9D` | **Primary** — hero gradient stop, case 01, CTAs |
+| magenta | `#D400A8` | Case 02 bg, hero gradient mid |
+| cotton | `#FFB3D9` | About bg, archive chip |
+| blush | `#FFDAE9` | Stat card row |
+| ink-navy | `#0F1B3D` | Text, dark surfaces |
+| cream | `#FFF8F3` | Background |
+| volt | `#F5FF00` | Offsets, marquees, stickers |
+| elec-blue | `#00B4FF` | Reserved (unused here — was case 02 in B2) |
+
+**Palette diff vs B2**
+- Hero gradient: `hot-red → navy` → now `bubble → magenta → navy`
+- Case 01 bg: `hot-red` → `bubble`
+- Case 02 bg: `elec-blue` → `magenta`
+- About bg: `neon-pink` → `cotton` (softer)
+- `-webkit-text-stroke` outline: `#0F1B3D` still; added `.outline-text-bubble` variant
+
+**Animation intent** — identical to B2 (mask reveal, sticker hover offset, dual marquees, spinning stars, noise overlay, blinking dot). Nothing structurally changed, only color tokens.
+
+**When to pick this over B2**
+- Brand feels more "beauty · lifestyle · feminine" than "punk · editorial"
+- Paired with softer photography / portraiture
+- Bubblegum as dominant reads playful-bold; red reads aggressive-bold
 
 ---
 

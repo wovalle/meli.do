@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MELISSA ENCARNACION — LOUD DESIGN, PINK SOUL</title>
+<meta name="description" content="Maximalist portfolio (pink edit) — Melissa Encarnacion, Art Director, Dominican Republic." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Righteous&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'bubble': '#FF3E9D',      /* primary */
+          'magenta': '#D400A8',     /* deep pink */
+          'cotton': '#FFB3D9',      /* soft pink */
+          'blush': '#FFDAE9',       /* softest pink */
+          'ink-navy': '#0F1B3D',
+          cream: '#FFF8F3',
+          volt: '#F5FF00',
+          'elec-blue': '#00B4FF',
+          lime: '#C7FF5B',
+        },
+        fontFamily: {
+          serif: ['"DM Serif Display"', 'serif'],
+          sans: ['"Space Grotesk"', 'sans-serif'],
+          display: ['Righteous', 'sans-serif'],
+        },
+        maxWidth: { shell: '1440px' },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root {
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  html { background: #FFF8F3; }
+  body {
+    font-feature-settings: "ss01","cv11";
+    -webkit-font-smoothing: antialiased;
+    color: #0F1B3D;
+  }
+
+  /* NOISE */
+  .noise { position: relative; }
+  .noise::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: multiply; opacity: .45;
+  }
+
+  /* STICKER — offset shadow */
+  .sticker { box-shadow: 6px 6px 0 0 #0F1B3D; transition: transform 300ms var(--ease-out-back), box-shadow 300ms var(--ease-out-quint); }
+  .sticker:hover { transform: translate(-3px,-3px); box-shadow: 10px 10px 0 0 #0F1B3D; }
+  .sticker-magenta { box-shadow: 6px 6px 0 0 #D400A8; }
+  .sticker-bubble { box-shadow: 6px 6px 0 0 #FF3E9D; }
+  .sticker-volt { box-shadow: 6px 6px 0 0 #F5FF00; }
+  .sticker-blue { box-shadow: 6px 6px 0 0 #00B4FF; }
+
+  /* MARQUEE */
+  .marq { animation: marq 22s linear infinite; }
+  @keyframes marq { to { transform: translateX(-50%); } }
+  .marq-rev { animation: marq 22s linear infinite reverse; }
+
+  /* HEADLINE MASK */
+  .mask { overflow: hidden; }
+  .mask > span { display: inline-block; transform: translateY(105%); animation: up 1000ms var(--ease-out-quint) forwards; }
+  .d-100 > span { animation-delay: 100ms; }
+  .d-200 > span { animation-delay: 200ms; }
+  @keyframes up { to { transform: translateY(0); } }
+
+  /* SPIN */
+  .spin { animation: spin 14s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FLOATY */
+  .float-1 { animation: f1 5s ease-in-out infinite; }
+  .float-2 { animation: f2 7s ease-in-out infinite; }
+  @keyframes f1 { 0%,100% { transform: translate(0,0) rotate(0); } 50% { transform: translate(-4px,-10px) rotate(6deg); } }
+  @keyframes f2 { 0%,100% { transform: translate(0,0) rotate(0); } 50% { transform: translate(6px,-14px) rotate(-8deg); } }
+
+  /* IMG FADE */
+  img.lazy-fade { opacity: 0; transition: opacity 700ms var(--ease-out-quint); }
+  img.lazy-fade.loaded { opacity: 1; }
+
+  /* TEXT OUTLINE */
+  .outline-text { -webkit-text-stroke: 2px #0F1B3D; color: transparent; }
+  .outline-text-cream { -webkit-text-stroke: 2px #FFF8F3; color: transparent; }
+  .outline-text-bubble { -webkit-text-stroke: 2px #FF3E9D; color: transparent; }
+
+  /* TILT */
+  .tilt { transition: transform 400ms var(--ease-out-back); }
+  .tilt:hover { transform: rotate(-2deg) scale(1.02); }
+
+  /* BLINK */
+  .blink { animation: blink 1s steps(2,end) infinite; }
+  @keyframes blink { 50% { opacity: .3; } }
+
+  /* PINK GRADIENT */
+  .pink-grad {
+    background: radial-gradient(ellipse at top right, #FF3E9D 0%, #D400A8 45%, #0F1B3D 100%);
+  }
+</style>
+</head>
+<body class="bg-cream font-sans overflow-x-hidden">
+
+<!-- ============== TOP BANNER TICKER ============== -->
+<div class="bg-ink-navy text-cream border-b-4 border-ink-navy overflow-hidden py-2">
+  <div class="marq flex gap-8 whitespace-nowrap text-[13px] font-medium uppercase tracking-[0.18em]">
+    <span>★ open for 2026 commissions ★ head of design at liquid digital agency ★ santo domingo, do ★ art direction · brand · packaging ★ spanish + english ★</span>
+    <span>★ open for 2026 commissions ★ head of design at liquid digital agency ★ santo domingo, do ★ art direction · brand · packaging ★ spanish + english ★</span>
+  </div>
+</div>
+
+<!-- ============== NAV ============== -->
+<header class="sticky top-0 z-50 bg-cream border-b-4 border-ink-navy">
+  <div class="max-w-shell mx-auto flex items-center justify-between px-6 lg:px-10 h-16">
+    <a href="#" class="font-display text-[26px] tracking-tight flex items-center gap-2">
+      MELLEN<span class="text-bubble">*</span>
+    </a>
+    <nav class="hidden md:flex gap-8 text-[13px] font-bold uppercase tracking-[0.14em]">
+      <a href="#work" class="hover:text-bubble transition">Work</a>
+      <a href="#estelar" class="hover:text-bubble transition">01</a>
+      <a href="#alkasa" class="hover:text-bubble transition">02</a>
+      <a href="#about" class="hover:text-bubble transition">About</a>
+      <a href="#contact" class="hover:text-bubble transition">Contact</a>
+    </nav>
+    <a href="#contact" class="bg-bubble text-cream px-5 py-2 text-[13px] font-bold uppercase tracking-[0.14em] sticker hover:bg-magenta transition">
+      HOLLA →
+    </a>
+  </div>
+</header>
+
+<!-- ============== HERO ============== -->
+<section class="relative border-b-4 border-ink-navy overflow-hidden pink-grad">
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 pt-20 lg:pt-24 pb-16 relative">
+
+    <!-- floaty stickers -->
+    <div class="absolute top-10 right-[6%] sticker sticker-volt bg-volt text-ink-navy px-4 py-2 text-[12px] font-bold uppercase rotate-[8deg] float-1">NEW · 2026</div>
+    <div class="absolute top-[30%] right-[12%] sticker sticker-bubble bg-cotton text-ink-navy px-3 py-1.5 text-[11px] font-bold uppercase rotate-[-5deg] float-2">10+ YEARS</div>
+    <div class="absolute bottom-10 left-[4%] sticker sticker-volt bg-volt text-ink-navy px-3 py-1.5 text-[11px] font-bold uppercase rotate-[-8deg] float-1">MADE IN DR 🇩🇴</div>
+
+    <!-- star -->
+    <svg class="absolute top-8 left-[8%] spin" width="72" height="72" viewBox="0 0 48 48" fill="none">
+      <path d="M24 0 L30 18 L48 24 L30 30 L24 48 L18 30 L0 24 L18 18 Z" fill="#F5FF00"/>
+    </svg>
+
+    <!-- kicker -->
+    <div class="inline-flex items-center gap-2 bg-cream text-ink-navy px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] mb-6">
+      <span class="w-2 h-2 bg-bubble rounded-full blink"></span>
+      PORTFOLIO / N° 01 / 2026
+    </div>
+
+    <!-- huge title -->
+    <h1 class="font-serif text-[72px] sm:text-[120px] lg:text-[200px] leading-[0.88] text-cream">
+      <span class="mask block"><span>MELISSA</span></span>
+      <span class="mask d-100 block italic outline-text-cream">ENCARNACION</span>
+    </h1>
+
+    <!-- sub row -->
+    <div class="mt-8 lg:mt-12 grid grid-cols-12 gap-6">
+      <p class="col-span-12 md:col-span-6 text-cream text-[18px] lg:text-[22px] leading-snug">
+        Dominican <span class="bg-volt text-ink-navy px-2">Art Director</span> &amp; designer. I build brand systems that run loud in public and feel gentle up close.
+      </p>
+      <div class="col-span-12 md:col-span-6 flex flex-wrap gap-3 items-start md:justify-end">
+        <a href="#work" class="sticker bg-volt text-ink-navy px-5 py-3 text-[13px] font-bold uppercase tracking-[0.14em]">SEE THE WORK →</a>
+        <a href="#contact" class="sticker sticker-bubble bg-cream text-ink-navy px-5 py-3 text-[13px] font-bold uppercase tracking-[0.14em]">GET IN TOUCH ★</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- stat strip -->
+  <div class="border-t-4 border-ink-navy grid grid-cols-2 md:grid-cols-4 text-ink-navy">
+    <div class="bg-volt border-r-4 border-ink-navy p-6 md:p-8">
+      <div class="text-[11px] font-bold uppercase tracking-[0.2em]">YEARS</div>
+      <div class="font-serif text-[56px] lg:text-[80px] leading-none mt-2">10<span class="text-bubble">+</span></div>
+    </div>
+    <div class="bg-cream border-r-4 border-ink-navy p-6 md:p-8">
+      <div class="text-[11px] font-bold uppercase tracking-[0.2em]">BRANDS</div>
+      <div class="font-serif text-[56px] lg:text-[80px] leading-none mt-2">13</div>
+    </div>
+    <div class="bg-blush border-r-4 border-ink-navy p-6 md:p-8">
+      <div class="text-[11px] font-bold uppercase tracking-[0.2em]">DESIGNERS LED</div>
+      <div class="font-serif text-[56px] lg:text-[80px] leading-none mt-2">05</div>
+    </div>
+    <div class="bg-bubble text-cream p-6 md:p-8">
+      <div class="text-[11px] font-bold uppercase tracking-[0.2em]">LANGUAGES</div>
+      <div class="font-serif text-[56px] lg:text-[80px] leading-none mt-2">2</div>
+      <div class="text-[12px] font-bold uppercase tracking-[0.14em] mt-2 opacity-80">ES / EN</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== BIG MARQUEE ============== -->
+<div class="bg-volt text-ink-navy border-b-4 border-ink-navy overflow-hidden py-3">
+  <div class="marq-rev flex gap-10 whitespace-nowrap font-serif text-[48px] lg:text-[72px] italic">
+    <span>BRAND ★ EDITORIAL ★ PACKAGING ★ ART DIRECTION ★ IDENTITY ★ CAMPAIGN ★</span>
+    <span>BRAND ★ EDITORIAL ★ PACKAGING ★ ART DIRECTION ★ IDENTITY ★ CAMPAIGN ★</span>
+  </div>
+</div>
+
+<!-- ============== CASE 01 — ESTELAR (bubblegum pink) ============== -->
+<section id="estelar" class="bg-bubble text-cream border-b-4 border-ink-navy">
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+
+    <div class="flex items-end justify-between mb-10">
+      <div class="inline-flex items-center gap-3 bg-volt text-ink-navy px-4 py-2 text-[12px] font-bold uppercase tracking-[0.18em] sticker">
+        CASE 01 · FEATURED · NOV 2024
+      </div>
+      <div class="hidden md:block text-[12px] font-bold uppercase tracking-[0.18em] opacity-80">/ PAGE 01 OF 04</div>
+    </div>
+
+    <h2 class="font-serif text-[56px] lg:text-[144px] leading-[0.9]">
+      <span class="block">ESTELAR.</span>
+      <span class="block italic text-volt">A SALAMI</span>
+      <span class="block">WITH A <em class="not-italic">passport.</em></span>
+    </h2>
+
+    <div class="grid grid-cols-12 gap-6 mt-14 lg:mt-20">
+      <figure class="col-span-12 lg:col-span-8 tilt sticker sticker-volt bg-ink-navy overflow-hidden aspect-[16/10]">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/3666ab229654899.68685cc14afa5.jpg"
+             alt="Estelar packaging hero" onload="this.classList.add('loaded')" />
+      </figure>
+
+      <aside class="col-span-12 lg:col-span-4 space-y-4">
+        <div class="bg-cream text-ink-navy p-5 sticker">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-ink-navy/60">CLIENT</div>
+          <div class="font-serif text-[32px] leading-none mt-1">Tú Sabe</div>
+        </div>
+        <div class="bg-volt text-ink-navy p-5 sticker">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em]">MARKET</div>
+          <div class="font-serif text-[32px] leading-none mt-1">DR → NY</div>
+        </div>
+        <div class="bg-ink-navy text-cream p-5 sticker sticker-bubble">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70">SCOPE</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span class="bg-cream text-ink-navy px-2 py-0.5 text-[11px] font-bold">BRANDING</span>
+            <span class="bg-bubble px-2 py-0.5 text-[11px] font-bold">PACKAGING</span>
+            <span class="bg-volt text-ink-navy px-2 py-0.5 text-[11px] font-bold">LAUNCH</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 mt-8">
+      <figure class="col-span-12 md:col-span-6 tilt sticker bg-ink-navy overflow-hidden aspect-[4/5]">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/4cc2c3229654899.68685cc14eafb.jpg"
+             alt="Estelar — product detail" onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-12 md:col-span-6 tilt sticker sticker-volt bg-ink-navy overflow-hidden aspect-[4/5]">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/29e68e229654899.68685cc14d550.jpg"
+             alt="Estelar — on shelf" onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+
+    <!-- pull quote -->
+    <div class="mt-12 border-y-4 border-cream py-8">
+      <div class="font-serif text-[36px] lg:text-[64px] italic leading-[1.05]">
+        "The first Dominican artisanal salami to reach New York — a product that carries flavor, history, and identity across the ocean."
+      </div>
+      <div class="mt-4 text-[12px] font-bold uppercase tracking-[0.2em] opacity-80">— DESIGNER'S NOTE, 2024</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CASE 02 — ALKASA (magenta) ============== -->
+<section id="alkasa" class="bg-magenta text-cream border-b-4 border-ink-navy relative">
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+
+    <div class="flex items-end justify-between mb-10">
+      <div class="inline-flex items-center gap-3 bg-ink-navy text-cream px-4 py-2 text-[12px] font-bold uppercase tracking-[0.18em] sticker sticker-volt">
+        CASE 02 · FEATURED · OCT 2024
+      </div>
+      <div class="hidden md:block text-[12px] font-bold uppercase tracking-[0.18em] opacity-70">/ PAGE 02 OF 04</div>
+    </div>
+
+    <h2 class="font-serif text-[56px] lg:text-[144px] leading-[0.9]">
+      <span class="block">ALKASA<span class="text-volt">.</span></span>
+      <span class="block italic outline-text-cream">THIRTY YEARS</span>
+      <span class="block">OF <em class="not-italic">building.</em></span>
+    </h2>
+
+    <div class="grid grid-cols-12 gap-6 mt-14 lg:mt-20">
+      <aside class="col-span-12 lg:col-span-4 space-y-4 order-2 lg:order-1">
+        <div class="bg-ink-navy text-cream p-5 sticker sticker-bubble">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70">CLIENT</div>
+          <div class="font-serif text-[32px] leading-none mt-1">Alkasa</div>
+        </div>
+        <div class="bg-volt text-ink-navy p-5 sticker">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em]">YEAR</div>
+          <div class="font-serif text-[32px] leading-none mt-1">2024</div>
+        </div>
+        <div class="bg-bubble text-cream p-5 sticker">
+          <div class="text-[11px] font-bold uppercase tracking-[0.2em] opacity-80">SCOPE</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span class="bg-cream text-ink-navy px-2 py-0.5 text-[11px] font-bold">BRANDING</span>
+            <span class="bg-volt text-ink-navy px-2 py-0.5 text-[11px] font-bold">SYSTEM</span>
+            <span class="bg-ink-navy px-2 py-0.5 text-[11px] font-bold">EVENT</span>
+          </div>
+        </div>
+      </aside>
+
+      <figure class="col-span-12 lg:col-span-8 tilt sticker bg-ink-navy overflow-hidden aspect-[16/10] order-1 lg:order-2">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6f22aa231578247.68d6abb0e599d.png"
+             alt="Alkasa — 30 anos key visual" onload="this.classList.add('loaded')" />
+      </figure>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 mt-8">
+      <figure class="col-span-6 md:col-span-4 tilt sticker bg-ink-navy aspect-square overflow-hidden">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/1237e2231578247.68d6abb0e60f7.png"
+             alt="Alkasa — posters" onload="this.classList.add('loaded')" />
+      </figure>
+      <figure class="col-span-6 md:col-span-4 tilt sticker sticker-bubble bg-ink-navy aspect-square overflow-hidden">
+        <img class="lazy-fade w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/7df345231578247.68d6a64941743.png"
+             alt="Alkasa — signage" onload="this.classList.add('loaded')" />
+      </figure>
+      <div class="col-span-12 md:col-span-4 tilt sticker sticker-volt bg-bubble text-cream aspect-square flex flex-col justify-between p-6">
+        <div class="text-[11px] font-bold uppercase tracking-[0.2em] opacity-80">ANNIVERSARY / 30</div>
+        <div class="font-serif text-[120px] lg:text-[160px] leading-none italic">30</div>
+        <div class="text-[12px] font-bold uppercase">YEARS OF BUILDING THE DR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ARCHIVE GRID ============== -->
+<section id="work" class="bg-cream border-b-4 border-ink-navy">
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <div class="flex items-end justify-between mb-12 lg:mb-16">
+      <div>
+        <div class="text-[12px] font-bold uppercase tracking-[0.22em] text-ink-navy/60">/ ARCHIVE · 2018 — 2026</div>
+        <h3 class="font-serif text-[48px] lg:text-[96px] leading-[0.9] mt-2">
+          THE <em class="italic text-bubble">LOUD</em><br/>BACK CATALOGUE.
+        </h3>
+      </div>
+      <a href="#" class="hidden md:inline-flex bg-ink-navy text-cream px-5 py-3 text-[12px] font-bold uppercase tracking-[0.18em] sticker sticker-bubble hover:bg-bubble transition">
+        ALL 13 PROJECTS →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+      <div class="col-span-12 md:col-span-6 lg:col-span-4 tilt sticker bg-volt overflow-hidden aspect-[5/6] relative">
+        <img class="lazy-fade absolute inset-0 w-full h-full object-cover"
+             src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6fe3ac231427501.688b827153a47.png"
+             alt="Liquid Beer 10 Years" onload="this.classList.add('loaded')" />
+        <div class="absolute top-3 left-3 bg-ink-navy text-cream px-2 py-1 text-[10px] font-bold uppercase tracking-[0.18em]">03</div>
+        <div class="absolute bottom-0 left-0 right-0 bg-ink-navy/90 text-cream p-4 flex items-end justify-between">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-[0.18em] opacity-70">BRAND · 2025</div>
+            <div class="font-serif text-[28px] leading-none mt-1">Liquid Beer</div>
+          </div>
+          <span class="text-[20px]">→</span>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-6 lg:col-span-4 tilt sticker sticker-volt bg-bubble text-cream aspect-[5/6] p-8 flex flex-col justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.18em] opacity-80">04 · CAMPAIGN / 2023</div>
+          <div class="font-serif text-[44px] lg:text-[56px] leading-[0.95] mt-4">Humano<br/>Seguros</div>
+        </div>
+        <div class="space-y-3">
+          <div class="text-[13px] leading-snug opacity-80">Insurance that feels like a hug. A campaign that reframed a category with warmth and clarity.</div>
+          <div class="text-[12px] font-bold uppercase tracking-[0.14em]">Case study →</div>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-6 lg:col-span-4 tilt sticker sticker-volt bg-ink-navy text-cream aspect-[5/6] p-8 flex flex-col justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.18em] opacity-60">05 · BRANDING / 2023</div>
+          <div class="font-serif text-[44px] lg:text-[56px] leading-[0.95] mt-4 italic">Bien<br/>Picaito</div>
+        </div>
+        <div class="space-y-3">
+          <div class="text-[13px] leading-snug opacity-80">A spicy Dominican food brand with a personality as loud as its flavor.</div>
+          <div class="text-[12px] font-bold uppercase tracking-[0.14em]">Case study →</div>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-6 lg:col-span-6 tilt sticker bg-cotton text-ink-navy p-8 flex items-end justify-between gap-6">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.18em] opacity-70">06 · IDENTITY / 2022</div>
+          <div class="font-serif text-[56px] lg:text-[88px] leading-[0.9] mt-4">Banco<br/>Popular <em class="italic">60</em></div>
+        </div>
+        <div class="max-w-[220px] text-[13px] leading-snug text-right">
+          60th anniversary identity system for the DR's largest bank.<br/><span class="font-bold">Case study →</span>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-6 lg:col-span-6 tilt sticker sticker-magenta bg-cream border-4 border-ink-navy p-8 flex flex-col justify-between gap-6">
+        <div class="text-[10px] font-bold uppercase tracking-[0.18em] opacity-60">+ 07 — 13</div>
+        <div>
+          <div class="font-serif text-[40px] lg:text-[64px] leading-[0.9]">SEVEN MORE<br/>IN THE <em class="italic text-bubble">VAULT.</em></div>
+          <div class="mt-4 text-[14px] leading-relaxed">Cultural, editorial, packaging — most from the Liquid Digital chapter.</div>
+        </div>
+        <a href="#" class="inline-flex items-start self-start bg-ink-navy text-cream px-4 py-2 text-[12px] font-bold uppercase tracking-[0.18em] sticker sticker-volt">
+          OPEN ARCHIVE →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT (soft blush) ============== -->
+<section id="about" class="bg-cotton text-ink-navy border-b-4 border-ink-navy">
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <div class="grid grid-cols-12 gap-6 lg:gap-10 items-start">
+
+      <div class="col-span-12 lg:col-span-5">
+        <div class="bg-ink-navy p-4 pb-8 sticker sticker-volt rotate-[-3deg] inline-block max-w-full">
+          <div class="aspect-[4/5] bg-cream w-[280px] lg:w-[380px] max-w-full flex items-end p-5">
+            <div class="w-full">
+              <div class="w-10 h-10 bg-bubble"></div>
+              <div class="font-display text-[18px] mt-3 text-ink-navy uppercase tracking-[0.1em]">MELLEN · 2024</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 space-y-3">
+          <div class="inline-block bg-volt text-ink-navy px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] sticker">SANTO DOMINGO, DO</div>
+          <div class="inline-block bg-ink-navy text-cream px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] sticker sticker-volt">HEAD OF DESIGN</div>
+          <div class="inline-block bg-bubble text-cream px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] sticker">LIQUID DIGITAL AGENCY</div>
+        </div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-7">
+        <div class="text-[11px] font-bold uppercase tracking-[0.22em] opacity-70 mb-3">/ ABOUT</div>
+        <h3 class="font-serif text-[48px] lg:text-[96px] leading-[0.9]">
+          TEN YEARS.<br/>ONE <em class="italic text-bubble">LOUD,</em><br/>ONE <em class="italic text-magenta">QUIET.</em>
+        </h3>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 text-[16px] leading-[1.7]">
+          <p>
+            I'm a Dominican Art Director. For the past decade I've been shaping brand systems out of Santo Domingo — five of them at Liquid Digital Agency, where I now lead a team of five designers.
+          </p>
+          <p>
+            My work lives between two speeds: the loud surface where brands compete for attention, and the quiet craft that makes them worth remembering. I try to do both well, at once.
+          </p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-cream text-ink-navy p-4 sticker">
+            <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">SECTOR</div>
+            <div class="font-serif text-[18px] mt-1">Finance</div>
+          </div>
+          <div class="bg-cream text-ink-navy p-4 sticker">
+            <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">SECTOR</div>
+            <div class="font-serif text-[18px] mt-1">FMCG / Food</div>
+          </div>
+          <div class="bg-cream text-ink-navy p-4 sticker">
+            <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">SECTOR</div>
+            <div class="font-serif text-[18px] mt-1">Cultural</div>
+          </div>
+          <div class="bg-cream text-ink-navy p-4 sticker">
+            <div class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">SECTOR</div>
+            <div class="font-serif text-[18px] mt-1">Insurance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section id="contact" class="bg-ink-navy text-cream border-b-4 border-ink-navy relative overflow-hidden">
+  <svg class="absolute top-10 right-10 spin opacity-80" width="140" height="140" viewBox="0 0 48 48"><path d="M24 0 L30 18 L48 24 L30 30 L24 48 L18 30 L0 24 L18 18 Z" fill="#F5FF00"/></svg>
+  <svg class="absolute bottom-20 left-10 spin opacity-80" style="animation-direction:reverse" width="100" height="100" viewBox="0 0 48 48"><path d="M24 0 L30 18 L48 24 L30 30 L24 48 L18 30 L0 24 L18 18 Z" fill="#FF3E9D"/></svg>
+
+  <div class="noise max-w-shell mx-auto px-6 lg:px-10 py-24 lg:py-40 relative">
+    <div class="inline-flex items-center gap-3 bg-volt text-ink-navy px-4 py-2 text-[12px] font-bold uppercase tracking-[0.22em] sticker">
+      / 05 — LET'S MAKE NOISE
+    </div>
+
+    <h2 class="font-serif text-[72px] sm:text-[128px] lg:text-[224px] leading-[0.86] mt-8">
+      <span class="block">SAY</span>
+      <span class="block italic text-bubble">HOLLA<span class="text-cream">.</span></span>
+    </h2>
+
+    <a href="mailto:hello@melissaencarnacion.com" class="inline-block mt-10 bg-bubble text-cream px-8 py-5 text-[16px] lg:text-[22px] font-bold uppercase tracking-[0.14em] sticker sticker-volt hover:bg-magenta transition">
+      hello@melissaencarnacion.com →
+    </a>
+
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 text-[12px] font-bold uppercase tracking-[0.18em]">
+      <div>
+        <div class="opacity-60">BEHANCE</div>
+        <div class="mt-2">@MELISSAENCARN</div>
+      </div>
+      <div>
+        <div class="opacity-60">INSTAGRAM</div>
+        <div class="mt-2">@MELLEN.DESIGN</div>
+      </div>
+      <div>
+        <div class="opacity-60">LINKEDIN</div>
+        <div class="mt-2">MELISSA-ENCARNACION</div>
+      </div>
+      <div>
+        <div class="opacity-60">ZONE</div>
+        <div class="mt-2">AST · GMT-4</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER MARQUEE ============== -->
+<div class="bg-volt text-ink-navy border-b-4 border-ink-navy py-3 overflow-hidden">
+  <div class="marq flex gap-10 whitespace-nowrap font-display text-[22px] lg:text-[28px] uppercase">
+    <span>★ HECHO EN SANTO DOMINGO · V1.0 Y2K MAXIMALIST PINK · © 2026 M. ENCARNACION · ALL RIGHTS RESERVED ·</span>
+    <span>★ HECHO EN SANTO DOMINGO · V1.0 Y2K MAXIMALIST PINK · © 2026 M. ENCARNACION · ALL RIGHTS RESERVED ·</span>
+  </div>
+</div>
+
+<footer class="bg-ink-navy text-cream">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-8 flex flex-col md:flex-row justify-between gap-4 text-[11px] font-bold uppercase tracking-[0.18em]">
+    <div>© 2026 MELLEN · LOUD DESIGN, PINK SOUL</div>
+    <div class="flex gap-6 opacity-70">
+      <span>SET IN DM SERIF DISPLAY + SPACE GROTESK</span>
+      <span>V1.0 · Y2K MAXIMALIST PINK</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

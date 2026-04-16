@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mellen — a sweet little portfolio</title>
+<meta name="description" content="Melissa Encarnacion — Dominican Art Director. A warm, scrapbook-style portfolio." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Serif+Display:ital@0;1&family=Poppins:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          peach: '#FFE9D4',
+          cream: '#FFFBF2',
+          cacao: '#2E1E14',
+          rose: '#E8528F',
+          sage: '#7FB085',
+          tangerine: '#F4A261',
+          lilac: '#C5B3F5',
+          butter: '#FFEDA0',
+          cherry: '#C44569',
+        },
+        fontFamily: {
+          serif: ['"Instrument Serif"', 'serif'],
+          display: ['"DM Serif Display"', 'serif'],
+          sans: ['Poppins', 'sans-serif'],
+          hand: ['Caveat', 'cursive'],
+        },
+        borderRadius: {
+          'xxl': '28px',
+          'pill': '999px',
+        },
+        maxWidth: { shell: '1440px' },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root {
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  html, body { background: #FFE9D4; }
+  body { color: #2E1E14; -webkit-font-smoothing: antialiased; }
+
+  /* SOFT UP */
+  @keyframes soft-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  .soft-up { animation: soft-up 900ms var(--ease-out-quint) both; }
+  .d-100 { animation-delay: 100ms; }
+  .d-200 { animation-delay: 200ms; }
+  .d-300 { animation-delay: 300ms; }
+  .d-400 { animation-delay: 400ms; }
+
+  /* FLOATY */
+  .f1 { animation: f1 6s ease-in-out infinite; }
+  .f2 { animation: f2 8s ease-in-out infinite; }
+  .f3 { animation: f3 9s ease-in-out infinite; }
+  @keyframes f1 { 0%,100% { transform: translate(0,0) rotate(var(--rot,0deg)); } 50% { transform: translate(-6px,-14px) rotate(calc(var(--rot,0deg) + 8deg)); } }
+  @keyframes f2 { 0%,100% { transform: translate(0,0) rotate(var(--rot,0deg)); } 50% { transform: translate(8px,-18px) rotate(calc(var(--rot,0deg) - 10deg)); } }
+  @keyframes f3 { 0%,100% { transform: translate(0,0) rotate(var(--rot,0deg)); } 50% { transform: translate(-4px,-10px) rotate(calc(var(--rot,0deg) + 5deg)); } }
+
+  /* SPIN */
+  .spin-slow { animation: spin 22s linear infinite; transform-origin: center; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* LIFT */
+  .lift { transition: transform 500ms var(--ease-out-back), box-shadow 500ms var(--ease-out-quint); }
+  .lift:hover { transform: translateY(-6px) rotate(-.6deg); }
+
+  /* TAPE */
+  .tape {
+    position: absolute; z-index: 2;
+    background: rgba(255,237,160,.85);
+    box-shadow: 0 2px 6px rgba(46,30,20,.1);
+    mix-blend-mode: multiply;
+  }
+  .tape-r { transform: rotate(6deg); }
+  .tape-l { transform: rotate(-6deg); }
+
+  /* IMG LAZY FADE */
+  img.lazy-fade { opacity: 0; transition: opacity 900ms var(--ease-out-quint); }
+  img.lazy-fade.loaded { opacity: 1; }
+
+  /* DOT GRID */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(46,30,20,.1) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* HANDWRITTEN UNDERLINE */
+  .hand-u {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14'><path d='M2 10 C 40 4, 80 4, 118 8 S 180 12, 198 7' stroke='%23E8528F' stroke-width='3' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 14px;
+    padding-bottom: 6px;
+  }
+
+  /* WAVE HAND */
+  .wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2.6s ease-in-out infinite; }
+  @keyframes wave {
+    0%, 60%, 100% { transform: rotate(0); }
+    10% { transform: rotate(14deg); }
+    30% { transform: rotate(12deg); }
+    50% { transform: rotate(8deg); }
+  }
+
+  /* SCRAPBOOK SHADOW */
+  .polaroid { filter: drop-shadow(0 20px 30px rgba(46,30,20,.15)); }
+
+  /* DASHED BORDER */
+  .dashed-b { border: 2px dashed #2E1E14; }
+</style>
+</head>
+<body class="bg-peach text-cacao font-sans antialiased overflow-x-hidden">
+
+<!-- ============== NAV — top floating pill ============== -->
+<header class="sticky top-4 z-50 px-4 lg:px-8">
+  <div class="max-w-shell mx-auto bg-cream rounded-pill border-2 border-cacao/10 flex items-center justify-between px-6 py-3 shadow-[0_14px_30px_-22px_rgba(46,30,20,.3)]">
+    <a href="#" class="flex items-center gap-2">
+      <svg class="spin-slow" width="30" height="30" viewBox="0 0 40 40">
+        <path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#E8528F"/>
+      </svg>
+      <span class="font-serif italic text-[26px]">mellen</span>
+    </a>
+    <nav class="hidden md:flex gap-7 text-[14px] font-medium">
+      <a href="#work" class="hover:text-rose transition">work</a>
+      <a href="#journal" class="hover:text-rose transition">journal</a>
+      <a href="#about" class="hover:text-rose transition">about</a>
+      <a href="#contact" class="hover:text-rose transition">contact</a>
+    </nav>
+    <a href="#contact" class="bg-cacao text-cream rounded-pill px-5 py-2 text-[13px] font-medium hover:bg-rose transition">
+      say hola ✿
+    </a>
+  </div>
+</header>
+
+<!-- ============== HERO — centered portrait with orbit of notes ============== -->
+<section class="pt-20 lg:pt-24 pb-16 lg:pb-24 relative overflow-hidden">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+
+    <!-- top kicker -->
+    <div class="flex flex-wrap items-center gap-3 soft-up justify-center">
+      <span class="bg-cream rounded-pill px-4 py-1.5 text-[12px] font-medium flex items-center gap-2 border border-cacao/10">
+        <span class="w-2 h-2 rounded-full bg-rose animate-pulse"></span>
+        open for 2026 work
+      </span>
+      <span class="bg-butter rounded-pill px-4 py-1.5 text-[12px] font-medium">a portfolio, but make it warm</span>
+    </div>
+
+    <!-- headline over photo -->
+    <div class="relative mt-8 lg:mt-12">
+      <!-- centered polaroid -->
+      <div class="polaroid mx-auto w-[280px] sm:w-[340px] lg:w-[420px] soft-up d-100 relative" style="--rot: -2deg; transform: rotate(-2deg);">
+        <div class="bg-cream p-4 pb-12 rounded-xxl border border-cacao/10 relative">
+          <!-- tape corners -->
+          <div class="tape tape-r" style="top:-10px; left:10%; width:70px; height:24px;"></div>
+          <div class="tape tape-l" style="top:-8px; right:12%; width:60px; height:22px;"></div>
+
+          <div class="aspect-[4/5] bg-cacao rounded-[18px] overflow-hidden flex items-end p-5 relative">
+            <svg class="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 400 500" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#E8528F" stop-opacity=".6"/>
+                  <stop offset="1" stop-color="#F4A261" stop-opacity=".3"/>
+                </linearGradient>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#g1)"/>
+            </svg>
+            <div class="relative w-full">
+              <div class="w-10 h-10 bg-rose rounded-full"></div>
+              <div class="font-hand text-[26px] text-cream mt-3">Hi — it's me! ✦</div>
+            </div>
+          </div>
+          <div class="font-hand text-[24px] text-cacao text-center mt-3">Melissa, Santo Domingo · 2024</div>
+        </div>
+      </div>
+
+      <!-- floating sticky notes absolutely positioned around photo -->
+      <div class="absolute top-4 left-2 md:left-8 lg:left-[6%] bg-butter rounded-2xl px-4 py-3 shadow-md rotate-[-6deg] f1 max-w-[180px] soft-up d-200" style="--rot: -6deg;">
+        <div class="font-hand text-[20px] leading-tight">10 years<br/>in design ✿</div>
+      </div>
+
+      <div class="absolute top-[40%] right-2 md:right-8 lg:right-[5%] bg-sage text-cream rounded-2xl px-4 py-3 shadow-md rotate-[5deg] f2 max-w-[200px] soft-up d-300" style="--rot: 5deg;">
+        <div class="font-hand text-[20px] leading-tight">Head of Design<br/>@ Liquid Digital ✧</div>
+      </div>
+
+      <div class="hidden md:block absolute bottom-6 left-8 lg:left-[10%] bg-lilac rounded-2xl px-4 py-3 shadow-md rotate-[-3deg] f3 max-w-[200px] soft-up d-400" style="--rot: -3deg;">
+        <div class="font-hand text-[20px] leading-tight">Brand · Packaging ·<br/>Editorial · Campaign</div>
+      </div>
+
+      <div class="absolute -bottom-4 right-10 lg:right-[12%] bg-rose text-cream rounded-2xl px-4 py-3 shadow-md rotate-[6deg] f1 soft-up d-400" style="--rot: 6deg;">
+        <div class="font-hand text-[22px] leading-tight">made in DR 🇩🇴</div>
+      </div>
+
+      <!-- stars -->
+      <svg class="absolute top-[20%] left-[22%] f1 hidden md:block" width="48" height="48" viewBox="0 0 40 40"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#E8528F"/></svg>
+      <svg class="absolute top-[10%] right-[25%] f2 hidden md:block" width="38" height="38" viewBox="0 0 40 40"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#F4A261"/></svg>
+    </div>
+
+    <!-- big headline BELOW photo -->
+    <h1 class="mt-16 lg:mt-20 font-serif text-[52px] sm:text-[88px] lg:text-[136px] leading-[0.94] text-center soft-up d-300">
+      hi, I'm <em class="text-rose">Melissa</em>, <span class="wave">🫶🏽</span><br/>
+      I make brands<br/>
+      with a <span class="hand-u">lot of heart</span>.
+    </h1>
+
+    <p class="mt-10 lg:mt-14 text-[18px] lg:text-[22px] leading-[1.55] max-w-[56ch] mx-auto text-center soft-up d-400">
+      Ten years of brand identity, art direction, and editorial work out of Santo Domingo — for Dominican brands that want to feel like themselves, and diaspora brands that still smell like home.
+    </p>
+
+    <div class="mt-10 flex flex-wrap justify-center gap-3 soft-up d-400">
+      <a href="#work" class="bg-cacao text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-rose transition">see my work →</a>
+      <a href="#contact" class="bg-cream border-2 border-cacao/20 rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-butter transition">work with me ✿</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TICKER ============== -->
+<section class="py-4 bg-cream border-y-2 border-cacao/10 overflow-hidden">
+  <div class="flex gap-10 whitespace-nowrap font-serif italic text-[28px] lg:text-[40px] text-cacao/80" style="animation: tick 28s linear infinite;">
+    <span>✿ made with sabor ✿ art direction ✿ brand identity ✿ packaging ✿ editorial ✿ campaigns ✿</span>
+    <span>✿ made with sabor ✿ art direction ✿ brand identity ✿ packaging ✿ editorial ✿ campaigns ✿</span>
+  </div>
+  <style>@keyframes tick { to { transform: translateX(-50%); } }</style>
+</section>
+
+<!-- ============== SELECTED WORK — magazine spread feel ============== -->
+<section id="work" class="py-20 lg:py-28 relative">
+  <div class="max-w-shell mx-auto px-6 lg:px-10">
+
+    <!-- section header -->
+    <div class="flex flex-col items-center text-center mb-14 lg:mb-20">
+      <div class="font-hand text-[30px] lg:text-[36px] text-rose">— dear reader,</div>
+      <h2 class="font-serif text-[48px] lg:text-[96px] leading-[0.95] mt-2 max-w-[16ch]">
+        two favourites,<br/>from 2024.
+      </h2>
+      <p class="mt-6 text-[16px] leading-[1.6] max-w-[56ch] text-cacao/75">
+        A salami that flew to New York, and a company that turned thirty. Both of them Dominican, both of them loved.
+      </p>
+    </div>
+
+    <!-- CASE 01 — ESTELAR -->
+    <article class="grid grid-cols-12 gap-6 lg:gap-10 mb-20 lg:mb-28 items-center">
+      <div class="col-span-12 md:col-span-7 relative polaroid lift">
+        <div class="bg-cream p-4 pb-8 rounded-xxl border border-cacao/10 rotate-[-1.2deg]">
+          <div class="tape tape-l" style="top:-12px; left:12%; width:80px; height:24px;"></div>
+          <div class="aspect-[4/3] bg-cacao rounded-[18px] overflow-hidden">
+            <img class="lazy-fade w-full h-full object-cover"
+                 src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/3666ab229654899.68685cc14afa5.jpg"
+                 alt="Estelar — made by Tú Sabe" onload="this.classList.add('loaded')" />
+          </div>
+          <div class="flex items-center justify-between mt-4 px-2">
+            <div class="font-hand text-[22px]">Estelar · Nov '24</div>
+            <div class="font-hand text-[22px] text-rose">Plate 01 ✿</div>
+          </div>
+        </div>
+        <svg class="absolute -top-8 -right-6 f2" width="72" height="72" viewBox="0 0 40 40" style="--rot:0deg;">
+          <path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#F4A261"/>
+        </svg>
+      </div>
+
+      <div class="col-span-12 md:col-span-5">
+        <div class="inline-block bg-rose text-cream rounded-pill px-3 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase">01 · featured</div>
+        <h3 class="font-serif text-[40px] lg:text-[64px] leading-[0.95] mt-4">
+          Estelar,<br/><em class="text-rose">by Tú Sabe.</em>
+        </h3>
+        <p class="font-hand text-[22px] text-cacao/70 mt-4">— the first Dominican salami in NY</p>
+        <p class="text-[16px] leading-[1.65] mt-5 text-cacao/80 max-w-[42ch]">
+          Branding, packaging, and art direction for an artisanal product crossing an ocean — every detail tuned for warmth, tradition, and a little bit of Dominican sabor.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="bg-butter rounded-pill px-3 py-1 text-[12px]">Branding</span>
+          <span class="bg-sage text-cream rounded-pill px-3 py-1 text-[12px]">Packaging</span>
+          <span class="bg-lilac rounded-pill px-3 py-1 text-[12px]">Launch</span>
+        </div>
+        <a href="#" class="mt-7 inline-flex items-center gap-2 font-medium text-[14px] border-b-2 border-cacao pb-0.5 hover:text-rose hover:border-rose transition">
+          read the full story →
+        </a>
+      </div>
+    </article>
+
+    <!-- CASE 02 — ALKASA -->
+    <article class="grid grid-cols-12 gap-6 lg:gap-10 items-center">
+      <div class="col-span-12 md:col-span-5 order-2 md:order-1">
+        <div class="inline-block bg-sage text-cream rounded-pill px-3 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase">02 · featured</div>
+        <h3 class="font-serif text-[40px] lg:text-[64px] leading-[0.95] mt-4">
+          Alkasa,<br/><em class="text-sage">30 años.</em>
+        </h3>
+        <p class="font-hand text-[22px] text-cacao/70 mt-4">— three decades of building the DR</p>
+        <p class="text-[16px] leading-[1.65] mt-5 text-cacao/80 max-w-[42ch]">
+          A flexible anniversary visual system for a Dominican construction leader. A "30" monogram, a deep brand-red, and a texture library that quietly nods to the craft.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="bg-rose text-cream rounded-pill px-3 py-1 text-[12px]">Branding</span>
+          <span class="bg-butter rounded-pill px-3 py-1 text-[12px]">Graphic System</span>
+          <span class="bg-tangerine text-cream rounded-pill px-3 py-1 text-[12px]">Anniversary</span>
+        </div>
+        <a href="#" class="mt-7 inline-flex items-center gap-2 font-medium text-[14px] border-b-2 border-cacao pb-0.5 hover:text-sage hover:border-sage transition">
+          read the full story →
+        </a>
+      </div>
+      <div class="col-span-12 md:col-span-7 relative polaroid lift order-1 md:order-2">
+        <div class="bg-cream p-4 pb-8 rounded-xxl border border-cacao/10 rotate-[1.5deg]">
+          <div class="tape tape-r" style="top:-12px; right:12%; width:80px; height:24px;"></div>
+          <div class="aspect-[4/3] bg-peach rounded-[18px] overflow-hidden">
+            <img class="lazy-fade w-full h-full object-cover"
+                 src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6f22aa231578247.68d6abb0e599d.png"
+                 alt="Alkasa — 30 años" onload="this.classList.add('loaded')" />
+          </div>
+          <div class="flex items-center justify-between mt-4 px-2">
+            <div class="font-hand text-[22px] text-sage">Plate 02 ✿</div>
+            <div class="font-hand text-[22px]">Alkasa · Oct '24</div>
+          </div>
+        </div>
+        <svg class="absolute -bottom-6 -left-6 f3" width="64" height="64" viewBox="0 0 40 40" style="--rot:0deg;">
+          <path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#C5B3F5"/>
+        </svg>
+      </div>
+    </article>
+
+    <!-- mini archive as tapes strip -->
+    <div class="mt-20 lg:mt-28">
+      <div class="text-center mb-10">
+        <div class="font-hand text-[28px] text-rose">— from the archive</div>
+        <h3 class="font-serif text-[36px] lg:text-[56px] leading-[0.95] mt-2">
+          + 11 more, waiting patiently.
+        </h3>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5 lg:gap-6">
+        <div class="lift rounded-xxl overflow-hidden aspect-square bg-butter border-2 border-cacao/10 relative">
+          <img class="lazy-fade w-full h-full object-cover" src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6fe3ac231427501.688b827153a47.png" alt="Liquid Beer" onload="this.classList.add('loaded')"/>
+          <div class="absolute bottom-0 inset-x-0 bg-cream/90 p-3">
+            <div class="font-hand text-[20px]">Liquid Beer · '25</div>
+          </div>
+        </div>
+        <div class="lift rounded-xxl aspect-square bg-rose text-cream p-5 flex flex-col justify-between border-2 border-cacao/10">
+          <div class="text-[11px] uppercase tracking-[0.18em] opacity-80">campaign · '23</div>
+          <div class="font-serif text-[28px] leading-[0.95]">Humano<br/>Seguros</div>
+          <div class="font-hand text-[20px] opacity-90">a hug, basically ✿</div>
+        </div>
+        <div class="lift rounded-xxl aspect-square bg-sage text-cream p-5 flex flex-col justify-between border-2 border-cacao/10">
+          <div class="text-[11px] uppercase tracking-[0.18em] opacity-80">brand · '23</div>
+          <div class="font-serif text-[28px] leading-[0.95]">Bien<br/>Picaito</div>
+          <div class="font-hand text-[20px] opacity-90">spicy spicy ✧</div>
+        </div>
+        <div class="lift rounded-xxl aspect-square bg-lilac p-5 flex flex-col justify-between border-2 border-cacao/10">
+          <div class="text-[11px] uppercase tracking-[0.18em] text-cacao/70">identity · '22</div>
+          <div class="font-serif text-[28px] leading-[0.95]">Banco<br/>Popular 60</div>
+          <div class="font-hand text-[20px]">a grown-up classic</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== JOURNAL / NOW SECTION ============== -->
+<section id="journal" class="py-20 lg:py-28 bg-cream border-y-2 border-cacao/10">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-12 gap-6 lg:gap-10 items-start">
+    <div class="col-span-12 lg:col-span-5">
+      <div class="font-hand text-[28px] text-rose">— studio diary</div>
+      <h3 class="font-serif text-[40px] lg:text-[72px] leading-[0.95] mt-2">
+        what I'm <em>on</em><br/>this month.
+      </h3>
+      <p class="mt-6 text-[16px] leading-[1.65] text-cacao/80 max-w-[40ch]">
+        A rotating snapshot of what's playing in the studio, on the tabletop, and on the side of the desk. Updated monthly-ish.
+      </p>
+    </div>
+
+    <div class="col-span-12 lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+      <div class="bg-butter rounded-xxl p-6 lift border-2 border-cacao/10">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-cacao/60">listening</div>
+        <div class="font-serif text-[28px] leading-[1.05] mt-2">Bachata en Fukuoka</div>
+        <div class="font-hand text-[22px] mt-1 text-cacao/70">— Juan Luis Guerra</div>
+      </div>
+      <div class="bg-rose text-cream rounded-xxl p-6 lift border-2 border-cacao/10">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.18em] opacity-80">reading</div>
+        <div class="font-serif text-[28px] leading-[1.05] mt-2">The Creative Act</div>
+        <div class="font-hand text-[22px] mt-1 opacity-90">— Rick Rubin</div>
+      </div>
+      <div class="bg-sage text-cream rounded-xxl p-6 lift border-2 border-cacao/10">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.18em] opacity-80">eating</div>
+        <div class="font-serif text-[28px] leading-[1.05] mt-2">Mofongo, always</div>
+        <div class="font-hand text-[22px] mt-1 opacity-90">— Santo Domingo</div>
+      </div>
+      <div class="bg-lilac rounded-xxl p-6 lift border-2 border-cacao/10">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-cacao/60">sketching</div>
+        <div class="font-serif text-[28px] leading-[1.05] mt-2">Typography, always</div>
+        <div class="font-hand text-[22px] mt-1 text-cacao/70">— the never-ending love affair</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT — letter format ============== -->
+<section id="about" class="py-20 lg:py-28 dot-grid">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-12 gap-6 lg:gap-10 items-start">
+    <div class="col-span-12 lg:col-span-4">
+      <div class="sticky top-28">
+        <div class="font-hand text-[32px] text-rose">— a letter,</div>
+        <h3 class="font-serif text-[56px] lg:text-[96px] leading-[0.9] mt-2">
+          about <em>me.</em>
+        </h3>
+        <div class="mt-8 space-y-2">
+          <div class="inline-block bg-butter rounded-pill px-4 py-1.5 text-[12px] font-medium">📍 Santo Domingo, DO</div>
+          <div class="inline-block bg-rose text-cream rounded-pill px-4 py-1.5 text-[12px] font-medium">✿ Head of Design, Liquid Digital</div>
+          <div class="inline-block bg-sage text-cream rounded-pill px-4 py-1.5 text-[12px] font-medium">✧ ES · EN</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-8">
+      <div class="bg-cream rounded-xxl border-2 border-cacao/10 p-8 lg:p-12 relative">
+        <div class="tape tape-r" style="top:-14px; left:8%; width:120px; height:26px;"></div>
+        <div class="tape tape-l" style="top:-10px; right:10%; width:90px; height:22px;"></div>
+
+        <div class="font-hand text-[28px] text-rose">Dear reader,</div>
+
+        <div class="mt-6 space-y-5 text-[17px] leading-[1.75] text-cacao/90 font-serif">
+          <p>
+            I grew up in the Dominican Republic and spent a decade figuring out what it meant to design from here. I lead a team of five at <em>Liquid Digital Agency</em> in Santo Domingo. We've shipped identities for thirteen brands across food, finance, insurance, and culture.
+          </p>
+          <p>
+            My taste tips towards <em class="text-rose">warm</em>. I care about typography, paper weight, the temperature of a color. I like brands that feel like someone's actually at home behind the logo.
+          </p>
+          <p>
+            I studied design here, traveled enough to know the difference, and chose to stay. The Caribbean makes you brave with color. I try to earn that.
+          </p>
+        </div>
+
+        <div class="mt-8 font-hand text-[32px] text-rose">
+          con cariño,<br/>
+          <span class="text-cacao">Melissa ✿</span>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-peach rounded-2xl p-4 border-2 border-cacao/10">
+            <div class="text-[10px] uppercase tracking-[0.18em] text-cacao/60">years</div>
+            <div class="font-serif text-[32px] leading-none mt-2">10+</div>
+          </div>
+          <div class="bg-butter rounded-2xl p-4 border-2 border-cacao/10">
+            <div class="text-[10px] uppercase tracking-[0.18em] text-cacao/60">team</div>
+            <div class="font-serif text-[32px] leading-none mt-2">5</div>
+          </div>
+          <div class="bg-sage text-cream rounded-2xl p-4 border-2 border-cacao/10">
+            <div class="text-[10px] uppercase tracking-[0.18em] opacity-80">brands</div>
+            <div class="font-serif text-[32px] leading-none mt-2">13</div>
+          </div>
+          <div class="bg-lilac rounded-2xl p-4 border-2 border-cacao/10">
+            <div class="text-[10px] uppercase tracking-[0.18em] text-cacao/60">languages</div>
+            <div class="font-serif text-[32px] leading-none mt-2">2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT — postcard ============== -->
+<section id="contact" class="py-20 lg:py-32 bg-rose text-cream relative overflow-hidden">
+  <svg class="absolute top-10 left-[6%] spin-slow opacity-80" width="80" height="80" viewBox="0 0 40 40"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#FFEDA0"/></svg>
+  <svg class="absolute bottom-16 right-[6%] spin-slow opacity-80" style="animation-direction:reverse" width="120" height="120" viewBox="0 0 40 40"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#2E1E14"/></svg>
+
+  <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+
+    <div class="max-w-[920px] mx-auto">
+      <!-- postcard -->
+      <div class="bg-cream text-cacao rounded-xxl border-2 border-cacao/10 p-8 lg:p-12 shadow-[0_30px_60px_-30px_rgba(46,30,20,.4)] relative rotate-[-1deg]">
+        <div class="tape tape-r" style="top:-14px; left:44%; width:140px; height:28px;"></div>
+
+        <div class="grid grid-cols-12 gap-4 lg:gap-8">
+          <!-- left — message -->
+          <div class="col-span-12 md:col-span-7 md:pr-8 md:border-r-2 md:border-dashed md:border-cacao/30">
+            <div class="font-hand text-[28px] text-rose">Dear Melissa,</div>
+            <div class="font-serif text-[32px] lg:text-[48px] leading-[1.05] mt-4">
+              let's build something<br/>warm together.
+            </div>
+            <div class="mt-6 font-hand text-[22px] text-cacao/70">
+              I'd love to chat about a project,<br/>a collab, or just design in general.
+            </div>
+            <a href="mailto:hello@melissaencarnacion.com" class="mt-8 inline-block font-serif italic text-[22px] lg:text-[28px] border-b-2 border-cacao hover:text-rose hover:border-rose transition">
+              hello@melissaencarnacion.com →
+            </a>
+          </div>
+          <!-- right — "stamp" -->
+          <div class="col-span-12 md:col-span-5 md:pl-4">
+            <div class="flex flex-col items-end">
+              <!-- stamp -->
+              <div class="dashed-b rounded-lg p-4 bg-peach rotate-[4deg] inline-block w-[140px] text-center">
+                <div class="font-hand text-[22px] text-rose leading-[1]">postal<br/>express</div>
+                <div class="font-serif italic text-[18px] mt-2">MDO · DR</div>
+                <div class="font-hand text-[14px] mt-1 text-cacao/60">April 2026</div>
+              </div>
+              <!-- address -->
+              <div class="mt-6 font-hand text-[18px] text-cacao/80 text-right leading-[1.5]">
+                To:<br/>
+                <span class="text-cacao text-[22px]">future client ✿</span><br/>
+                anywhere, everywhere<br/>
+                the world — 00000
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- socials -->
+      <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 text-[13px]">
+        <a href="#" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+          <div class="opacity-70">behance</div>
+          <div class="font-medium mt-1">@melissaencarn</div>
+        </a>
+        <a href="#" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+          <div class="opacity-70">instagram</div>
+          <div class="font-medium mt-1">@mellen.design</div>
+        </a>
+        <a href="#" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+          <div class="opacity-70">linkedin</div>
+          <div class="font-medium mt-1">melissa-encarnacion</div>
+        </a>
+        <a href="#" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+          <div class="opacity-70">timezone</div>
+          <div class="font-medium mt-1">AST (GMT-4)</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="bg-cacao text-cream">
+  <div class="max-w-shell mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between gap-4 text-[12px]">
+    <div class="font-hand text-[20px]">hecho con ♥ en Santo Domingo · © 2026</div>
+    <div class="flex gap-6 opacity-70">
+      <span>v1.0 · Y2K Illustrated — Scrapbook</span>
+      <span>Instrument Serif · Poppins · Caveat</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

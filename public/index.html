@@ -53,13 +53,66 @@
         max-width: 1200px;
         margin: 0 auto;
       }
+      .section-title {
+        font-size: 14px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 32px 0 16px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+      }
+      .section-title:first-of-type {
+        margin-top: 0;
+      }
       .grid {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 0 0 32px;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 24px;
+      }
+      .grid.featured {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .grid.featured .card {
+        flex-direction: row;
+      }
+      .grid.featured .thumb {
+        aspect-ratio: auto;
+        width: 55%;
+        border-right: 1px solid var(--border);
+        border-bottom: none;
+      }
+      .grid.featured .meta {
+        padding: 28px 28px 32px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .grid.featured .name {
+        font-size: 28px;
+      }
+      .grid.featured .tag {
+        font-size: 16px;
+      }
+      .badge.current {
+        background: #ff1493;
+        color: #fff;
+      }
+      @media (max-width: 720px) {
+        .grid.featured .card {
+          flex-direction: column;
+        }
+        .grid.featured .thumb {
+          width: 100%;
+          aspect-ratio: 16 / 10;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
       }
       .card {
         background: var(--card);
@@ -134,11 +187,38 @@
     <header>
       <h1>meli.do — variation picker</h1>
       <p>
-        Six portfolio directions. Click a card to open the full page. Feedback
-        welcome — tell Willy which feels most <em>you</em>.
+        Winner is <strong>Y2K — Illustrated</strong>. Current is that base
+        with a postcard contact section. Other variations kept for reference.
       </p>
     </header>
     <main>
+      <h2 class="section-title">Current</h2>
+      <ul class="grid featured">
+        <li>
+          <a class="card" href="/variations/current">
+            <div class="thumb">
+              <img
+                src="/previews/current-full.png"
+                alt="current preview"
+                loading="lazy"
+                onerror="this.src='/previews/y2k-illustrated-full.png'"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge current">Current · v1.1</span>
+              <p class="name">Y2K — Illustrated + Postcard</p>
+              <p class="tag">
+                Base: lavender/cream y2k-illustrated. Contact section
+                reworked as a postcard (stamp, address, dashed divider) in
+                the same palette. Keeps "let's make something warm" +
+                "write me a love letter" copy.
+              </p>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+      <h2 class="section-title">All variations</h2>
       <ul class="grid">
         <li>
           <a class="card" href="/variations/editorial-dashboard">

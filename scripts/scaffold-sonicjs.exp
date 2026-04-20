@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 600
+cd /tmp
+spawn env SONICJS_TELEMETRY=false npx --yes create-sonicjs@latest sonicjs-test
+expect {
+    -re "\\(y/N\\)" { send "y\r"; exp_continue }
+    -re "\\(Y/n\\)" { send "\r"; exp_continue }
+    -re "Password" { send "admin1234\r"; exp_continue }
+    -re "password" { send "admin1234\r"; exp_continue }
+    -re "\\?" { send "\r"; exp_continue }
+    eof
+}

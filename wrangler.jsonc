@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "meli-do",
+  "account_id": "d5705803ba3e46be8c7b0566e47ff7d6",
+  "compatibility_date": "2026-04-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}

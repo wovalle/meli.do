@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>meli.do — variation picker</title>
+    <style>
+      :root {
+        --bg: #f5f0e8;
+        --ink: #0a0a0a;
+        --muted: #5b5b5b;
+        --accent: #e8ff00;
+        --card: #ffffff;
+        --border: #0a0a0a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      header {
+        padding: 48px 32px 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+        font-weight: 800;
+      }
+      header p {
+        font-size: 16px;
+        color: var(--muted);
+        margin: 0;
+        max-width: 60ch;
+      }
+      main {
+        padding: 24px 32px 96px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section-title {
+        font-size: 14px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 32px 0 16px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+      }
+      .section-title:first-of-type {
+        margin-top: 0;
+      }
+      .grid {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 32px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+      }
+      .grid.featured {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .grid.featured .card {
+        flex-direction: row;
+      }
+      .grid.featured .thumb {
+        aspect-ratio: auto;
+        width: 55%;
+        border-right: 1px solid var(--border);
+        border-bottom: none;
+      }
+      .grid.featured .meta {
+        padding: 28px 28px 32px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .grid.featured .name {
+        font-size: 28px;
+      }
+      .grid.featured .tag {
+        font-size: 16px;
+      }
+      .badge.current {
+        background: #ff1493;
+        color: #fff;
+      }
+      @media (max-width: 720px) {
+        .grid.featured .card {
+          flex-direction: column;
+        }
+        .grid.featured .thumb {
+          width: 100%;
+          aspect-ratio: 16 / 10;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        transition:
+          transform 200ms ease,
+          box-shadow 200ms ease;
+      }
+      .card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 var(--border);
+      }
+      .thumb {
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: #eee;
+        border-bottom: 1px solid var(--border);
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        display: block;
+      }
+      .meta {
+        padding: 16px 18px 20px;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 4px 8px;
+        background: var(--accent);
+        color: var(--ink);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .badge.warm {
+        background: #ffd6e7;
+      }
+      .name {
+        font-weight: 700;
+        font-size: 18px;
+        margin: 0 0 4px;
+      }
+      .tag {
+        font-size: 14px;
+        color: var(--muted);
+        margin: 0;
+      }
+      footer {
+        padding: 0 32px 48px;
+        max-width: 1200px;
+        margin: 0 auto;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      footer code {
+        background: #e8e2d7;
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>meli.do — variation picker</h1>
+      <p>
+        Winner is <strong>Y2K — Illustrated</strong>. Current is that base
+        with a postcard contact section. Other variations kept for reference.
+      </p>
+    </header>
+    <main>
+      <h2 class="section-title">Current</h2>
+      <ul class="grid featured">
+        <li>
+          <a class="card" href="/variations/current">
+            <div class="thumb">
+              <img
+                src="/previews/current-full.png"
+                alt="current preview"
+                loading="lazy"
+                onerror="this.src='/previews/y2k-illustrated-full.png'"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge current">Current · v1.1</span>
+              <p class="name">Y2K — Illustrated + Postcard</p>
+              <p class="tag">
+                Base: lavender/cream y2k-illustrated. Contact section
+                reworked as a postcard (stamp, address, dashed divider) in
+                the same palette. Keeps "let's make something warm" +
+                "write me a love letter" copy.
+              </p>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+      <h2 class="section-title">All variations</h2>
+      <ul class="grid">
+        <li>
+          <a class="card" href="/variations/editorial-dashboard">
+            <div class="thumb">
+              <img
+                src="/previews/editorial-dashboard-full.png"
+                alt="editorial-dashboard preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge">Editorial · A1</span>
+              <p class="name">Editorial — Dashboard</p>
+              <p class="tag">Ink + volt. Confident, numerical, systematic.</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="/variations/editorial-zine">
+            <div class="thumb">
+              <img
+                src="/previews/editorial-zine-full.png"
+                alt="editorial-zine preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge">Editorial · A2</span>
+              <p class="name">Editorial — Zine</p>
+              <p class="tag">Fraunces + rust. Magazine masthead, drop caps.</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="/variations/y2k-illustrated">
+            <div class="thumb">
+              <img
+                src="/previews/y2k-illustrated-full.png"
+                alt="y2k-illustrated preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge warm">Y2K · B1</span>
+              <p class="name">Y2K — Illustrated</p>
+              <p class="tag">Lavender + cream. Playful, floating stars.</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="/variations/y2k-illustrated-v2">
+            <div class="thumb">
+              <img
+                src="/previews/y2k-illustrated-v2-full.png"
+                alt="y2k-illustrated-v2 preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge warm">Y2K · B1.b</span>
+              <p class="name">Y2K — Scrapbook</p>
+              <p class="tag">Peach + sage. Polaroid hero, letter-style about.</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="/variations/y2k-maximalist">
+            <div class="thumb">
+              <img
+                src="/previews/y2k-maximalist-full.png"
+                alt="y2k-maximalist preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge warm">Y2K · B2</span>
+              <p class="name">Y2K — Maximalist (punk)</p>
+              <p class="tag">Hot-red + navy. Stickers, marquees, noise.</p>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="/variations/y2k-maximalist-pink">
+            <div class="thumb">
+              <img
+                src="/previews/y2k-maximalist-pink-full.png"
+                alt="y2k-maximalist-pink preview"
+                loading="lazy"
+              />
+            </div>
+            <div class="meta">
+              <span class="badge warm">Y2K · B2.b</span>
+              <p class="name">Y2K — Maximalist (bubblegum)</p>
+              <p class="tag">Bubble-pink + magenta. Femme-loud, same system.</p>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </main>
+    <footer>
+      Each design is a single-file prototype. Tailwind via CDN, Google Fonts,
+      Behance-hotlinked imagery. Hosted on Cloudflare Workers static assets.
+    </footer>
+  </body>
+</html>

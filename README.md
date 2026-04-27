@@ -52,7 +52,7 @@ Middleware skips Access in dev (`import.meta.env.DEV`).
 npx wrangler login
 
 # D1
-npx wrangler d1 create meli-do-db
+npx wrangler d1 create meli-db
 # → copy database_id into wrangler.jsonc → d1_databases[0].database_id
 
 # R2
@@ -101,7 +101,7 @@ Or push to `main` — Workers Builds runs `npm run build` and deploys.
 ## Verifying P1
 
 - [ ] `npm run dev` → `/`, `/legacy/picker/`, `/legacy/variations/*.html` all work.
-- [ ] `npx wrangler d1 execute meli-do-db --remote --command "select name from sqlite_master where type='table'"` shows `case_studies` + `blocks`.
+- [ ] `npx wrangler d1 execute meli-db --remote --command "select name from sqlite_master where type='table'"` shows `case_studies` + `blocks`.
 - [ ] `npx wrangler r2 bucket list` shows `meli-do-images`.
 - [ ] `npm run setup:access` is idempotent.
 - [ ] Deployed `/admin` returns Access challenge for unauthed; allowed user reaches placeholder.

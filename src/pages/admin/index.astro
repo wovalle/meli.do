@@ -1,22 +1,134 @@
 ---
-const email = Astro.locals.accessUser?.email ?? 'unknown';
+import { actions } from 'astro:actions';
+import { drizzle } from 'drizzle-orm/d1';
+import { desc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { caseStudies } from '../../db/schema';
+
+const db = drizzle((env as { db: D1Database }).db);
+
+const createResult = Astro.getActionResult(actions.caseStudies.create);
+if (createResult && !createResult.error) {
+  return Astro.redirect(`/admin/${createResult.data.id}?status=created`);
+}
+
+const deleteResult = Astro.getActionResult(actions.caseStudies.delete);
+if (deleteResult && !deleteResult.error) {
+  return Astro.redirect(`/admin?status=deleted`);
+}
+
+const publishResult = Astro.getActionResult(actions.caseStudies.publish);
+if (publishResult && !publishResult.error) {
+  return Astro.redirect(`/admin/${publishResult.data.id}?status=published`);
+}
+
+const createError =
+  createResult?.error?.fields?.title?.[0] ?? createResult?.error?.message ?? null;
+
+const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.updatedAt)).all();
+
+const fmt = (ms: number | Date | null) => {
+  if (!ms) return '—';
+  const d = ms instanceof Date ? ms : new Date(ms);
+  return d.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
+};
+
+const isBuilding = (publishedAt: Date | null): boolean => {
+  if (!publishedAt) return false;
+  const ms = publishedAt instanceof Date ? publishedAt.getTime() : new Date(publishedAt).getTime();
+  return Date.now() - ms < 2 * 60 * 1000;
+};
 ---
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>admin · meli.do</title>
-    <style>
-      body { font-family: ui-monospace, SFMono-Regular, monospace; max-width: 60ch; margin: 10vh auto; padding: 0 24px; color: #0a0a0a; }
-      h1 { font-size: 24px; margin: 0 0 16px; }
-      code { background: #f0eee8; padding: 2px 6px; }
-    </style>
-  </head>
-  <body>
-    <h1>admin</h1>
-    <p>Signed in as <code>{email}</code>.</p>
-    <p>P2 will add: case study CRUD, blocks editor, R2 upload, publish trigger.</p>
-  </body>
-</html>
+<AdminLayout title="Case studies">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-semibold">Case studies</h1>
+    <span class="text-sm text-stone-500">{studies.length} {studies.length === 1 ? 'item' : 'items'}</span>
+  </div>
+
+  <section class="rounded-lg border border-stone-200 bg-white p-5 mb-8">
+    <h2 class="text-sm font-semibold text-stone-700 mb-3">New case study</h2>
+    <form method="POST" action={actions.caseStudies.create} class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+      <label class="flex-1">
+        <span class="block text-xs font-medium text-stone-600 mb-1">Title</span>
+        <input
+          name="title"
+          required
+          maxlength="120"
+          placeholder="e.g. Estelar — by Tú Sabe"
+          class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+        />
+      </label>
+      <button type="submit" class="inline-flex items-center justify-center rounded-md bg-stone-900 text-white px-4 py-2 text-sm font-medium hover:bg-stone-700 transition">
+        Create
+      </button>
+    </form>
+    {createError && (
+      <p role="alert" class="mt-2 text-sm text-red-700">{createError}</p>
+    )}
+  </section>
+
+  {studies.length === 0 ? (
+    <div class="rounded-lg border border-dashed border-stone-300 bg-white p-10 text-center">
+      <p class="text-stone-600">No case studies yet. Create your first above.</p>
+    </div>
+  ) : (
+    <div class="overflow-x-auto rounded-lg border border-stone-200 bg-white">
+      <table class="w-full text-sm">
+        <thead class="text-left text-xs uppercase tracking-wide text-stone-500 border-b border-stone-200">
+          <tr>
+            <th class="px-4 py-3 font-medium">Title</th>
+            <th class="px-4 py-3 font-medium">Slug</th>
+            <th class="px-4 py-3 font-medium">Status</th>
+            <th class="px-4 py-3 font-medium">Updated</th>
+            <th class="px-4 py-3 font-medium text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+          {studies.map((s) => {
+            const building = s.status === 'published' && isBuilding(s.publishedAt);
+            return (
+              <tr>
+                <td class="px-4 py-3">
+                  <a href={`/admin/${s.id}`} class="font-medium text-stone-900 hover:underline">{s.title}</a>
+                </td>
+                <td class="px-4 py-3 text-stone-600 font-mono text-xs">{s.slug}</td>
+                <td class="px-4 py-3">
+                  {building ? (
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-900 px-2.5 py-0.5 text-xs font-medium">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                      Building…
+                    </span>
+                  ) : s.status === 'published' ? (
+                    <span class="inline-flex rounded-full bg-emerald-100 text-emerald-900 px-2.5 py-0.5 text-xs font-medium">Published</span>
+                  ) : (
+                    <span class="inline-flex rounded-full bg-stone-100 text-stone-700 px-2.5 py-0.5 text-xs font-medium">Draft</span>
+                  )}
+                </td>
+                <td class="px-4 py-3 text-stone-600">{fmt(s.updatedAt)}</td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-end gap-2">
+                    {s.status === 'draft' && (
+                      <form method="POST" action={actions.caseStudies.publish}>
+                        <input type="hidden" name="id" value={s.id} />
+                        <button type="submit" class="rounded-md border border-emerald-300 bg-emerald-50 text-emerald-900 px-2.5 py-1 text-xs font-medium hover:bg-emerald-100 transition">
+                          Publish
+                        </button>
+                      </form>
+                    )}
+                    <form method="POST" action={actions.caseStudies.delete} onsubmit="return confirm('Delete this case study and all its blocks?')">
+                      <input type="hidden" name="id" value={s.id} />
+                      <button type="submit" class="rounded-md border border-red-300 bg-red-50 text-red-800 px-2.5 py-1 text-xs font-medium hover:bg-red-100 transition">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>

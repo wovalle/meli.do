@@ -1,0 +1,41 @@
+---
+import PublicLayout from '../layouts/PublicLayout.astro';
+---
+<PublicLayout title="Lost in translation — 404" description="That page wandered off. Let's get you back home.">
+
+  <section class="min-h-[70vh] flex items-center py-20 lg:py-28">
+    <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-12 gap-6 lg:gap-10 items-center">
+
+      <div class="col-span-12 md:col-span-7 relative">
+        <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink soft-up">— ay, no.</div>
+        <h1 class="font-display text-[80px] sm:text-[128px] lg:text-[200px] leading-[0.9] tracking-[-0.02em] mt-2 soft-up d-100">
+          4<span class="italic text-hot-pink">0</span>4
+        </h1>
+        <p class="mt-6 text-[18px] lg:text-[22px] leading-[1.55] max-w-[40ch] soft-up d-200">
+          Esa página se fue de vacaciones. Maybe try the <a href="/" class="hand-underline">homepage</a> or one of the case studies.
+        </p>
+
+        <div class="mt-10 flex flex-wrap gap-3 soft-up d-300">
+          <a href="/" class="bg-navy text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-hot-pink transition">Take me home →</a>
+          <a href="/#work" class="bg-cream border border-navy/20 rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-butter transition">See the work ✦</a>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-5 relative">
+        <div class="bg-butter p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[3deg] lift">
+          <div class="aspect-[4/5] bg-coral rounded-[18px] overflow-hidden flex items-center justify-center p-6">
+            <div class="font-display italic text-[64px] lg:text-[96px] text-cream leading-[0.9] text-center">
+              página<br/>perdida
+            </div>
+          </div>
+          <div class="font-hand text-[22px] text-navy text-center mt-3">— no encontrada</div>
+        </div>
+        <svg class="absolute -top-6 -right-4 float-a" width="80" height="80" viewBox="0 0 48 48" fill="none">
+          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF1493" />
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+</PublicLayout>

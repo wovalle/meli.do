@@ -1,0 +1,58 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Melissa Encarnacion — Dominican Art Director. Warm, playful, considered brand work." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Poppins:wght@300;400;500;600&family=Caveat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-lavender text-navy font-sans antialiased overflow-x-hidden">
+
+    <header class="sticky top-4 z-50 px-4 lg:px-8">
+      <div class="max-w-shell mx-auto bg-cream/80 glassy rounded-pill border border-navy/10 flex items-center justify-between px-6 py-3 shadow-[0_12px_32px_-20px_rgba(26,43,74,.25)]">
+        <a href="/" class="flex items-center gap-2">
+          <svg class="spin-slow" width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 1 L14 9 L22 8 L15.5 13 L18 21 L12 16 L6 21 L8.5 13 L2 8 L10 9 Z" fill="#FF1493" />
+          </svg>
+          <span class="font-display text-[22px] tracking-tight">mellen</span>
+        </a>
+        <nav class="hidden md:flex gap-8 text-[14px] font-medium">
+          <a href="/#work" class="hover:text-hot-pink transition">Work</a>
+          <a href="/#about" class="hover:text-hot-pink transition">About</a>
+          <a href="/#contact" class="hover:text-hot-pink transition">Contact</a>
+        </nav>
+        <a href="/#contact" class="bg-navy text-cream rounded-pill px-5 py-2 text-[13px] font-medium hover:bg-hot-pink transition">
+          Say hola ✦
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="bg-navy text-cream">
+      <div class="max-w-shell mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between gap-6 text-[12px]">
+        <div>© 2026 Melissa Encarnacion · hecho con ♥ en Santo Domingo</div>
+        <div class="flex gap-6 opacity-70">
+          <span>Type: Instrument Serif + Poppins + Caveat</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

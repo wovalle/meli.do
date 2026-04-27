@@ -1,7 +1,8 @@
 node_modules/
 .playwright-mcp/
 test-results/
-public/variations/
-public/previews/
+dist/
+.astro/
 .wrangler/
 .dev.vars
+worker-configuration.d.ts

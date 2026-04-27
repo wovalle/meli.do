@@ -88,7 +88,12 @@ async function ensureApp(group) {
   const body = {
     name: 'meli.do admin',
     domain: `${DOMAIN}/admin`,
-    self_hosted_domains: [`${DOMAIN}/admin`, `${DOMAIN}/api`],
+    self_hosted_domains: [
+      `${DOMAIN}/admin`,
+      `${DOMAIN}/api`,
+      `*-${DOMAIN}/admin`,
+      `*-${DOMAIN}/api`,
+    ],
     type: 'self_hosted',
     session_duration: '24h',
     policies: [
@@ -118,7 +123,7 @@ async function ensureApp(group) {
   const group = await ensureGroup();
   console.log(`group: meli-admins (${group.id}) — ${EMAILS.length} member(s)`);
   const app = await ensureApp(group);
-  console.log(`app: ${app.name} (${app.id}) → ${DOMAIN}/admin + /api`);
+  console.log(`app: ${app.name} (${app.id}) → ${DOMAIN}/{admin,api} + *-${DOMAIN}/{admin,api}`);
   console.log('');
   console.log('Set these for the worker:');
   console.log(`  ACCESS_TEAM_DOMAIN=${org.auth_domain}`);

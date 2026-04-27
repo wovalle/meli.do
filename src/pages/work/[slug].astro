@@ -9,8 +9,7 @@ export const prerender = false;
 
 const db = drizzle((env as { db: D1Database }).db);
 
-const slug = Astro.params.slug;
-if (!slug) return Astro.redirect('/404');
+const { slug } = Astro.params as { slug: string };
 
 const study = await db
   .select()
@@ -22,19 +21,20 @@ if (!study) {
   return new Response(null, { status: 404 });
 }
 
-const studyBlocks = await db
-  .select()
-  .from(blocks)
-  .where(eq(blocks.caseStudyId, study.id))
-  .orderBy(asc(blocks.position))
-  .all();
-
-const allPublished = await db
-  .select({ slug: caseStudies.slug, title: caseStudies.title })
-  .from(caseStudies)
-  .where(eq(caseStudies.status, 'published'))
-  .orderBy(desc(caseStudies.publishedAt))
-  .all();
+const [studyBlocks, allPublished] = await Promise.all([
+  db
+    .select()
+    .from(blocks)
+    .where(eq(blocks.caseStudyId, study.id))
+    .orderBy(asc(blocks.position))
+    .all(),
+  db
+    .select({ slug: caseStudies.slug, title: caseStudies.title })
+    .from(caseStudies)
+    .where(eq(caseStudies.status, 'published'))
+    .orderBy(desc(caseStudies.publishedAt))
+    .all(),
+]);
 
 const idx = allPublished.findIndex((s) => s.slug === slug);
 const prev = idx > 0 ? allPublished[idx - 1] : null;

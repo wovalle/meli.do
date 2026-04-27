@@ -14,11 +14,9 @@
 		"enabled": true
 	},
 	"vars": {
-		// Set the following via `wrangler secret put <NAME>` for production:
-		//   ACCESS_TEAM_DOMAIN: "<team>.cloudflareaccess.com"
-		//   ACCESS_AUD:         "<application-aud-tag>"
-		//   DEPLOY_HOOK_URL:    "https://api.cloudflare.com/client/v4/pages/.../deploy_hooks/<id>"
-		//                       Triggered by caseStudies.publish to rebuild the public site.
+		// Set ACCESS_TEAM_DOMAIN and ACCESS_AUD via `wrangler secret put` for production.
+		// ACCESS_TEAM_DOMAIN: "<team>.cloudflareaccess.com"
+		// ACCESS_AUD: "<application-aud-tag>"
 	},
 	"d1_databases": [
 		{

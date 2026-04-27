@@ -16,7 +16,7 @@ const flash = (() => {
   if (status === "created") return { tone: "ok" as const, msg: "Case study created." };
   if (status === "saved") return { tone: "ok" as const, msg: "Saved." };
   if (status === "deleted") return { tone: "ok" as const, msg: "Deleted." };
-  if (status === "published") return { tone: "ok" as const, msg: "Published. Site rebuilds in ~90s." };
+  if (status === "published") return { tone: "ok" as const, msg: "Published." };
   if (status === "block-added") return { tone: "ok" as const, msg: "Block added." };
   if (status === "block-deleted") return { tone: "ok" as const, msg: "Block deleted." };
   if (status === "moved") return { tone: "ok" as const, msg: "Reordered." };

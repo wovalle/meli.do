@@ -5,6 +5,7 @@ import { desc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { caseStudies } from '../../db/schema';
+import { formatDateTime } from '../../lib/format';
 
 const db = drizzle((env as { db: D1Database }).db);
 
@@ -27,18 +28,6 @@ const createError =
   createResult?.error?.fields?.title?.[0] ?? createResult?.error?.message ?? null;
 
 const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.updatedAt)).all();
-
-const fmt = (ms: number | Date | null) => {
-  if (!ms) return '—';
-  const d = ms instanceof Date ? ms : new Date(ms);
-  return d.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
-};
-
-const isBuilding = (publishedAt: Date | null): boolean => {
-  if (!publishedAt) return false;
-  const ms = publishedAt instanceof Date ? publishedAt.getTime() : new Date(publishedAt).getTime();
-  return Date.now() - ms < 2 * 60 * 1000;
-};
 ---
 <AdminLayout title="Case studies">
   <div class="flex items-center justify-between mb-6">
@@ -85,27 +74,20 @@ const isBuilding = (publishedAt: Date | null): boolean => {
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
-          {studies.map((s) => {
-            const building = s.status === 'published' && isBuilding(s.publishedAt);
-            return (
+          {studies.map((s) => (
               <tr>
                 <td class="px-4 py-3">
                   <a href={`/admin/${s.id}`} class="font-medium text-stone-900 hover:underline">{s.title}</a>
                 </td>
                 <td class="px-4 py-3 text-stone-600 font-mono text-xs">{s.slug}</td>
                 <td class="px-4 py-3">
-                  {building ? (
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-900 px-2.5 py-0.5 text-xs font-medium">
-                      <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
-                      Building…
-                    </span>
-                  ) : s.status === 'published' ? (
+                  {s.status === 'published' ? (
                     <span class="inline-flex rounded-full bg-emerald-100 text-emerald-900 px-2.5 py-0.5 text-xs font-medium">Published</span>
                   ) : (
                     <span class="inline-flex rounded-full bg-stone-100 text-stone-700 px-2.5 py-0.5 text-xs font-medium">Draft</span>
                   )}
                 </td>
-                <td class="px-4 py-3 text-stone-600">{fmt(s.updatedAt)}</td>
+                <td class="px-4 py-3 text-stone-600">{formatDateTime(s.updatedAt)}</td>
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-2">
                     {s.status === 'draft' && (
@@ -125,8 +107,7 @@ const isBuilding = (publishedAt: Date | null): boolean => {
                   </div>
                 </td>
               </tr>
-            );
-          })}
+          ))}
         </tbody>
       </table>
     </div>

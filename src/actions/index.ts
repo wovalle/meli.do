@@ -27,7 +27,6 @@ const slugify = (s: string): string =>
 interface Env {
   db: D1Database;
   BUCKET: R2Bucket;
-  DEPLOY_HOOK_URL?: string;
 }
 
 const getEnv = (): Env => workerEnv as unknown as Env;
@@ -79,7 +78,7 @@ export const server = {
       input: z.object({
         title: z.string().min(1, 'Title required').max(120),
       }),
-      handler: async ({ title }, context) => {
+      handler: async ({ title }) => {
         const db = getDb();
         const id = nanoid();
         const slug = await uniqueSlug(db, slugify(title));
@@ -96,7 +95,7 @@ export const server = {
         slug: z.string().min(1).max(80).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase letters, numbers, dashes'),
         summary: z.string().max(500).optional().or(z.literal('')),
       }),
-      handler: async ({ id, title, slug, summary }, context) => {
+      handler: async ({ id, title, slug, summary }) => {
         const db = getDb();
         const finalSlug = await uniqueSlug(db, slug, id);
         await db
@@ -111,7 +110,7 @@ export const server = {
     delete: defineAction({
       accept: 'form',
       input: z.object({ id: z.string().min(1) }),
-      handler: async ({ id }, context) => {
+      handler: async ({ id }) => {
         const db = getDb();
         await db.delete(caseStudies).where(eq(caseStudies.id, id)).run();
         return { ok: true };
@@ -121,21 +120,13 @@ export const server = {
     publish: defineAction({
       accept: 'form',
       input: z.object({ id: z.string().min(1) }),
-      handler: async ({ id }, context) => {
-        const env = getEnv();
-        const db = drizzle(env.db);
+      handler: async ({ id }) => {
+        const db = getDb();
         await db
           .update(caseStudies)
           .set({ status: 'published', publishedAt: new Date(), updatedAt: new Date() })
           .where(eq(caseStudies.id, id))
           .run();
-        if (env.DEPLOY_HOOK_URL) {
-          try {
-            await fetch(env.DEPLOY_HOOK_URL, { method: 'POST' });
-          } catch (e) {
-            // swallow; publish state already saved
-          }
-        }
         return { id };
       },
     }),
@@ -163,19 +154,20 @@ export const server = {
             }
           }
         }),
-      handler: async ({ caseStudyId, layout, fileL, altL, fileR, altR }, context) => {
+      handler: async ({ caseStudyId, layout, fileL, altL, fileR, altR }) => {
         const env = getEnv();
-        const db = drizzle(env.db);
+        const db = getDb();
 
-        const maxRow = await db
-          .select({ max: sql<number>`COALESCE(MAX(${blocks.position}), -1)` })
-          .from(blocks)
-          .where(eq(blocks.caseStudyId, caseStudyId))
-          .get();
+        const [maxRow, imageLKey, imageRKey] = await Promise.all([
+          db
+            .select({ max: sql<number>`COALESCE(MAX(${blocks.position}), -1)` })
+            .from(blocks)
+            .where(eq(blocks.caseStudyId, caseStudyId))
+            .get(),
+          uploadImage(env, caseStudyId, fileL),
+          layout === 'pair' && fileR ? uploadImage(env, caseStudyId, fileR) : Promise.resolve(null),
+        ]);
         const position = (maxRow?.max ?? -1) + 1;
-
-        const imageLKey = await uploadImage(env, caseStudyId, fileL);
-        const imageRKey = layout === 'pair' && fileR ? await uploadImage(env, caseStudyId, fileR) : null;
 
         const id = nanoid();
         await db
@@ -208,36 +200,35 @@ export const server = {
         id: z.string().min(1),
         direction: z.enum(['up', 'down']),
       }),
-      handler: async ({ id, direction }, context) => {
+      handler: async ({ id, direction }) => {
         const db = getDb();
         const current = await db.select().from(blocks).where(eq(blocks.id, id)).get();
         if (!current) {
           throw new ActionError({ code: 'NOT_FOUND', message: 'Block not found' });
         }
-        const neighbor =
-          direction === 'up'
-            ? await db
-                .select()
-                .from(blocks)
-                .where(and(eq(blocks.caseStudyId, current.caseStudyId), sql`${blocks.position} < ${current.position}`))
-                .orderBy(desc(blocks.position))
-                .limit(1)
-                .get()
-            : await db
-                .select()
-                .from(blocks)
-                .where(and(eq(blocks.caseStudyId, current.caseStudyId), sql`${blocks.position} > ${current.position}`))
-                .orderBy(asc(blocks.position))
-                .limit(1)
-                .get();
+        const neighbor = await (direction === 'up'
+          ? db
+              .select()
+              .from(blocks)
+              .where(and(eq(blocks.caseStudyId, current.caseStudyId), sql`${blocks.position} < ${current.position}`))
+              .orderBy(desc(blocks.position))
+              .limit(1)
+          : db
+              .select()
+              .from(blocks)
+              .where(and(eq(blocks.caseStudyId, current.caseStudyId), sql`${blocks.position} > ${current.position}`))
+              .orderBy(asc(blocks.position))
+              .limit(1)
+        ).get();
 
         if (!neighbor) {
           return { id, caseStudyId: current.caseStudyId, swapped: false };
         }
 
-        await db.update(blocks).set({ position: -1 }).where(eq(blocks.id, current.id)).run();
-        await db.update(blocks).set({ position: current.position }).where(eq(blocks.id, neighbor.id)).run();
-        await db.update(blocks).set({ position: neighbor.position }).where(eq(blocks.id, current.id)).run();
+        await db.batch([
+          db.update(blocks).set({ position: neighbor.position }).where(eq(blocks.id, current.id)),
+          db.update(blocks).set({ position: current.position }).where(eq(blocks.id, neighbor.id)),
+        ]);
 
         return { id, caseStudyId: current.caseStudyId, swapped: true };
       },
@@ -246,7 +237,7 @@ export const server = {
     delete: defineAction({
       accept: 'form',
       input: z.object({ id: z.string().min(1) }),
-      handler: async ({ id }, context) => {
+      handler: async ({ id }) => {
         const db = getDb();
         const block = await db.select({ caseStudyId: blocks.caseStudyId }).from(blocks).where(eq(blocks.id, id)).get();
         if (!block) {
@@ -264,7 +255,7 @@ export const server = {
         altL: z.string().min(1, 'Alt text required'),
         altR: z.string().optional(),
       }),
-      handler: async ({ id, altL, altR }, context) => {
+      handler: async ({ id, altL, altR }) => {
         const db = getDb();
         const block = await db.select().from(blocks).where(eq(blocks.id, id)).get();
         if (!block) {

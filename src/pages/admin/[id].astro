@@ -5,13 +5,12 @@ import { eq, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
+import { formatDateTime } from '../../lib/format';
 
 const db = drizzle((env as { db: D1Database }).db);
 
-const { id } = Astro.params;
-if (!id) return Astro.redirect('/admin');
+const { id } = Astro.params as { id: string };
 
-// Handle action results — redirect to PRG-clear errors and show flash
 const metaResult = Astro.getActionResult(actions.caseStudies.updateMeta);
 if (metaResult && !metaResult.error) {
   return Astro.redirect(`/admin/${id}?status=saved`);
@@ -62,19 +61,6 @@ const metaErrMsg = metaResult?.error?.message;
 const addErrors = addResult?.error?.fields ?? {};
 const addErrMsg = addResult?.error?.message;
 
-const fmt = (ms: number | Date | null) => {
-  if (!ms) return '—';
-  const d = ms instanceof Date ? ms : new Date(ms);
-  return d.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
-};
-
-const isBuilding = (publishedAt: Date | null): boolean => {
-  if (!publishedAt) return false;
-  const ms = publishedAt instanceof Date ? publishedAt.getTime() : new Date(publishedAt).getTime();
-  return Date.now() - ms < 2 * 60 * 1000;
-};
-
-const building = study.status === 'published' && isBuilding(study.publishedAt);
 ---
 <AdminLayout title={study.title}>
   <div class="mb-4">
@@ -85,7 +71,7 @@ const building = study.status === 'published' && isBuilding(study.publishedAt);
     <div>
       <h1 class="text-2xl font-semibold">{study.title}</h1>
       <p class="text-sm text-stone-500 mt-1">
-        {study.status === 'published' ? 'Published' : 'Draft'} · Updated {fmt(study.updatedAt)}
+        {study.status === 'published' ? 'Published' : 'Draft'} · Updated {formatDateTime(study.updatedAt)}
         {study.status === 'published' && (
           <> · <a href={`/work/${study.slug}`} class="underline hover:text-stone-900">View live →</a></>
         )}
@@ -97,15 +83,9 @@ const building = study.status === 'published' && isBuilding(study.publishedAt);
         <input type="hidden" name="id" value={study.id} />
         <button
           type="submit"
-          disabled={building}
-          class="inline-flex items-center gap-2 rounded-md bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          class="inline-flex items-center gap-2 rounded-md bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition"
         >
-          {building ? (
-            <>
-              <span class="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse"></span>
-              Building…
-            </>
-          ) : study.status === 'published' ? 'Re-publish' : 'Publish'}
+          {study.status === 'published' ? 'Re-publish' : 'Publish'}
         </button>
       </form>
       <form method="POST" action={actions.caseStudies.delete} onsubmit="return confirm('Delete this case study and all its blocks?')">

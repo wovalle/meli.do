@@ -1,0 +1,333 @@
+---
+import { actions } from 'astro:actions';
+import { drizzle } from 'drizzle-orm/d1';
+import { eq, asc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { caseStudies, blocks } from '../../db/schema';
+import { formatDateTime } from '../../lib/format';
+
+const db = drizzle((env as { db: D1Database }).db);
+
+const { id } = Astro.params as { id: string };
+
+const metaResult = Astro.getActionResult(actions.caseStudies.updateMeta);
+if (metaResult && !metaResult.error) {
+  return Astro.redirect(`/admin/${id}?status=saved`);
+}
+
+const publishResult = Astro.getActionResult(actions.caseStudies.publish);
+if (publishResult && !publishResult.error) {
+  return Astro.redirect(`/admin/${id}?status=published`);
+}
+
+const deleteResult = Astro.getActionResult(actions.caseStudies.delete);
+if (deleteResult && !deleteResult.error) {
+  return Astro.redirect(`/admin?status=deleted`);
+}
+
+const addResult = Astro.getActionResult(actions.blocks.add);
+if (addResult && !addResult.error) {
+  return Astro.redirect(`/admin/${id}?status=block-added`);
+}
+
+const moveResult = Astro.getActionResult(actions.blocks.move);
+if (moveResult && !moveResult.error) {
+  return Astro.redirect(`/admin/${id}?status=moved`);
+}
+
+const blockDeleteResult = Astro.getActionResult(actions.blocks.delete);
+if (blockDeleteResult && !blockDeleteResult.error) {
+  return Astro.redirect(`/admin/${id}?status=block-deleted`);
+}
+
+const altResult = Astro.getActionResult(actions.blocks.updateAlt);
+if (altResult && !altResult.error) {
+  return Astro.redirect(`/admin/${id}?status=saved`);
+}
+
+const study = await db.select().from(caseStudies).where(eq(caseStudies.id, id)).get();
+if (!study) return Astro.redirect('/admin');
+
+const studyBlocks = await db
+  .select()
+  .from(blocks)
+  .where(eq(blocks.caseStudyId, id))
+  .orderBy(asc(blocks.position))
+  .all();
+
+const metaErrors = metaResult?.error?.fields ?? {};
+const metaErrMsg = metaResult?.error?.message;
+const addErrors = addResult?.error?.fields ?? {};
+const addErrMsg = addResult?.error?.message;
+
+---
+<AdminLayout title={study.title}>
+  <div class="mb-4">
+    <a href="/admin" class="text-sm text-stone-500 hover:text-stone-900">← All case studies</a>
+  </div>
+
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold">{study.title}</h1>
+      <p class="text-sm text-stone-500 mt-1">
+        {study.status === 'published' ? 'Published' : 'Draft'} · Updated {formatDateTime(study.updatedAt)}
+        {study.status === 'published' && (
+          <> · <a href={`/work/${study.slug}`} class="underline hover:text-stone-900">View live →</a></>
+        )}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <form method="POST" action={actions.caseStudies.publish}>
+        <input type="hidden" name="id" value={study.id} />
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 rounded-md bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition"
+        >
+          {study.status === 'published' ? 'Re-publish' : 'Publish'}
+        </button>
+      </form>
+      <form method="POST" action={actions.caseStudies.delete} onsubmit="return confirm('Delete this case study and all its blocks?')">
+        <input type="hidden" name="id" value={study.id} />
+        <button type="submit" class="rounded-md border border-red-300 bg-red-50 text-red-800 px-3 py-2 text-sm font-medium hover:bg-red-100 transition">
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <section class="rounded-lg border border-stone-200 bg-white p-5 mb-8">
+    <h2 class="text-sm font-semibold text-stone-700 mb-3">Meta</h2>
+    <form method="POST" action={actions.caseStudies.updateMeta} class="space-y-4">
+      <input type="hidden" name="id" value={study.id} />
+      <label class="block">
+        <span class="block text-xs font-medium text-stone-600 mb-1">Title</span>
+        <input
+          name="title"
+          required
+          maxlength="120"
+          value={study.title}
+          class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+        />
+        {metaErrors.title && <p role="alert" class="mt-1 text-sm text-red-700">{metaErrors.title[0]}</p>}
+      </label>
+      <label class="block">
+        <span class="block text-xs font-medium text-stone-600 mb-1">Slug</span>
+        <input
+          name="slug"
+          required
+          maxlength="80"
+          pattern="[a-z0-9-]+"
+          value={study.slug}
+          class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm font-mono focus:border-stone-900 focus:outline-none"
+        />
+        <p class="mt-1 text-xs text-stone-500">Lowercase letters, numbers, dashes. URL: /work/{study.slug}</p>
+        {metaErrors.slug && <p role="alert" class="mt-1 text-sm text-red-700">{metaErrors.slug[0]}</p>}
+      </label>
+      <label class="block">
+        <span class="block text-xs font-medium text-stone-600 mb-1">Summary <span class="text-stone-400 font-normal">(optional)</span></span>
+        <textarea
+          name="summary"
+          rows="3"
+          maxlength="500"
+          class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+        >{study.summary ?? ''}</textarea>
+        {metaErrors.summary && <p role="alert" class="mt-1 text-sm text-red-700">{metaErrors.summary[0]}</p>}
+      </label>
+      {metaErrMsg && !Object.keys(metaErrors).length && (
+        <p role="alert" class="text-sm text-red-700">{metaErrMsg}</p>
+      )}
+      <button type="submit" class="inline-flex items-center justify-center rounded-md bg-stone-900 text-white px-4 py-2 text-sm font-medium hover:bg-stone-700 transition">
+        Save meta
+      </button>
+    </form>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-sm font-semibold text-stone-700 mb-3">Blocks ({studyBlocks.length})</h2>
+
+    {studyBlocks.length === 0 ? (
+      <div class="rounded-lg border border-dashed border-stone-300 bg-white p-10 text-center">
+        <p class="text-stone-600">No blocks yet. Add an image below.</p>
+      </div>
+    ) : (
+      <ol class="space-y-4">
+        {studyBlocks.map((b, idx) => (
+          <li class="rounded-lg border border-stone-200 bg-white p-4">
+            <div class="flex flex-wrap items-start gap-4">
+              <div class="flex flex-col gap-1 pt-1">
+                <form method="POST" action={actions.blocks.move}>
+                  <input type="hidden" name="id" value={b.id} />
+                  <input type="hidden" name="direction" value="up" />
+                  <button
+                    type="submit"
+                    disabled={idx === 0}
+                    aria-label="Move up"
+                    class="inline-flex items-center justify-center w-11 h-11 rounded border border-stone-300 bg-white text-stone-700 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                  >↑</button>
+                </form>
+                <form method="POST" action={actions.blocks.move}>
+                  <input type="hidden" name="id" value={b.id} />
+                  <input type="hidden" name="direction" value="down" />
+                  <button
+                    type="submit"
+                    disabled={idx === studyBlocks.length - 1}
+                    aria-label="Move down"
+                    class="inline-flex items-center justify-center w-11 h-11 rounded border border-stone-300 bg-white text-stone-700 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                  >↓</button>
+                </form>
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-xs font-mono text-stone-500">#{idx + 1}</span>
+                  <span class="rounded-full bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium">{b.layout}</span>
+                </div>
+
+                <div class={b.layout === 'pair' ? 'grid grid-cols-2 gap-3 mb-3' : 'mb-3'}>
+                  <img
+                    src={`/images/${b.imageLKey}`}
+                    alt={b.altL}
+                    loading="lazy"
+                    class="w-full max-h-64 object-cover rounded border border-stone-200 bg-stone-100"
+                  />
+                  {b.layout === 'pair' && b.imageRKey && (
+                    <img
+                      src={`/images/${b.imageRKey}`}
+                      alt={b.altR ?? ''}
+                      loading="lazy"
+                      class="w-full max-h-64 object-cover rounded border border-stone-200 bg-stone-100"
+                    />
+                  )}
+                </div>
+
+                <form method="POST" action={actions.blocks.updateAlt} class="space-y-2">
+                  <input type="hidden" name="id" value={b.id} />
+                  <label class="block">
+                    <span class="block text-xs font-medium text-stone-600 mb-1">{b.layout === 'pair' ? 'Left alt' : 'Alt text'}</span>
+                    <input
+                      name="altL"
+                      required
+                      value={b.altL}
+                      class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+                    />
+                  </label>
+                  {b.layout === 'pair' && (
+                    <label class="block">
+                      <span class="block text-xs font-medium text-stone-600 mb-1">Right alt</span>
+                      <input
+                        name="altR"
+                        required
+                        value={b.altR ?? ''}
+                        class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+                      />
+                    </label>
+                  )}
+                  <button type="submit" class="rounded-md border border-stone-300 bg-white text-stone-800 px-3 py-1.5 text-xs font-medium hover:bg-stone-50 transition">
+                    Save alt
+                  </button>
+                </form>
+              </div>
+
+              <form method="POST" action={actions.blocks.delete} onsubmit="return confirm('Delete this block?')">
+                <input type="hidden" name="id" value={b.id} />
+                <button type="submit" class="rounded-md border border-red-300 bg-red-50 text-red-800 px-2.5 py-1 text-xs font-medium hover:bg-red-100 transition">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  <section class="rounded-lg border border-stone-200 bg-white p-5">
+    <h2 class="text-sm font-semibold text-stone-700 mb-3">Add block</h2>
+    <form method="POST" action={actions.blocks.add} enctype="multipart/form-data" class="space-y-4">
+      <input type="hidden" name="caseStudyId" value={study.id} />
+
+      <label class="block">
+        <span class="block text-xs font-medium text-stone-600 mb-1">Layout</span>
+        <select
+          name="layout"
+          id="layout-select"
+          class="rounded-md border border-stone-300 px-3 py-2 text-sm bg-white focus:border-stone-900 focus:outline-none"
+        >
+          <option value="single">Single (full-width image)</option>
+          <option value="pair">Pair (two images side-by-side)</option>
+        </select>
+      </label>
+
+      <div class="grid sm:grid-cols-2 gap-4" id="image-grid">
+        <div>
+          <label class="block">
+            <span class="block text-xs font-medium text-stone-600 mb-1">Image</span>
+            <input
+              type="file"
+              name="fileL"
+              required
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              class="block w-full text-sm file:mr-3 file:rounded file:border-0 file:bg-stone-200 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-stone-300"
+            />
+            {addErrors.fileL && <p role="alert" class="mt-1 text-sm text-red-700">{addErrors.fileL[0]}</p>}
+          </label>
+          <label class="block mt-3">
+            <span class="block text-xs font-medium text-stone-600 mb-1">Alt text <span class="text-red-600">*</span></span>
+            <input
+              name="altL"
+              required
+              placeholder="Describe the image for screen readers"
+              class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+            />
+            {addErrors.altL && <p role="alert" class="mt-1 text-sm text-red-700">{addErrors.altL[0]}</p>}
+          </label>
+        </div>
+
+        <div data-pair-only>
+          <label class="block">
+            <span class="block text-xs font-medium text-stone-600 mb-1">Right image</span>
+            <input
+              type="file"
+              name="fileR"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              class="block w-full text-sm file:mr-3 file:rounded file:border-0 file:bg-stone-200 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-stone-300"
+            />
+            {addErrors.fileR && <p role="alert" class="mt-1 text-sm text-red-700">{addErrors.fileR[0]}</p>}
+          </label>
+          <label class="block mt-3">
+            <span class="block text-xs font-medium text-stone-600 mb-1">Right alt text</span>
+            <input
+              name="altR"
+              placeholder="Describe the right image"
+              class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-900 focus:outline-none"
+            />
+            {addErrors.altR && <p role="alert" class="mt-1 text-sm text-red-700">{addErrors.altR[0]}</p>}
+          </label>
+        </div>
+      </div>
+
+      {addErrMsg && !Object.keys(addErrors).length && (
+        <p role="alert" class="text-sm text-red-700">{addErrMsg}</p>
+      )}
+
+      <p class="text-xs text-stone-500">JPEG, PNG, WebP, or AVIF · max 10MB per image</p>
+
+      <button type="submit" class="inline-flex items-center justify-center rounded-md bg-stone-900 text-white px-4 py-2 text-sm font-medium hover:bg-stone-700 transition">
+        Add block
+      </button>
+    </form>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const sel = document.getElementById('layout-select');
+      const pair = document.querySelector('[data-pair-only]');
+      if (!sel || !pair) return;
+      const sync = () => { pair.hidden = sel.value !== 'pair'; };
+      sel.addEventListener('change', sync);
+      sync();
+    })();
+  </script>
+</AdminLayout>

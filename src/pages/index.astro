@@ -1,21 +1,301 @@
 ---
-export const prerender = true;
+import { drizzle } from 'drizzle-orm/d1';
+import { eq, desc, inArray, and, asc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import PublicLayout from '../layouts/PublicLayout.astro';
+import { caseStudies, blocks } from '../db/schema';
+
+const db = drizzle((env as { db: D1Database }).db);
+
+const published = await db
+  .select()
+  .from(caseStudies)
+  .where(eq(caseStudies.status, 'published'))
+  .orderBy(desc(caseStudies.publishedAt))
+  .all();
+
+const studyIds = published.map((s) => s.id);
+const firstBlocks = studyIds.length
+  ? await db
+      .select()
+      .from(blocks)
+      .where(and(inArray(blocks.caseStudyId, studyIds), eq(blocks.position, 0)))
+      .all()
+  : [];
+const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
+
+const cardColors = ['butter', 'coral', 'mint', 'sky'];
+
+Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
 ---
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>meli.do</title>
-    <style>
-      body { font-family: ui-sans-serif, system-ui, sans-serif; max-width: 60ch; margin: 10vh auto; padding: 0 24px; color: #0a0a0a; }
-      h1 { font-size: clamp(32px, 5vw, 56px); letter-spacing: -0.02em; margin: 0 0 12px; }
-      p { color: #5b5b5b; }
-      a { color: #0a0a0a; }
-    </style>
-  </head>
-  <body>
-    <h1>meli.do</h1>
-    <p>Portfolio coming soon. <a href="/legacy/picker/">Design picker</a> · <a href="/admin">Admin</a></p>
-  </body>
-</html>
+<PublicLayout title="¡Hola! I'm Melissa — Art Director & Designer">
+
+  <section class="relative pt-16 lg:pt-24 pb-24 lg:pb-32 overflow-hidden">
+    <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+
+      <svg class="absolute -top-6 right-[12%] float-a" width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF1493" />
+      </svg>
+      <svg class="absolute top-[40%] -left-2 lg:left-8 float-b" width="60" height="60" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="#FF7F50" stroke-width="3" stroke-dasharray="4 6" />
+      </svg>
+      <svg class="absolute top-[18%] right-0 float-c" width="96" height="96" viewBox="0 0 96 96" fill="none">
+        <path d="M48 6 Q 60 30 84 40 Q 60 50 48 84 Q 36 50 12 40 Q 36 30 48 6 Z" fill="#FFE484" />
+      </svg>
+
+      <div class="flex flex-wrap items-center gap-3 soft-up">
+        <span class="bg-cream rounded-pill px-4 py-1.5 text-[12px] font-medium flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-coral inline-block animate-pulse"></span>
+          Open for 2026 projects
+        </span>
+        <span class="bg-butter rounded-pill px-4 py-1.5 text-[12px] font-medium">Based in Santo Domingo ⋄ DO</span>
+        <span class="bg-hot-pink text-cream rounded-pill px-4 py-1.5 text-[12px] font-medium">10 years designing</span>
+      </div>
+
+      <h1 class="font-display text-[64px] sm:text-[96px] lg:text-[152px] leading-[0.95] tracking-[-0.02em] mt-8 soft-up d-100">
+        ¡Hola! <span class="wave inline-block">👋🏽</span><br/>
+        I'm <span class="italic text-hot-pink">Melissa</span>,<br/>
+        an <span class="hand-underline">art director</span><br/>
+        who loves <em class="font-display">sabor</em>.
+      </h1>
+
+      <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-10 items-end">
+        <p class="col-span-12 lg:col-span-7 text-[18px] lg:text-[22px] leading-[1.55] max-w-[40ch] soft-up d-200">
+          I'm a Dominican designer leading the design team at Liquid Digital Agency. For the past decade I've been building brand systems that feel warm, specific, and a little bit homemade — even when they're running at scale.
+        </p>
+
+        <div class="col-span-12 lg:col-span-5 flex flex-wrap gap-3 soft-up d-300">
+          <a href="#work" class="bg-navy text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-hot-pink transition">See my work →</a>
+          <a href="#contact" class="bg-cream border border-navy/20 rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-butter transition">Let's collab ✦</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="py-6 border-y border-navy/10 bg-cream overflow-hidden">
+    <div class="marquee flex gap-10 whitespace-nowrap text-navy/70 font-display text-[28px] lg:text-[44px] italic">
+      <span>✦ brand identity ✦ art direction ✦ packaging ✦ editorial ✦ campaigns ✦ digital ✦</span>
+      <span>✦ brand identity ✦ art direction ✦ packaging ✦ editorial ✦ campaigns ✦ digital ✦</span>
+    </div>
+  </section>
+
+  <section id="about" class="py-20 lg:py-28">
+    <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-12 gap-6 lg:gap-10 items-start">
+
+      <div class="col-span-12 md:col-span-5 lg:col-span-4 relative">
+        <div class="bg-cream p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[-3deg] lift">
+          <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden flex items-end p-5">
+            <div class="w-full">
+              <div class="w-10 h-10 bg-hot-pink rounded-full"></div>
+              <div class="font-hand text-[28px] text-cream mt-4">hi, it's me ✦</div>
+            </div>
+          </div>
+          <div class="font-hand text-[22px] text-navy text-center mt-3">— Santo Domingo, 2026</div>
+        </div>
+        <svg class="absolute -top-6 -right-4 float-a" width="80" height="80" viewBox="0 0 48 48" fill="none">
+          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF7F50" />
+        </svg>
+      </div>
+
+      <div class="col-span-12 md:col-span-7 lg:col-span-8 space-y-8">
+        <h2 class="font-display text-[44px] lg:text-[80px] leading-[0.95]">
+          A decade of brand work,<br/>grounded in <span class="italic text-hot-pink">Caribbean warmth</span>.
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-butter rounded-xxl p-5">
+            <div class="font-display text-[44px] leading-none">10+</div>
+            <div class="text-[12px] font-medium mt-2 text-navy/70">years experience</div>
+          </div>
+          <div class="bg-coral rounded-xxl p-5 text-cream">
+            <div class="font-display text-[44px] leading-none">5</div>
+            <div class="text-[12px] font-medium mt-2 opacity-80">designers led</div>
+          </div>
+          <div class="bg-mint rounded-xxl p-5">
+            <div class="font-display text-[44px] leading-none">{Math.max(13, published.length)}</div>
+            <div class="text-[12px] font-medium mt-2 text-navy/70">brands built</div>
+          </div>
+          <div class="bg-sky rounded-xxl p-5">
+            <div class="font-display text-[44px] leading-none">2</div>
+            <div class="text-[12px] font-medium mt-2 text-navy/70">languages</div>
+          </div>
+        </div>
+
+        <div class="bg-cream rounded-xxl p-6 lg:p-8">
+          <p class="text-[16px] lg:text-[18px] leading-[1.7]">
+            I lead the design team at <strong>Liquid Digital Agency</strong> in Santo Domingo. Our work ranges from FMCG and finance to cultural and small founder-led brands. I care about craft, but more than anything, I care about whether a brand <em>feels</em> like where it's from — like it knows who it's talking to.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-6">
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Brand Identity</span>
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Art Direction</span>
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Packaging</span>
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Editorial</span>
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Campaigns</span>
+            <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Team leadership</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="py-20 lg:py-28 bg-cream border-y border-navy/10">
+    <div class="max-w-shell mx-auto px-6 lg:px-10">
+
+      <div class="flex items-end justify-between mb-12 lg:mb-16">
+        <div>
+          <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink">— selected work</div>
+          <h2 class="font-display text-[44px] lg:text-[88px] leading-[0.95]">
+            {published.length > 0 ? (
+              <>{published.length} {published.length === 1 ? 'love letter' : 'love letters'}<br/>to the <span class="italic">DR</span>.</>
+            ) : (
+              <>Work coming<br/><span class="italic">soon</span>.</>
+            )}
+          </h2>
+        </div>
+      </div>
+
+      {published.length === 0 ? (
+        <div class="text-center py-16">
+          <p class="font-hand text-[28px] text-navy/60">— new case studies in the studio —</p>
+        </div>
+      ) : (
+        <>
+          {published.slice(0, 2).map((s, idx) => {
+            const thumb = thumbByStudy.get(s.id);
+            const isReversed = idx % 2 === 1;
+            const accent = idx === 0 ? 'hot-pink' : 'coral';
+            const number = String(idx + 1).padStart(2, '0');
+            return (
+              <article class={`grid grid-cols-12 gap-6 lg:gap-10 items-stretch mb-10 lg:mb-14`}>
+                <div class={`col-span-12 md:col-span-7 lg:col-span-8 relative lift ${isReversed ? 'order-1 md:order-2' : ''}`}>
+                  <a href={`/work/${s.slug}`} class="block rounded-xxl overflow-hidden border border-navy/10 bg-navy aspect-[4/3] md:aspect-[16/10]">
+                    {thumb ? (
+                      <img class="w-full h-full object-cover" src={`/images/${thumb.imageLKey}`} alt={thumb.altL} loading="lazy" />
+                    ) : (
+                      <div class="w-full h-full bg-navy"></div>
+                    )}
+                  </a>
+                </div>
+                <div class={`col-span-12 md:col-span-5 lg:col-span-4 flex flex-col justify-between gap-6 ${isReversed ? 'order-2 md:order-1' : ''}`}>
+                  <div>
+                    <div class="flex items-center gap-3">
+                      <span class={`bg-${accent} text-cream rounded-pill px-3 py-1 text-[11px] font-semibold`}>{number} — Featured</span>
+                      {s.publishedAt && (
+                        <span class="text-[12px] text-navy/60">
+                          {new Date(s.publishedAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
+                        </span>
+                      )}
+                    </div>
+                    <h3 class="font-display text-[40px] lg:text-[56px] leading-[0.95] mt-4">{s.title}</h3>
+                    {s.summary && (
+                      <p class="text-[15px] leading-[1.65] mt-4 text-navy/80">{s.summary}</p>
+                    )}
+                  </div>
+                  <div>
+                    <a href={`/work/${s.slug}`} class="mt-5 inline-flex items-center gap-2 font-medium text-[14px] border-b border-navy pb-0.5 hover:text-hot-pink hover:border-hot-pink transition">
+                      Read the case study →
+                    </a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+
+          {published.length > 2 && (
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+              {published.slice(2).map((s, idx) => {
+                const thumb = thumbByStudy.get(s.id);
+                const color = cardColors[idx % cardColors.length];
+                return thumb ? (
+                  <a href={`/work/${s.slug}`} class={`rounded-xxl overflow-hidden aspect-square bg-${color} lift block`}>
+                    <img class="w-full h-full object-cover" src={`/images/${thumb.imageLKey}`} alt={thumb.altL} loading="lazy" />
+                  </a>
+                ) : (
+                  <a href={`/work/${s.slug}`} class={`rounded-xxl aspect-square bg-${color} p-5 lift flex flex-col justify-between text-navy`}>
+                    <div class="text-[11px] font-medium opacity-70">
+                      {s.publishedAt ? new Date(s.publishedAt).toLocaleDateString(undefined, { year: 'numeric' }) : ''}
+                    </div>
+                    <div class="font-display text-[28px] leading-[0.95]">{s.title}</div>
+                    <div class="text-[12px] opacity-70">Case study →</div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  </section>
+
+  <section id="contact" class="py-20 lg:py-32 bg-hot-pink text-cream relative overflow-hidden">
+    <svg class="absolute top-10 left-[8%] spin-slow" width="80" height="80" viewBox="0 0 48 48"><path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FFE484" /></svg>
+    <svg class="absolute bottom-10 right-[8%] spin-slow" width="120" height="120" viewBox="0 0 48 48" style="animation-direction:reverse"><path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#1A2B4A" /></svg>
+
+    <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+      <div class="max-w-[920px] mx-auto">
+
+        <div class="font-hand text-[28px] lg:text-[36px] text-butter text-center">— let's make something warm</div>
+
+        <div class="mt-6 bg-cream text-navy rounded-xxl border border-navy/10 p-8 lg:p-12 shadow-[0_30px_60px_-30px_rgba(26,43,74,.45)] relative rotate-[-1deg]">
+          <div class="tape tape-r" style="top:-14px; left:44%; width:140px; height:28px;"></div>
+
+          <div class="grid grid-cols-12 gap-4 lg:gap-8">
+            <div class="col-span-12 md:col-span-7 md:pr-8 md:border-r-2 md:border-dashed md:border-navy/30">
+              <div class="font-hand text-[28px] text-hot-pink">Dear Melissa,</div>
+
+              <h2 class="font-display text-[44px] sm:text-[64px] lg:text-[88px] leading-[0.95] mt-3">
+                Write me<br/>a <em class="text-hot-pink">love letter</em>.
+              </h2>
+
+              <p class="mt-6 font-hand text-[22px] text-navy/75">
+                A project, a collab, or just design in general —<br/>
+                I'd love to hear from you.
+              </p>
+
+              <a href="mailto:hello@melissaencarnacion.com" class="mt-8 inline-block font-display italic text-[22px] lg:text-[28px] border-b-2 border-navy hover:text-hot-pink hover:border-hot-pink transition">
+                hello@melissaencarnacion.com →
+              </a>
+            </div>
+
+            <div class="col-span-12 md:col-span-5 md:pl-4">
+              <div class="flex flex-col items-end">
+                <div class="dashed-b rounded-lg p-4 bg-butter rotate-[4deg] inline-block w-[148px] text-center">
+                  <div class="font-hand text-[22px] text-hot-pink leading-[1]">postal<br/>express</div>
+                  <div class="font-display italic text-[18px] mt-2">MDO · DR</div>
+                  <div class="font-hand text-[14px] mt-1 text-navy/60">2026</div>
+                </div>
+                <div class="mt-6 font-hand text-[18px] text-navy/80 text-right leading-[1.5]">
+                  To:<br/>
+                  <span class="text-navy text-[22px]">future client ✦</span><br/>
+                  anywhere, everywhere<br/>
+                  the world — 00000
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 text-[13px]">
+          <a href="https://www.behance.net/melissaencarn" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+            <div class="opacity-70">Behance</div>
+            <div class="font-medium mt-1">@melissaencarn</div>
+          </a>
+          <a href="https://instagram.com/mellen.design" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+            <div class="opacity-70">Instagram</div>
+            <div class="font-medium mt-1">@mellen.design</div>
+          </a>
+          <a href="https://www.linkedin.com/in/melissa-encarnacion" class="bg-cream/10 border border-cream/30 rounded-xxl p-4 hover:bg-cream/20 transition">
+            <div class="opacity-70">LinkedIn</div>
+            <div class="font-medium mt-1">melissa-encarnacion</div>
+          </a>
+          <span class="bg-cream/10 border border-cream/30 rounded-xxl p-4">
+            <div class="opacity-70">Zona Horaria</div>
+            <div class="font-medium mt-1">AST (GMT-4)</div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</PublicLayout>

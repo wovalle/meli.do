@@ -1,0 +1,116 @@
+---
+import { drizzle } from 'drizzle-orm/d1';
+import { eq, and, asc, desc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import { caseStudies, blocks } from '../../db/schema';
+
+export const prerender = false;
+
+const db = drizzle((env as { db: D1Database }).db);
+
+const { slug } = Astro.params as { slug: string };
+
+const study = await db
+  .select()
+  .from(caseStudies)
+  .where(and(eq(caseStudies.slug, slug), eq(caseStudies.status, 'published')))
+  .get();
+
+if (!study) {
+  return new Response(null, { status: 404 });
+}
+
+const [studyBlocks, allPublished] = await Promise.all([
+  db
+    .select()
+    .from(blocks)
+    .where(eq(blocks.caseStudyId, study.id))
+    .orderBy(asc(blocks.position))
+    .all(),
+  db
+    .select({ slug: caseStudies.slug, title: caseStudies.title })
+    .from(caseStudies)
+    .where(eq(caseStudies.status, 'published'))
+    .orderBy(desc(caseStudies.publishedAt))
+    .all(),
+]);
+
+const idx = allPublished.findIndex((s) => s.slug === slug);
+const prev = idx > 0 ? allPublished[idx - 1] : null;
+const next = idx >= 0 && idx < allPublished.length - 1 ? allPublished[idx + 1] : null;
+
+const description = study.summary ?? `Case study by Melissa Encarnacion — ${study.title}`;
+
+Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
+---
+<PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description}>
+
+  <article class="pt-12 lg:pt-20 pb-20 lg:pb-28">
+    <header class="max-w-shell mx-auto px-6 lg:px-10 mb-12 lg:mb-20">
+      <a href="/#work" class="font-hand text-[22px] text-hot-pink hover:underline">← back to work</a>
+      <h1 class="font-display text-[48px] sm:text-[80px] lg:text-[128px] leading-[0.95] tracking-[-0.02em] mt-4 soft-up">
+        {study.title}
+      </h1>
+      {study.summary && (
+        <p class="mt-6 text-[18px] lg:text-[22px] leading-[1.55] max-w-[60ch] text-navy/80 soft-up d-100">
+          {study.summary}
+        </p>
+      )}
+      {study.publishedAt && (
+        <div class="mt-6 text-[12px] font-medium text-navy/60 uppercase tracking-wider soft-up d-200">
+          Published {new Date(study.publishedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+        </div>
+      )}
+    </header>
+
+    {studyBlocks.length === 0 ? (
+      <div class="max-w-shell mx-auto px-6 lg:px-10 text-center py-16">
+        <p class="font-hand text-[28px] text-navy/60">— more soon —</p>
+      </div>
+    ) : (
+      <div class="max-w-shell mx-auto px-6 lg:px-10 space-y-6 lg:space-y-10">
+        {studyBlocks.map((b) => (
+          b.layout === 'pair' && b.imageRKey ? (
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+              <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
+                <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} alt={b.altL} loading="lazy" />
+              </div>
+              <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
+                <img class="w-full h-auto block" src={`/images/${b.imageRKey}`} alt={b.altR ?? ''} loading="lazy" />
+              </div>
+            </div>
+          ) : (
+            <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
+              <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} alt={b.altL} loading="lazy" />
+            </div>
+          )
+        ))}
+      </div>
+    )}
+  </article>
+
+  {(prev || next) && (
+    <nav class="border-t border-navy/10 bg-cream py-10 lg:py-14">
+      <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-2 gap-6">
+        <div>
+          {prev && (
+            <a href={`/work/${prev.slug}`} class="block group">
+              <div class="font-hand text-[18px] text-hot-pink">← previous</div>
+              <div class="font-display text-[24px] lg:text-[36px] leading-[1.05] mt-2 group-hover:text-hot-pink transition">{prev.title}</div>
+            </a>
+          )}
+        </div>
+        <div class="text-right">
+          {next && (
+            <a href={`/work/${next.slug}`} class="block group">
+              <div class="font-hand text-[18px] text-hot-pink">next →</div>
+              <div class="font-display text-[24px] lg:text-[36px] leading-[1.05] mt-2 group-hover:text-hot-pink transition">{next.title}</div>
+            </a>
+          )}
+        </div>
+      </div>
+    </nav>
+  )}
+
+</PublicLayout>

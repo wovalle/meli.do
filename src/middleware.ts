@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
+import { env } from 'cloudflare:workers';
 
 const PROTECTED_PREFIXES = ['/admin', '/api'];
 
@@ -30,15 +31,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
       return next();
     }
 
-    const runtime = (context.locals as { runtime?: { env?: Record<string, string | undefined> } }).runtime;
-    const env = runtime?.env ?? {};
-    const teamDomain = env.ACCESS_TEAM_DOMAIN;
-    const aud = env.ACCESS_AUD;
+    const teamDomain = (env as Record<string, string | undefined>).ACCESS_TEAM_DOMAIN;
+    const aud = (env as Record<string, string | undefined>).ACCESS_AUD;
     if (!teamDomain || !aud) {
-      return new Response(
-        `Access not configured. runtime=${runtime ? 'set' : 'missing'} team=${teamDomain ?? 'missing'} aud=${aud ? 'set' : 'missing'}`,
-        { status: 500 },
-      );
+      return new Response('Access not configured (ACCESS_TEAM_DOMAIN / ACCESS_AUD missing).', { status: 500 });
     }
 
     const token =

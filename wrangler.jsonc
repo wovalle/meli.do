@@ -1,11 +1,39 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "meli-do",
-  "account_id": "d5705803ba3e46be8c7b0566e47ff7d6",
-  "compatibility_date": "2026-04-01",
-  "assets": {
-    "directory": "./public",
-    "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "meli-do",
+	"account_id": "d5705803ba3e46be8c7b0566e47ff7d6",
+	"compatibility_date": "2026-04-01",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		// Set ACCESS_TEAM_DOMAIN and ACCESS_AUD via `wrangler secret put` for production.
+		// ACCESS_TEAM_DOMAIN: "<team>.cloudflareaccess.com"
+		// ACCESS_AUD: "<application-aud-tag>"
+	},
+	"d1_databases": [
+		{
+			"binding": "db",
+			"database_name": "meli-db",
+			"database_id": "7a887d11-8835-4fe7-9bc2-9f297067e7cb",
+			"migrations_dir": "./drizzle"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "BUCKET",
+			"bucket_name": "meli-do-images"
+		},
+		{
+			"bucket_name": "meli",
+			"binding": "meli_r2"
+		}
+	]
 }

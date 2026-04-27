@@ -23,13 +23,17 @@
 			"binding": "db",
 			"database_name": "meli-db",
 			"database_id": "7a887d11-8835-4fe7-9bc2-9f297067e7cb",
-            "migrations_dir": "./drizzle"
+			"migrations_dir": "./drizzle"
 		}
 	],
 	"r2_buckets": [
 		{
 			"binding": "BUCKET",
 			"bucket_name": "meli-do-images"
+		},
+		{
+			"bucket_name": "meli",
+			"binding": "meli_r2"
 		}
 	]
 }

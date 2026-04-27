@@ -24,7 +24,7 @@ function isProtected(pathname: string): boolean {
 export const onRequest = defineMiddleware(async (context, next) => {
   try {
     const { pathname } = new URL(context.request.url);
-    if (!isProtected(pathname)) return next();
+    const protectedRoute = isProtected(pathname);
 
     if (import.meta.env.DEV) {
       context.locals.accessUser = { email: 'dev@local', sub: 'dev' };
@@ -33,9 +33,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     const teamDomain = (env as Record<string, string | undefined>).ACCESS_TEAM_DOMAIN;
     const aud = (env as Record<string, string | undefined>).ACCESS_AUD;
-    if (!teamDomain || !aud) {
-      return new Response('Access not configured (ACCESS_TEAM_DOMAIN / ACCESS_AUD missing).', { status: 500 });
-    }
 
     const token =
       context.request.headers.get('Cf-Access-Jwt-Assertion') ??
@@ -44,23 +41,33 @@ export const onRequest = defineMiddleware(async (context, next) => {
         ?.match(/(?:^|;\s*)CF_Authorization=([^;]+)/)?.[1] ??
       null;
 
-    if (!token) {
-      return new Response('Unauthorized', { status: 401 });
+    if (token && teamDomain && aud) {
+      try {
+        const { payload } = await jwtVerify(token, getJWKS(teamDomain), {
+          issuer: `https://${teamDomain}`,
+          audience: aud,
+        });
+        context.locals.accessUser = {
+          email: typeof payload.email === 'string' ? payload.email : 'unknown',
+          sub: typeof payload.sub === 'string' ? payload.sub : 'unknown',
+        };
+      } catch (e) {
+        if (protectedRoute) {
+          return new Response(`Forbidden: ${(e as Error).message}`, { status: 403 });
+        }
+      }
     }
 
-    try {
-      const { payload } = await jwtVerify(token, getJWKS(teamDomain), {
-        issuer: `https://${teamDomain}`,
-        audience: aud,
-      });
-      context.locals.accessUser = {
-        email: typeof payload.email === 'string' ? payload.email : 'unknown',
-        sub: typeof payload.sub === 'string' ? payload.sub : 'unknown',
-      };
-      return next();
-    } catch (e) {
-      return new Response(`Forbidden: ${(e as Error).message}`, { status: 403 });
+    if (protectedRoute) {
+      if (!teamDomain || !aud) {
+        return new Response('Access not configured (ACCESS_TEAM_DOMAIN / ACCESS_AUD missing).', { status: 500 });
+      }
+      if (!context.locals.accessUser) {
+        return new Response('Unauthorized', { status: 401 });
+      }
     }
+
+    return next();
   } catch (e) {
     return new Response(`Middleware error: ${(e as Error).message}\n${(e as Error).stack ?? ''}`, {
       status: 500,

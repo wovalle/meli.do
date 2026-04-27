@@ -21,6 +21,18 @@ if (publishResult && !publishResult.error) {
   return Astro.redirect(`/admin/${id}?status=published`);
 }
 
+const unpublishResult = Astro.getActionResult(actions.caseStudies.unpublish);
+if (unpublishResult && !unpublishResult.error) {
+  return Astro.redirect(`/admin/${id}?status=unpublished`);
+}
+
+const toggleFeaturedResult = Astro.getActionResult(actions.caseStudies.toggleFeatured);
+if (toggleFeaturedResult && !toggleFeaturedResult.error) {
+  return Astro.redirect(
+    `/admin/${id}?status=${toggleFeaturedResult.data.featured ? 'featured' : 'unfeatured'}`,
+  );
+}
+
 const deleteResult = Astro.getActionResult(actions.caseStudies.delete);
 if (deleteResult && !deleteResult.error) {
   return Astro.redirect(`/admin?status=deleted`);
@@ -79,15 +91,40 @@ const addErrMsg = addResult?.error?.message;
     </div>
 
     <div class="flex items-center gap-2">
-      <form method="POST" action={actions.caseStudies.publish}>
+      <form method="POST" action={actions.caseStudies.toggleFeatured}>
         <input type="hidden" name="id" value={study.id} />
         <button
           type="submit"
-          class="inline-flex items-center gap-2 rounded-md bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition"
+          title={study.featured ? 'Remove from featured' : 'Mark as featured'}
+          class={study.featured
+            ? 'inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 text-amber-900 px-3 py-2 text-sm font-medium hover:bg-amber-100 transition'
+            : 'inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white text-stone-700 px-3 py-2 text-sm font-medium hover:bg-stone-50 transition'}
         >
-          {study.status === 'published' ? 'Re-publish' : 'Publish'}
+          <span aria-hidden="true">{study.featured ? '★' : '☆'}</span>
+          {study.featured ? 'Featured' : 'Feature'}
         </button>
       </form>
+      {study.status === 'draft' ? (
+        <form method="POST" action={actions.caseStudies.publish}>
+          <input type="hidden" name="id" value={study.id} />
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 rounded-md bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition"
+          >
+            Publish
+          </button>
+        </form>
+      ) : (
+        <form method="POST" action={actions.caseStudies.unpublish}>
+          <input type="hidden" name="id" value={study.id} />
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 rounded-md border border-stone-300 bg-white text-stone-700 px-4 py-2 text-sm font-medium hover:bg-stone-50 transition"
+          >
+            Unpublish
+          </button>
+        </form>
+      )}
       <form method="POST" action={actions.caseStudies.delete} onsubmit="return confirm('Delete this case study and all its blocks?')">
         <input type="hidden" name="id" value={study.id} />
         <button type="submit" class="rounded-md border border-red-300 bg-red-50 text-red-800 px-3 py-2 text-sm font-medium hover:bg-red-100 transition">

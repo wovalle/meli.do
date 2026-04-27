@@ -82,7 +82,12 @@ export const server = {
         const db = getDb();
         const id = nanoid();
         const slug = await uniqueSlug(db, slugify(title));
-        await db.insert(caseStudies).values({ id, slug, title }).run();
+        const maxRow = await db
+          .select({ max: sql<number>`COALESCE(MAX(${caseStudies.sortOrder}), -1)` })
+          .from(caseStudies)
+          .get();
+        const sortOrder = (maxRow?.max ?? -1) + 1;
+        await db.insert(caseStudies).values({ id, slug, title, sortOrder }).run();
         return { id };
       },
     }),
@@ -128,6 +133,93 @@ export const server = {
           .where(eq(caseStudies.id, id))
           .run();
         return { id };
+      },
+    }),
+
+    unpublish: defineAction({
+      accept: 'form',
+      input: z.object({ id: z.string().min(1) }),
+      handler: async ({ id }) => {
+        const db = getDb();
+        await db
+          .update(caseStudies)
+          .set({ status: 'draft', updatedAt: new Date() })
+          .where(eq(caseStudies.id, id))
+          .run();
+        return { id };
+      },
+    }),
+
+    toggleFeatured: defineAction({
+      accept: 'form',
+      input: z.object({ id: z.string().min(1) }),
+      handler: async ({ id }) => {
+        const db = getDb();
+        const current = await db
+          .select({ featured: caseStudies.featured })
+          .from(caseStudies)
+          .where(eq(caseStudies.id, id))
+          .get();
+        if (!current) {
+          throw new ActionError({ code: 'NOT_FOUND', message: 'Case study not found' });
+        }
+        const next = !current.featured;
+        await db
+          .update(caseStudies)
+          .set({ featured: next, updatedAt: new Date() })
+          .where(eq(caseStudies.id, id))
+          .run();
+        return { id, featured: next };
+      },
+    }),
+
+    move: defineAction({
+      accept: 'form',
+      input: z.object({
+        id: z.string().min(1),
+        direction: z.enum(['up', 'down']),
+      }),
+      handler: async ({ id, direction }) => {
+        const db = getDb();
+        const current = await db.select().from(caseStudies).where(eq(caseStudies.id, id)).get();
+        if (!current) {
+          throw new ActionError({ code: 'NOT_FOUND', message: 'Case study not found' });
+        }
+        const neighbor = await (direction === 'up'
+          ? db
+              .select()
+              .from(caseStudies)
+              .where(
+                and(
+                  eq(caseStudies.featured, current.featured),
+                  sql`${caseStudies.sortOrder} < ${current.sortOrder}`,
+                ),
+              )
+              .orderBy(desc(caseStudies.sortOrder))
+              .limit(1)
+          : db
+              .select()
+              .from(caseStudies)
+              .where(
+                and(
+                  eq(caseStudies.featured, current.featured),
+                  sql`${caseStudies.sortOrder} > ${current.sortOrder}`,
+                ),
+              )
+              .orderBy(asc(caseStudies.sortOrder))
+              .limit(1)
+        ).get();
+
+        if (!neighbor) {
+          return { id, swapped: false };
+        }
+
+        await db.batch([
+          db.update(caseStudies).set({ sortOrder: neighbor.sortOrder }).where(eq(caseStudies.id, current.id)),
+          db.update(caseStudies).set({ sortOrder: current.sortOrder }).where(eq(caseStudies.id, neighbor.id)),
+        ]);
+
+        return { id, swapped: true };
       },
     }),
   },

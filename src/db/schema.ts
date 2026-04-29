@@ -9,6 +9,8 @@ export const caseStudies = sqliteTable(
     title: text('title').notNull(),
     summary: text('summary'),
     status: text('status', { enum: ['draft', 'published'] }).notNull().default('draft'),
+    featured: integer('featured', { mode: 'boolean' }).notNull().default(false),
+    sortOrder: integer('sort_order').notNull().default(0),
     createdAt: integer('created_at', { mode: 'timestamp_ms' })
       .notNull()
       .default(sql`(unixepoch() * 1000)`),

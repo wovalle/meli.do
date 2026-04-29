@@ -11,7 +11,7 @@ const published = await db
   .select()
   .from(caseStudies)
   .where(eq(caseStudies.status, 'published'))
-  .orderBy(desc(caseStudies.publishedAt))
+  .orderBy(desc(caseStudies.featured), asc(caseStudies.sortOrder), desc(caseStudies.publishedAt))
   .all();
 
 const studyIds = published.map((s) => s.id);

@@ -1,6 +1,6 @@
 ---
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, and, asc, desc } from 'drizzle-orm';
+import { eq, asc, desc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
@@ -14,10 +14,11 @@ const { slug } = Astro.params as { slug: string };
 const study = await db
   .select()
   .from(caseStudies)
-  .where(and(eq(caseStudies.slug, slug), eq(caseStudies.status, 'published')))
+  .where(eq(caseStudies.slug, slug))
   .get();
 
-if (!study) {
+const isPreview = !!Astro.locals.accessUser;
+if (!study || (study.status !== 'published' && !isPreview)) {
   return new Response(null, { status: 404 });
 }
 
@@ -41,10 +42,27 @@ const prev = idx > 0 ? allPublished[idx - 1] : null;
 const next = idx >= 0 && idx < allPublished.length - 1 ? allPublished[idx + 1] : null;
 
 const description = study.summary ?? `Case study by Melissa Encarnacion — ${study.title}`;
+const isDraft = study.status !== 'published';
 
-Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
+if (isDraft) {
+  Astro.response.headers.set('cache-control', 'private, no-store');
+} else {
+  Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
+}
 ---
 <PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description}>
+
+  {isDraft && (
+    <div class="bg-amber-100 border-b border-amber-300 text-amber-950">
+      <div class="max-w-shell mx-auto px-6 lg:px-10 py-3 flex flex-wrap items-center justify-between gap-3 text-sm">
+        <div class="flex items-center gap-2 font-medium">
+          <span class="inline-flex rounded-full bg-amber-600 text-white px-2 py-0.5 text-[11px] uppercase tracking-wider">Draft</span>
+          <span>Preview only — not published. Visible because you're signed in.</span>
+        </div>
+        <a href={`/admin/${study.id}`} class="underline underline-offset-2 hover:text-amber-700">Edit in admin →</a>
+      </div>
+    </div>
+  )}
 
   <article class="pt-12 lg:pt-20 pb-20 lg:pb-28">
     <header class="max-w-shell mx-auto px-6 lg:px-10 mb-12 lg:mb-20">

@@ -1,7 +1,7 @@
 ---
 import { actions } from 'astro:actions';
 import { drizzle } from 'drizzle-orm/d1';
-import { desc } from 'drizzle-orm';
+import { desc, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { caseStudies } from '../../db/schema';
@@ -21,13 +21,38 @@ if (deleteResult && !deleteResult.error) {
 
 const publishResult = Astro.getActionResult(actions.caseStudies.publish);
 if (publishResult && !publishResult.error) {
-  return Astro.redirect(`/admin/${publishResult.data.id}?status=published`);
+  return Astro.redirect(`/admin?status=published`);
+}
+
+const unpublishResult = Astro.getActionResult(actions.caseStudies.unpublish);
+if (unpublishResult && !unpublishResult.error) {
+  return Astro.redirect(`/admin?status=unpublished`);
+}
+
+const toggleFeaturedResult = Astro.getActionResult(actions.caseStudies.toggleFeatured);
+if (toggleFeaturedResult && !toggleFeaturedResult.error) {
+  return Astro.redirect(
+    `/admin?status=${toggleFeaturedResult.data.featured ? 'featured' : 'unfeatured'}`,
+  );
+}
+
+const moveResult = Astro.getActionResult(actions.caseStudies.move);
+if (moveResult && !moveResult.error) {
+  return Astro.redirect(`/admin?status=moved`);
 }
 
 const createError =
   createResult?.error?.fields?.title?.[0] ?? createResult?.error?.message ?? null;
 
-const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.updatedAt)).all();
+const studies = await db
+  .select()
+  .from(caseStudies)
+  .orderBy(desc(caseStudies.featured), asc(caseStudies.sortOrder), desc(caseStudies.updatedAt))
+  .all();
+
+const featuredCount = studies.filter((s) => s.featured).length;
+const isFirstInBucket = (idx: number) => idx === 0 || idx === featuredCount;
+const isLastInBucket = (idx: number) => idx === featuredCount - 1 || idx === studies.length - 1;
 ---
 <AdminLayout title="Case studies">
   <div class="flex items-center justify-between mb-6">
@@ -66,6 +91,8 @@ const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.upd
       <table class="w-full text-sm">
         <thead class="text-left text-xs uppercase tracking-wide text-stone-500 border-b border-stone-200">
           <tr>
+            <th class="px-3 py-3 font-medium w-8" aria-label="Featured">★</th>
+            <th class="px-3 py-3 font-medium w-20">Order</th>
             <th class="px-4 py-3 font-medium">Title</th>
             <th class="px-4 py-3 font-medium">Slug</th>
             <th class="px-4 py-3 font-medium">Status</th>
@@ -74,8 +101,46 @@ const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.upd
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
-          {studies.map((s) => (
+          {studies.map((s, idx) => (
               <tr>
+                <td class="px-3 py-3">
+                  <form method="POST" action={actions.caseStudies.toggleFeatured}>
+                    <input type="hidden" name="id" value={s.id} />
+                    <button
+                      type="submit"
+                      title={s.featured ? 'Remove from featured' : 'Mark as featured'}
+                      class={s.featured
+                        ? 'text-amber-500 hover:text-amber-600 transition'
+                        : 'text-stone-300 hover:text-amber-500 transition'}
+                    >
+                      {s.featured ? '★' : '☆'}
+                    </button>
+                  </form>
+                </td>
+                <td class="px-3 py-3">
+                  <div class="flex items-center gap-1">
+                    <form method="POST" action={actions.caseStudies.move}>
+                      <input type="hidden" name="id" value={s.id} />
+                      <input type="hidden" name="direction" value="up" />
+                      <button
+                        type="submit"
+                        disabled={isFirstInBucket(idx)}
+                        class="rounded-md border border-stone-200 bg-white text-stone-700 w-7 h-7 text-xs hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        aria-label="Move up"
+                      >↑</button>
+                    </form>
+                    <form method="POST" action={actions.caseStudies.move}>
+                      <input type="hidden" name="id" value={s.id} />
+                      <input type="hidden" name="direction" value="down" />
+                      <button
+                        type="submit"
+                        disabled={isLastInBucket(idx)}
+                        class="rounded-md border border-stone-200 bg-white text-stone-700 w-7 h-7 text-xs hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        aria-label="Move down"
+                      >↓</button>
+                    </form>
+                  </div>
+                </td>
                 <td class="px-4 py-3">
                   <a href={`/admin/${s.id}`} class="font-medium text-stone-900 hover:underline">{s.title}</a>
                 </td>
@@ -90,11 +155,18 @@ const studies = await db.select().from(caseStudies).orderBy(desc(caseStudies.upd
                 <td class="px-4 py-3 text-stone-600">{formatDateTime(s.updatedAt)}</td>
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-2">
-                    {s.status === 'draft' && (
+                    {s.status === 'draft' ? (
                       <form method="POST" action={actions.caseStudies.publish}>
                         <input type="hidden" name="id" value={s.id} />
                         <button type="submit" class="rounded-md border border-emerald-300 bg-emerald-50 text-emerald-900 px-2.5 py-1 text-xs font-medium hover:bg-emerald-100 transition">
                           Publish
+                        </button>
+                      </form>
+                    ) : (
+                      <form method="POST" action={actions.caseStudies.unpublish}>
+                        <input type="hidden" name="id" value={s.id} />
+                        <button type="submit" class="rounded-md border border-stone-300 bg-white text-stone-700 px-2.5 py-1 text-xs font-medium hover:bg-stone-100 transition">
+                          Unpublish
                         </button>
                       </form>
                     )}

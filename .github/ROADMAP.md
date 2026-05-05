@@ -31,6 +31,11 @@ Cost: $0/mo within CF + Access free tiers.
 
 Each phase = one PR. Comment here when a PR opens/lands. Check the box when merged.
 
+## Source Sites (P4a migration targets)
+
+- **Wix portfolio**: https://melissaencarnacion8.wixsite.com/mellen-portfolio/portfolio (16 projects)
+- **Behance**: https://www.behance.net/melissaencaa0c
+
 ## Out of scope (v1)
 
 Revision history, scheduled publishing, i18n, contact form submissions, collaborators, image crop controls, AI alt-text.

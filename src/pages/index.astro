@@ -23,6 +23,7 @@ const firstBlocks = studyIds.length
       .all()
   : [];
 const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
+const featuredCount = published.filter((s) => s.featured).length;
 
 const cardColors = ['butter', 'coral', 'mint', 'sky'];
 
@@ -147,7 +148,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink">— selected work</div>
           <h2 class="font-display text-[44px] lg:text-[88px] leading-[0.95]">
             {published.length > 0 ? (
-              <>{published.length} {published.length === 1 ? 'love letter' : 'love letters'}<br/>to the <span class="italic">DR</span>.</>
+              <>{featuredCount} {featuredCount === 1 ? ' love letter' : ' love letters'}<br/>to the <span class="italic">DR</span>.</>
             ) : (
               <>Work coming<br/><span class="italic">soon</span>.</>
             )}

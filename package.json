@@ -13,7 +13,11 @@
     "db:migrate:local": "wrangler d1 migrations apply meli-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply meli-db --remote",
     "setup:access": "node scripts/setup-access.mjs",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "import:wix": "node scripts/import-wix.mjs",
+    "import:wix:dry": "node scripts/import-wix.mjs --dry-run",
+    "import:behance": "node scripts/import-behance.mjs",
+    "import:behance:dry": "node scripts/import-behance.mjs --dry-run"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.2.1",

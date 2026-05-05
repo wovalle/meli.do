@@ -25,11 +25,16 @@ Cost: $0/mo within CF + Access free tiers.
 - [ ] **P3 — Merge winning design**: port `current.html` (Nav/Hero/Marquee/About/WorkGrid/Playlist/Contact/Footer) to Astro components. Work section dynamic from D1. Admin keeps neutral wireframe look.
 - [ ] **P4a — Data migration**: `scripts/import-behance.mjs` + `scripts/import-wix.mjs` → R2 + D1 drafts. Melissa curates + publishes via admin.
 - [ ] **P4b — UI polish**: lazy-load, prev/next nav, 404 page, a11y (alt text enforced, keyboard nav), toasts, orphan R2 cleanup cron.
-- [ ] **P5 — SEO + AI + custom domain**: `meli.do` DNS, sitemap, `robots.txt` (allow GPTBot/ClaudeBot/CCBot/PerplexityBot/Google-Extended), OG/Twitter/JSON-LD, CF Web Analytics, submit to GSC.
+- [ ] **P5 — SEO + AI + custom domain**: `mellen.do` DNS, sitemap, `robots.txt` (allow GPTBot/ClaudeBot/CCBot/PerplexityBot/Google-Extended), OG/Twitter/JSON-LD, CF Web Analytics, submit to GSC.
 
 ## Progress
 
 Each phase = one PR. Comment here when a PR opens/lands. Check the box when merged.
+
+## Source Sites (P4a migration targets)
+
+- **Wix portfolio**: https://melissaencarnacion8.wixsite.com/mellen-portfolio/portfolio (16 projects)
+- **Behance**: https://www.behance.net/melissaencaa0c
 
 ## Out of scope (v1)
 

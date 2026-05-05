@@ -93,6 +93,8 @@ async function ensureApp(group) {
       `${DOMAIN}/api`,
       `*-${DOMAIN}/admin`,
       `*-${DOMAIN}/api`,
+      'mellen.do/admin',
+      'mellen.do/api',
     ],
     type: 'self_hosted',
     session_duration: '24h',

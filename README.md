@@ -1,4 +1,4 @@
-# meli.do
+# mellen.do
 
 Portfolio CMS for Melissa Encarnacion (Art Director). Astro 6 + Cloudflare (Workers + D1 + R2 + Access).
 
@@ -70,7 +70,7 @@ npm run db:migrate:remote        # or :local for local dev
 export CF_API_TOKEN=...          # scopes: Access:Edit, Workers:Edit, D1:Edit, R2:Edit
 export CF_ACCOUNT_ID=d5705803ba3e46be8c7b0566e47ff7d6
 export ACCESS_EMAILS=hey@willy.im,melissa@example.com
-export MELIDO_DOMAIN=meli-do.<your-subdomain>.workers.dev
+export MELIDO_DOMAIN=mellen.do   # or meli-do.<subdomain>.workers.dev for workers.dev
 npm run setup:access
 ```
 

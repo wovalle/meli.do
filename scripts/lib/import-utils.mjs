@@ -34,7 +34,7 @@ export async function downloadImage(url, destPath) {
 }
 
 export function uploadToR2(localPath, key, mime, dryRun = false) {
-  const cmd = `npx wrangler r2 object put "meli-do-images/${key}" --file "${localPath}" --content-type "${mime}"`;
+  const cmd = `npx wrangler r2 object put "meli-do-images/${key}" --file "${localPath}" --content-type "${mime}" --remote`;
   if (dryRun) {
     console.log(`    [dry] r2 put → ${key}`);
     return;

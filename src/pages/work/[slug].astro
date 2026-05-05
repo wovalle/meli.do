@@ -42,6 +42,16 @@ const prev = idx > 0 ? allPublished[idx - 1] : null;
 const next = idx >= 0 && idx < allPublished.length - 1 ? allPublished[idx + 1] : null;
 
 const description = study.summary ?? `Case study by Melissa Encarnacion — ${study.title}`;
+
+// Build srcset from R2 key.
+// Main key uses original format; @800/@400 variants are .webp (from Wix/Behance transforms).
+function imgSrcset(key: string): string {
+  const dot = key.lastIndexOf('.');
+  const ext = key.slice(dot + 1);
+  if (ext === 'gif') return `/images/${key}`;
+  const base = key.slice(0, dot);
+  return `/images/${base}@400.webp 400w, /images/${base}@800.webp 800w, /images/${key} 1600w`;
+}
 const isDraft = study.status !== 'published';
 
 if (isDraft) {
@@ -92,15 +102,15 @@ if (isDraft) {
           b.layout === 'pair' && b.imageRKey ? (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
               <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-                <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} alt={b.altL} loading="lazy" />
+                <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={b.altL} loading="lazy" decoding="async" />
               </div>
               <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-                <img class="w-full h-auto block" src={`/images/${b.imageRKey}`} alt={b.altR ?? ''} loading="lazy" />
+                <img class="w-full h-auto block" src={`/images/${b.imageRKey}`} srcset={imgSrcset(b.imageRKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={b.altR ?? ''} loading="lazy" decoding="async" />
               </div>
             </div>
           ) : (
             <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-              <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} alt={b.altL} loading="lazy" />
+              <img class="w-full h-auto block" src={`/images/${b.imageLKey}`} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 1280px) 100vw, 1200px" alt={b.altL} loading="lazy" decoding="async" />
             </div>
           )
         ))}

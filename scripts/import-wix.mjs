@@ -92,25 +92,38 @@ function parseSummary(html) {
   return '';
 }
 
+// Widths to import; GIFs are uploaded once at original size
+const WIDTHS = [1600, 800, 400];
+
 function parseImageUrls(html) {
   const pattern = new RegExp(
     `https://static\\.wixstatic\\.com/media/(${MEDIA_PREFIX}[^~"'\\s<>?]+)~mv2\\.(jpg|jpeg|png|webp|gif)`,
     'gi'
   );
-  // Dedupe by image hash; prefer gif > png > jpg > webp (preserve animations)
   const EXT_RANK = { gif: 0, png: 1, jpg: 2, jpeg: 2, webp: 3 };
-  const byHash = new Map(); // hash → { url, ext }
+  const byHash = new Map();
   let m;
   while ((m = pattern.exec(html)) !== null) {
     const hash = m[1];
     const ext = m[2].toLowerCase();
-    const url = `https://static.wixstatic.com/media/${hash}~mv2.${ext}`;
     const existing = byHash.get(hash);
     if (!existing || (EXT_RANK[ext] ?? 99) < (EXT_RANK[existing.ext] ?? 99)) {
-      byHash.set(hash, { url, ext });
+      byHash.set(hash, { hash, ext });
     }
   }
-  return [...byHash.values()].map((v) => v.url);
+  return [...byHash.values()];
+}
+
+// Wix CDN transform URL — h_9999 constrains width only; enc_webp for smaller sizes
+// Full-size (index 0): original format (often smaller than webp at full res)
+// Smaller sizes: webp for better compression
+function wixUrl(hash, origExt, width, isFullSize) {
+  if (origExt === 'gif') return `https://static.wixstatic.com/media/${hash}~mv2.gif`;
+  if (isFullSize) {
+    // Original at full resolution — no transform needed
+    return `https://static.wixstatic.com/media/${hash}~mv2.${origExt}`;
+  }
+  return `https://static.wixstatic.com/media/${hash}~mv2.${origExt}/v1/fill/w_${width},h_9999,q_85,enc_webp/${hash}~mv2.webp`;
 }
 
 function buildInsertSQL(study, blocks) {
@@ -174,27 +187,51 @@ async function processProject(url) {
 
   const blocks = [];
   for (let i = 0; i < imageUrls.length; i++) {
-    const imgUrl = imageUrls[i];
-    const ext = detectExt(imgUrl);
+    const { hash, ext: origExt } = imageUrls[i];
+    const isGif = origExt === 'gif';
     const blockId = nanoid();
-    const r2Key = `${caseStudyId}/${blockId}.${ext}`;
-    const localPath = path.join(projectTmp, `${i}.${ext}`);
+    // Main key uses original ext; @800/@400 variants are .webp
+    const r2Key = `${caseStudyId}/${blockId}.${origExt}`;
 
-    console.log(`  [${i + 1}/${imageUrls.length}] ${imgUrl.split('/').pop()}`);
+    console.log(`  [${i + 1}/${imageUrls.length}] ${hash.slice(-8)}.${origExt}${isGif ? ' (gif, no resize)' : ''}`);
 
     if (!DRY_RUN) {
-      try {
-        await downloadImage(imgUrl, localPath);
-      } catch (err) {
-        console.warn(`    SKIP image — ${err.message}`);
-        continue;
+      let mainUploaded = false;
+      // GIFs: single upload; raster: full original + webp variants at 800w/400w
+      const variants = isGif
+        ? [{ suffix: '', w: 0, ext: 'gif', isFullSize: true }]
+        : [
+            { suffix: '',     w: WIDTHS[0], ext: origExt, isFullSize: true  },
+            { suffix: '@800', w: 800,       ext: 'webp',  isFullSize: false },
+            { suffix: '@400', w: 400,       ext: 'webp',  isFullSize: false },
+          ];
+
+      for (const { suffix, w, ext: varExt, isFullSize } of variants) {
+        const srcUrl = isGif
+          ? `https://static.wixstatic.com/media/${hash}~mv2.gif`
+          : wixUrl(hash, origExt, w, isFullSize);
+        const variantKey = `${caseStudyId}/${blockId}${suffix}.${varExt}`;
+        const localPath = path.join(projectTmp, `${i}${suffix}.${varExt}`);
+        // Main key is always the first (no suffix)
+        const isMain = suffix === '';
+        try {
+          await downloadImage(srcUrl, localPath);
+          uploadToR2(localPath, variantKey, detectMime(varExt), DRY_RUN);
+          if (isMain) mainUploaded = true;
+        } catch (err) {
+          console.warn(`    SKIP ${suffix || 'main'} — ${err.message}`);
+        }
+        await sleep(150);
       }
+      if (!mainUploaded) continue;
+      // r2Key is the main key (no suffix, original ext)
+    } else {
+      const variants = isGif ? ['(gif)'] : [`main.${origExt}`, '800w.webp', '400w.webp'];
+      console.log(`    [dry] r2 put ${variants.join(', ')} → ${caseStudyId}/${blockId}`);
     }
 
-    uploadToR2(localPath, r2Key, detectMime(ext), DRY_RUN);
     blocks.push({ id: blockId, position: i, imageLKey: r2Key });
-
-    await sleep(200);
+    await sleep(100);
   }
 
   return { id: caseStudyId, slug, title, summary, blocks };

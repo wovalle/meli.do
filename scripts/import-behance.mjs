@@ -37,9 +37,15 @@ const SQL_FILE = path.join(process.cwd(), 'tmp', 'import-behance.sql');
 const DRY_RUN = process.argv.includes('--dry-run');
 const REMOTE = !process.argv.includes('--local');
 
-// Behance CDN size segments to upgrade to full-size webp
+// Behance size variants mapped to our responsive widths.
+// Confirmed working (2026-05): fs_webp (full webp), 1400 (orig format ~1400px), disp (orig format smaller).
+// max_*_webp variants 302→CDN→404. Stored keys all use .webp ext; browsers render by content sniff.
+const BEHANCE_SIZES = [
+  { width: 1600, size: 'fs_webp' },
+  { width: 800,  size: '1400'    },
+  { width: 400,  size: 'disp'    },
+];
 const SIZE_PATTERN = /\/project_modules\/[^/]+\//;
-const FULL_SIZE = '/project_modules/fs_webp/';
 
 async function fetchHtml(url) {
   const resp = await fetch(url, {
@@ -67,32 +73,33 @@ function parseSummary(html) {
 }
 
 function parseImageUrls(html) {
-  // Match all Behance CDN image URLs regardless of size variant
-  const pattern = /https:\/\/mir-s3-cdn-cf\.behance\.net\/project_modules\/[^"'\s<>]+\.(?:jpg|jpeg|png|webp|gif)/gi;
+  // Match any size variant — we extract the hash+ext and build all sizes ourselves
+  const pattern = /https:\/\/mir-s3-cdn-cf\.behance\.net\/project_modules\/[^/]+\/([^"'\s<>]+\.(?:jpg|jpeg|png|webp|gif))/gi;
   const seen = new Set();
-  const urls = [];
+  const images = [];
   let m;
   while ((m = pattern.exec(html)) !== null) {
-    // Upgrade to full-size variant
-    const upgraded = m[0].replace(SIZE_PATTERN, FULL_SIZE);
-    if (!seen.has(upgraded)) {
-      seen.add(upgraded);
-      urls.push({ original: m[0], full: upgraded });
+    const filename = m[1]; // e.g. "6f22aa231578247.68d6abb0e599d.png"
+    if (!seen.has(filename)) {
+      seen.add(filename);
+      images.push(filename);
     }
   }
-  return urls;
+  return images;
 }
 
-async function tryUrl(full, original) {
-  // Try full-size first, fall back to original if 404
-  for (const url of [full, original]) {
-    const resp = await fetch(url, {
-      method: 'HEAD',
-      headers: { 'User-Agent': 'Mozilla/5.0' },
-    });
-    if (resp.ok) return url;
-  }
-  return null;
+function behanceUrl(filename, size) {
+  return `https://mir-s3-cdn-cf.behance.net/project_modules/${size}/${filename}`;
+}
+
+async function resolveUrl(filename, size, fallbackSize) {
+  const url = behanceUrl(filename, size);
+  const resp = await fetch(url, { method: 'HEAD', headers: { 'User-Agent': 'Mozilla/5.0' } });
+  if (resp.ok) return url;
+  const fallbackUrl = behanceUrl(filename, fallbackSize);
+  const resp2 = await fetch(fallbackUrl, { method: 'HEAD', headers: { 'User-Agent': 'Mozilla/5.0' } });
+  if (resp2.ok) return fallbackUrl;
+  return behanceUrl(filename, 'fs_webp');
 }
 
 function buildInsertSQL(study, blocks) {
@@ -129,20 +136,20 @@ async function processProject(projectUrl) {
 
   const title = parseTitle(html);
   const summary = parseSummary(html);
-  const imageEntries = parseImageUrls(html);
+  const imageFilenames = parseImageUrls(html);
 
   if (!title) {
     console.warn('  SKIP — could not extract title');
     return null;
   }
 
-  if (imageEntries.length === 0) {
+  if (imageFilenames.length === 0) {
     console.warn('  SKIP — no images found');
     return null;
   }
 
   const slug = slugify(title);
-  console.log(`  title: "${title}"  slug: "${slug}"  images: ${imageEntries.length}`);
+  console.log(`  title: "${title}"  slug: "${slug}"  images: ${imageFilenames.length}`);
 
   const exists = checkSlugExists(slug, REMOTE);
   if (exists) {
@@ -155,34 +162,47 @@ async function processProject(projectUrl) {
   mkdirSync(projectTmp, { recursive: true });
 
   const blocks = [];
-  for (let i = 0; i < imageEntries.length; i++) {
-    const { full, original } = imageEntries[i];
+  for (let i = 0; i < imageFilenames.length; i++) {
+    const filename = imageFilenames[i];
+    const origExt = detectExt(filename);
+    const isGif = origExt === 'gif';
     const blockId = nanoid();
+    // Behance webp variants are already webp; non-webp keep original ext
+    const storeExt = isGif ? 'gif' : 'webp';
+    const r2Key = `${caseStudyId}/${blockId}.${storeExt}`;
 
-    let resolvedUrl = full;
-    if (!DRY_RUN) {
-      resolvedUrl = await tryUrl(full, original) ?? original;
-    }
-
-    const ext = detectExt(resolvedUrl);
-    const r2Key = `${caseStudyId}/${blockId}.${ext}`;
-    const localPath = path.join(projectTmp, `${i}.${ext}`);
-
-    console.log(`  [${i + 1}/${imageEntries.length}] ${resolvedUrl.split('/').pop()}`);
+    console.log(`  [${i + 1}/${imageFilenames.length}] ${filename}${isGif ? ' (gif)' : ''}`);
 
     if (!DRY_RUN) {
-      try {
-        await downloadImage(resolvedUrl, localPath);
-      } catch (err) {
-        console.warn(`    SKIP image — ${err.message}`);
-        continue;
+      const sizesToFetch = isGif
+        ? [{ width: 0, size: 'fs' }]
+        : BEHANCE_SIZES;
+
+      let mainUploaded = false;
+      for (const { width, size } of sizesToFetch) {
+        const suffix = isGif || width === BEHANCE_SIZES[0].width ? '' : `@${width}`;
+        const variantKey = r2Key.replace(`.${storeExt}`, `${suffix}.${storeExt}`);
+        const localPath = path.join(projectTmp, `${i}${suffix}.${storeExt}`);
+        const srcUrl = isGif
+          ? behanceUrl(filename, 'fs')
+          : await resolveUrl(filename, size, 'max_1400_webp');
+        try {
+          await downloadImage(srcUrl, localPath);
+          uploadToR2(localPath, variantKey, detectMime(storeExt), DRY_RUN);
+          if (!mainUploaded) mainUploaded = true;
+        } catch (err) {
+          console.warn(`    SKIP ${width}w — ${err.message}`);
+        }
+        await sleep(200);
       }
+      if (!mainUploaded) continue;
+    } else {
+      const variants = isGif ? ['(gif)'] : BEHANCE_SIZES.map((s, j) => `${s.width}w${j === 0 ? ' [main]' : ''}`);
+      console.log(`    [dry] r2 put ${variants.join(', ')} → ${r2Key}`);
     }
 
-    uploadToR2(localPath, r2Key, detectMime(ext), DRY_RUN);
     blocks.push({ id: blockId, position: i, imageLKey: r2Key });
-
-    await sleep(300);
+    await sleep(100);
   }
 
   return { id: caseStudyId, slug, title, summary, blocks };

@@ -8,7 +8,18 @@ export const GET: APIRoute = async ({ params }) => {
   if (!key) return new Response('Not found', { status: 404 });
 
   const obj = await (env as { BUCKET: R2Bucket }).BUCKET.get(key);
-  if (!obj) return new Response('Not found', { status: 404 });
+  if (!obj) {
+    if (import.meta.env.DEV) {
+      const upstream = await fetch(`https://mellen.do/images/${key}`);
+      if (upstream.ok) {
+        const headers = new Headers();
+        headers.set('content-type', upstream.headers.get('content-type') ?? 'application/octet-stream');
+        headers.set('cache-control', 'public, max-age=300');
+        return new Response(upstream.body, { headers });
+      }
+    }
+    return new Response('Not found', { status: 404 });
+  }
 
   const headers = new Headers();
   headers.set('content-type', obj.httpMetadata?.contentType ?? 'application/octet-stream');

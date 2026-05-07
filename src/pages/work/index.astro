@@ -1,0 +1,364 @@
+---
+import { drizzle } from 'drizzle-orm/d1';
+import { eq, desc, inArray, and, asc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import { caseStudies, blocks } from '../../db/schema';
+
+export const prerender = false;
+
+const db = drizzle((env as { db: D1Database }).db);
+
+const published = await db
+  .select()
+  .from(caseStudies)
+  .where(eq(caseStudies.status, 'published'))
+  .orderBy(desc(caseStudies.featured), asc(caseStudies.sortOrder), desc(caseStudies.publishedAt))
+  .all();
+
+const studyIds = published.map((s) => s.id);
+const firstBlocks = studyIds.length
+  ? await db
+      .select()
+      .from(blocks)
+      .where(and(inArray(blocks.caseStudyId, studyIds), eq(blocks.position, 0)))
+      .all()
+  : [];
+const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
+
+const featured = published.filter((s) => s.featured);
+const rest = published.filter((s) => !s.featured);
+
+function imgSrcset(key: string): string {
+  const dot = key.lastIndexOf('.');
+  const ext = key.slice(dot + 1);
+  if (ext === 'gif') return `/images/${key}`;
+  const base = key.slice(0, dot);
+  return `/images/${base}@400.webp 400w, /images/${base}@800.webp 800w, /images/${key} 1600w`;
+}
+
+function fmtDate(ts: number | null): string {
+  if (!ts) return '';
+  return new Date(ts).toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+}
+
+const site = (Astro.site ?? Astro.url).toString().replace(/\/$/, '');
+const itemListJson = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Selected Work — Melissa Encarnación',
+  description: 'Brand and editorial design case studies by Melissa Encarnación, Dominican Art Director.',
+  url: `${site}/work`,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: published.length,
+    itemListElement: published.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${site}/work/${s.slug}`,
+      name: s.title,
+    })),
+  },
+};
+
+const cardColors = ['butter', 'coral', 'mint', 'sky', 'lavender'];
+
+Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
+---
+
+<PublicLayout
+  title="Selected Work — Melissa Encarnación"
+  description="A curated selection of brand, editorial and digital design case studies by Dominican Art Director Melissa Encarnación."
+  ogType="website"
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(itemListJson)} />
+
+  <!-- Header -->
+  <section class="relative pt-16 lg:pt-24 pb-12 lg:pb-16 overflow-hidden">
+    <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+
+      <svg class="absolute -top-2 right-[8%] float-a opacity-80" width="56" height="56" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF1493" />
+      </svg>
+      <svg class="absolute top-[55%] -left-4 float-b opacity-70" width="64" height="64" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="#FF7F50" stroke-width="3" stroke-dasharray="4 6" />
+      </svg>
+      <svg class="absolute top-[12%] right-[38%] float-c opacity-60" width="36" height="36" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M24 6 Q 30 22 42 24 Q 30 26 24 42 Q 18 26 6 24 Q 18 22 24 6 Z" fill="#FFE484" />
+      </svg>
+      <svg class="absolute bottom-[8%] right-[2%] float-a opacity-50" width="28" height="28" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="animation-delay:-2s">
+        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="none" stroke="#1A2B4A" stroke-width="2" />
+      </svg>
+
+      <div class="grid grid-cols-12 gap-6 lg:gap-10 items-end">
+        <div class="col-span-12 lg:col-span-7">
+          <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink soft-up">— selected work</div>
+          <h1 class="font-display text-[56px] sm:text-[88px] lg:text-[120px] leading-[0.92] tracking-[-0.02em] mt-2 soft-up d-100">
+            <span class="italic">a tiny</span> archive ✦
+          </h1>
+        </div>
+        <div class="col-span-12 lg:col-span-5 max-w-[44ch] text-[16px] lg:text-[18px] leading-[1.6] text-navy/80 soft-up d-200">
+          <p>
+            {published.length === 0
+              ? "New case studies are baking in the studio. While the archive fills up, peek at sketches, snippets, and unreleased bits over on Behance and Instagram."
+              : `${published.length} project${published.length === 1 ? '' : 's'} — brand systems, editorial, and digital work shaped over the last decade. Pick one and dig in.`}
+          </p>
+          {published.length > 0 && (
+            <div class="mt-5 flex flex-wrap items-center gap-3 text-[12px] uppercase tracking-wider text-navy/60">
+              <span class="bg-cream rounded-pill px-3 py-1">Brand</span>
+              <span class="bg-cream rounded-pill px-3 py-1">Editorial</span>
+              <span class="bg-cream rounded-pill px-3 py-1">Digital</span>
+              <span class="bg-cream rounded-pill px-3 py-1">Art Direction</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {published.length === 0 ? (
+    <section class="pb-24 lg:pb-32 relative">
+      <svg class="absolute top-[6%] right-[6%] float-b opacity-50 hidden md:block" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="18" fill="none" stroke="#1A2B4A" stroke-width="2" stroke-dasharray="3 5" />
+      </svg>
+      <svg class="absolute bottom-[14%] left-[4%] float-c opacity-60 hidden md:block" width="32" height="32" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#B8E6D0" />
+      </svg>
+      <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
+
+        <div class="relative rounded-xxl bg-cream/80 glassy border border-navy/10 overflow-hidden p-8 lg:p-12">
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 mb-10 lg:mb-12" aria-hidden="true">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div class={`relative rounded-xxl aspect-[4/5] bg-${cardColors[i % cardColors.length]}/60 overflow-hidden skeleton`} style={`--delay:${i * 120}ms`}>
+                <div class="absolute inset-0 shimmer"></div>
+                <div class="absolute bottom-3 left-3 right-3">
+                  <div class="h-3 rounded-full bg-navy/15 w-2/3"></div>
+                  <div class="h-2 rounded-full bg-navy/10 w-1/3 mt-2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="text-center max-w-[44ch] mx-auto">
+            <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink">— in the studio</div>
+            <h2 class="font-display text-[36px] lg:text-[56px] leading-[1] mt-2">
+              Case studies are <span class="italic">brewing</span>.
+            </h2>
+            <p class="text-[15px] lg:text-[16px] leading-[1.6] text-navy/70 mt-4">
+              Want a sneak peek? Most recent sketches, brand process, and editorial bits live on Behance and Instagram while the long-form archive bakes.
+            </p>
+            <div class="mt-7 flex flex-wrap justify-center gap-3">
+              <a href="https://www.behance.net/melissaencaa0c" target="_blank" rel="noopener noreferrer" class="bg-navy text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-hot-pink transition">Behance →</a>
+              <a href="https://instagram.com/mell.en" target="_blank" rel="noopener noreferrer" class="bg-cream border border-navy/20 rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-butter transition">Instagram ✦</a>
+              <a href="/#contact" class="font-hand text-[18px] text-navy/70 hover:text-hot-pink transition self-center px-2">or say hola →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <>
+
+      {/* Featured spotlight — large alternating */}
+      {featured.length > 0 && (
+        <section class="pb-12 lg:pb-20">
+          <div class="max-w-shell mx-auto px-6 lg:px-10 space-y-12 lg:space-y-20">
+            {featured.map((s, idx) => {
+              const thumb = thumbByStudy.get(s.id);
+              const reversed = idx % 2 === 1;
+              const number = String(idx + 1).padStart(2, '0');
+              return (
+                <article class="grid grid-cols-12 gap-6 lg:gap-10 items-center group reveal">
+                  <a
+                    href={`/work/${s.slug}`}
+                    class={`col-span-12 md:col-span-7 lg:col-span-8 ${reversed ? 'md:order-2' : ''} block rounded-xxl overflow-hidden border border-navy/10 bg-navy aspect-[4/3] md:aspect-[16/10] lift relative`}
+                  >
+                    {thumb ? (
+                      <img
+                        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                        src={`/images/${thumb.imageLKey}`}
+                        srcset={imgSrcset(thumb.imageLKey)}
+                        sizes="(max-width: 768px) 100vw, 66vw"
+                        alt={thumb.altL}
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-navy"></div>
+                    )}
+                    <span class="absolute top-4 left-4 bg-hot-pink text-cream rounded-pill px-3 py-1 text-[11px] font-semibold uppercase tracking-wider">
+                      ★ Featured
+                    </span>
+                  </a>
+                  <div class={`col-span-12 md:col-span-5 lg:col-span-4 ${reversed ? 'md:order-1' : ''}`}>
+                    <div class="flex items-center gap-3 text-[12px] text-navy/60">
+                      <span class="font-hand text-hot-pink text-[18px]">№ {number}</span>
+                      {s.publishedAt && <span>· {fmtDate(s.publishedAt)}</span>}
+                    </div>
+                    <h2 class="font-display text-[40px] lg:text-[64px] leading-[0.95] mt-3 tracking-[-0.01em]">
+                      <a href={`/work/${s.slug}`} class="hover:text-hot-pink transition">{s.title}</a>
+                    </h2>
+                    {s.summary && (
+                      <p class="text-[15px] lg:text-[16px] leading-[1.65] mt-5 text-navy/80 max-w-[42ch]">{s.summary}</p>
+                    )}
+                    <a href={`/work/${s.slug}`} class="mt-6 inline-flex items-center gap-2 font-medium text-[14px] border-b border-navy pb-0.5 hover:text-hot-pink hover:border-hot-pink transition group/cta">
+                      Read the case study
+                      <span class="inline-block transition-transform duration-200 group-hover/cta:translate-x-1">→</span>
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* The rest — editorial grid */}
+      {rest.length > 0 && (
+        <section class="pb-24 lg:pb-32">
+          <div class="max-w-shell mx-auto px-6 lg:px-10">
+            {featured.length > 0 && (
+              <div class="flex items-center gap-4 mb-8 lg:mb-12">
+                <div class="font-hand text-[24px] lg:text-[28px] text-hot-pink">— more from the archive</div>
+                <div class="flex-1 h-px bg-navy/15"></div>
+                <div class="text-[12px] uppercase tracking-wider text-navy/50">{rest.length} project{rest.length === 1 ? '' : 's'}</div>
+              </div>
+            )}
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+              {rest.map((s, idx) => {
+                const thumb = thumbByStudy.get(s.id);
+                const color = cardColors[idx % cardColors.length];
+                const number = String(featured.length + idx + 1).padStart(2, '0');
+                return (
+                  <li class="reveal" style={`--delay:${Math.min(idx * 60, 480)}ms`}>
+                    <a href={`/work/${s.slug}`} class="group/card block">
+                      <div class={`relative rounded-xxl overflow-hidden border border-navy/10 bg-${color} aspect-[4/5] lift`}>
+                        {thumb ? (
+                          <img
+                            class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-[1.05]"
+                            src={`/images/${thumb.imageLKey}`}
+                            srcset={imgSrcset(thumb.imageLKey)}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                            alt={thumb.altL}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div class={`w-full h-full bg-${color} flex items-center justify-center`}>
+                            <span class="font-display italic text-[64px] text-navy/40">{s.title.charAt(0)}</span>
+                          </div>
+                        )}
+                        <span class="absolute top-3 left-3 bg-cream/90 backdrop-blur rounded-pill px-2.5 py-1 text-[10px] font-semibold tracking-wider text-navy">№ {number}</span>
+                      </div>
+                      <div class="mt-4 flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <h3 class="font-display text-[24px] lg:text-[28px] leading-[1.05] group-hover/card:text-hot-pink transition">
+                            {s.title}
+                          </h3>
+                          {s.summary && (
+                            <p class="text-[13px] text-navy/65 mt-1.5 leading-[1.5] line-clamp-2">{s.summary}</p>
+                          )}
+                        </div>
+                        <span class="flex-none text-navy/40 group-hover/card:text-hot-pink group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-transform duration-200" aria-hidden="true">↗</span>
+                      </div>
+                      {s.publishedAt && (
+                        <div class="mt-2 text-[11px] uppercase tracking-wider text-navy/45">{fmtDate(s.publishedAt)}</div>
+                      )}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* Closing CTA */}
+      <section class="bg-hot-pink text-cream py-20 lg:py-28 relative overflow-hidden">
+        <svg class="absolute top-[18%] left-[10%] float-a opacity-50" width="36" height="36" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="none" stroke="#FFF5EC" stroke-width="2" />
+        </svg>
+        <svg class="absolute bottom-[20%] right-[12%] float-c opacity-60" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <circle cx="24" cy="24" r="20" fill="none" stroke="#FFE484" stroke-width="3" stroke-dasharray="4 6" />
+        </svg>
+        <svg class="absolute top-[60%] left-[6%] float-b opacity-40" width="20" height="20" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FFE484" />
+        </svg>
+        <div class="max-w-shell mx-auto px-6 lg:px-10 text-center relative">
+          <div class="font-hand text-[24px] lg:text-[28px] opacity-90">— like what you see?</div>
+          <h2 class="font-display italic text-[44px] lg:text-[80px] leading-[0.95] mt-3">let's make<br/>something next ✦</h2>
+          <a href="/#contact" class="mt-8 inline-block bg-cream text-hot-pink rounded-pill px-7 py-3.5 text-[14px] font-semibold hover:bg-navy hover:text-cream transition">
+            Start a project →
+          </a>
+        </div>
+      </section>
+    </>
+  )}
+</PublicLayout>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms ease-out, transform 700ms ease-out;
+    transition-delay: var(--delay, 0ms);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .skeleton {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: skel-in 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+  @keyframes skel-in {
+    to { opacity: 1; transform: none; }
+  }
+  .shimmer {
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255,255,255,0.55) 50%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.4s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton { opacity: 1; transform: none; animation: none; }
+    .shimmer { animation: none; }
+  }
+</style>
+
+<script>
+  const reveal = (el: Element) => el.classList.add('is-in');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          reveal(e.target);
+          io.unobserve(e.target);
+        }
+      }
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(reveal);
+  }
+</script>

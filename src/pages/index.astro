@@ -23,7 +23,6 @@ const firstBlocks = studyIds.length
       .all()
   : [];
 const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
-const featuredCount = published.filter((s) => s.featured).length;
 
 const cardColors = ['butter', 'coral', 'mint', 'sky'];
 
@@ -62,7 +61,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
       <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-10 items-end">
         <p class="col-span-12 lg:col-span-7 text-[18px] lg:text-[22px] leading-[1.55] max-w-[40ch] soft-up d-200">
-          I'm a Dominican designer leading the design team at Liquid Digital Agency. For the past decade I've been building brand systems that feel warm, specific, and a little bit homemade — even when they're running at scale.
+          I'm a Dominican designer leading a design team at Liquid Digital Agency. For the past decade I've been building brand systems that feel warm, specific, and a little bit homemade — even when they're running at scale.
         </p>
 
         <div class="col-span-12 lg:col-span-5 flex flex-col gap-3 soft-up d-300">
@@ -130,7 +129,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
         <div class="bg-cream rounded-xxl p-6 lg:p-8">
           <p class="text-[16px] lg:text-[18px] leading-[1.7]">
-            I lead the design team at <strong>Liquid Digital Agency</strong> in Santo Domingo. Our work ranges from FMCG and finance to cultural and small founder-led brands. I care about craft, but more than anything, I care about whether a brand <em>feels</em> like where it's from — like it knows who it's talking to.
+            I lead a design team at <strong>Liquid Digital Agency</strong> in Santo Domingo. Our work ranges from FMCG and finance to cultural and small founder-led brands. I care about craft, but more than anything, I care about whether a brand <em>feels</em> like where it's from — like it knows who it's talking to.
           </p>
           <div class="flex flex-wrap gap-2 mt-6">
             <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Brand Identity</span>
@@ -151,13 +150,6 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
       <div class="flex flex-wrap items-end justify-between gap-6 mb-12 lg:mb-16">
         <div>
           <a href="/work" class="font-hand text-[28px] lg:text-[36px] text-hot-pink hover:underline underline-offset-4 decoration-2 transition">— selected work</a>
-          <h2 class="font-display text-[44px] lg:text-[88px] leading-[0.95]">
-            {published.length > 0 ? (
-              <>{featuredCount} {featuredCount === 1 ? ' love letter' : ' love letters'}<br/>to the <span class="italic">DR</span>.</>
-            ) : (
-              <>Work coming<br/><span class="italic">soon</span>.</>
-            )}
-          </h2>
         </div>
         {published.length > 0 && (
           <a href="/work" class="group hidden md:inline-flex items-center gap-2 text-[14px] font-medium border-b-2 border-navy pb-1 hover:text-hot-pink hover:border-hot-pink transition">

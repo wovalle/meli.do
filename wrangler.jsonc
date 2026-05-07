@@ -11,7 +11,7 @@
 		"binding": "ASSETS"
 	},
 	"routes": [
-		{ "pattern": "mellen.do/*", "custom_domain": true }
+		{ "pattern": "mellen.do", "custom_domain": true }
 	],
 	"observability": {
 		"enabled": true

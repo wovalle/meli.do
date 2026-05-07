@@ -56,6 +56,15 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).toString();
     />
 
     <slot name="head" />
+
+    {import.meta.env.PROD && (
+      <script
+        is:inline
+        src="https://cdn.luchy.app/luchy.min.js"
+        data-api-key="37adf9da7da14b7996147a6a258daf87"
+        data-endpoint="https://dash.luchy.app/api/ingest"
+      ></script>
+    )}
   </head>
   <body class="bg-lavender text-navy font-sans antialiased overflow-x-hidden">
 

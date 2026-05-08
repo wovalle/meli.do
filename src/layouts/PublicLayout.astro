@@ -19,6 +19,24 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).toString();
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Melissa Encarnación",
+  jobTitle: "Art Director",
+  worksFor: {
+    "@type": "Organization",
+    name: "Liquid Digital",
+  },
+  url: "https://mellen.do",
+  email: "hola@mellen.do",
+  sameAs: [
+    "https://www.behance.net/melissaencaa0c",
+    "https://instagram.com/mell.en",
+    "https://www.linkedin.com/in/melissa-encarnación-108ab497/",
+  ],
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -47,6 +65,9 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).toString();
 
     <meta name="theme-color" content="#D9D0F5" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

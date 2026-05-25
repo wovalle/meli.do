@@ -10,7 +10,7 @@ export function imgUrl(
   width: number,
   opts?: { quality?: number; fit?: 'scale-down' | 'cover' | 'contain' }
 ): string {
-  if (isGif(key)) return `/images/${key}`;
+  if (isGif(key) || import.meta.env.DEV) return `/images/${key}`;
   const q = opts?.quality ?? DEFAULT_QUALITY;
   const fit = opts?.fit ?? 'scale-down';
   return `/cdn-cgi/image/format=auto,width=${width},quality=${q},fit=${fit}/images/${key}`;
@@ -21,6 +21,7 @@ export function imgSrcset(
   widths: readonly number[] = DEFAULT_WIDTHS
 ): string {
   if (isGif(key)) return `/images/${key}`;
+  if (import.meta.env.DEV) return '';
   return widths.map((w) => `${imgUrl(key, w)} ${w}w`).join(', ');
 }
 

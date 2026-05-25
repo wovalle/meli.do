@@ -6,7 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://mellen.do',
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    platformProxy: {
+      experimentalRemoteBindings: true,
+    },
+  }),
   vite: {
     plugins: [tailwindcss()],
   },

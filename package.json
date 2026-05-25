@@ -12,6 +12,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply meli-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply meli-db --remote",
+    "db:seed:local": "wrangler d1 execute meli-db --local --file scripts/seed-local.sql",
     "setup:access": "node scripts/setup-access.mjs",
     "generate-types": "wrangler types",
     "import:wix": "node scripts/import-wix.mjs",

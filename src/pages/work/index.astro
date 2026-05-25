@@ -4,6 +4,7 @@ import { eq, desc, inArray, and, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
+import { imgSrc, imgSrcset } from '../../lib/img';
 
 export const prerender = false;
 
@@ -28,14 +29,6 @@ const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
 
 const featured = published.filter((s) => s.featured);
 const rest = published.filter((s) => !s.featured);
-
-function imgSrcset(key: string): string {
-  const dot = key.lastIndexOf('.');
-  const ext = key.slice(dot + 1);
-  if (ext === 'gif') return `/images/${key}`;
-  const base = key.slice(0, dot);
-  return `/images/${base}@400.webp 400w, /images/${base}@800.webp 800w, /images/${key} 1600w`;
-}
 
 function fmtDate(ts: number | null): string {
   if (!ts) return '';
@@ -177,7 +170,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                     {thumb ? (
                       <img
                         class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                        src={`/images/${thumb.imageLKey}`}
+                        src={imgSrc(thumb.imageLKey, 1200)}
                         srcset={imgSrcset(thumb.imageLKey)}
                         sizes="(max-width: 768px) 100vw, 66vw"
                         alt={thumb.altL}
@@ -237,7 +230,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                         {thumb ? (
                           <img
                             class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-[1.05]"
-                            src={`/images/${thumb.imageLKey}`}
+                            src={imgSrc(thumb.imageLKey, 600)}
                             srcset={imgSrcset(thumb.imageLKey)}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                             alt={thumb.altL}

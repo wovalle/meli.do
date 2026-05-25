@@ -34,11 +34,6 @@
 			"binding": "BUCKET",
 			"bucket_name": "meli-do-images",
 			"remote": true
-		},
-		{
-			"bucket_name": "meli",
-			"binding": "meli_r2",
-			"remote": true
 		}
 	]
 }

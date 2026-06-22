@@ -4,7 +4,7 @@ import { eq, desc, inArray, and, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import PublicLayout from '../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../db/schema';
-import { imgSrc, imgSrcset } from '../lib/img';
+import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../lib/img';
 
 const db = drizzle((env as { db: D1Database }).db);
 
@@ -214,7 +214,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 const color = cardColors[idx % cardColors.length];
                 return thumb ? (
                   <a href={`/work/${s.slug}`} class={`rounded-xxl overflow-hidden aspect-square bg-${color} lift block`}>
-                    <img class="w-full h-full object-cover" src={imgSrc(thumb.imageLKey, 600)} srcset={imgSrcset(thumb.imageLKey, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="lazy" decoding="async" />
+                    <img class="w-full h-full object-cover" src={thumbSrc(thumb.imageLKey, 800, 1)} srcset={thumbSrcset(thumb.imageLKey, 1, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="lazy" decoding="async" />
                   </a>
                 ) : (
                   <a href={`/work/${s.slug}`} class={`rounded-xxl aspect-square bg-${color} p-5 lift flex flex-col justify-between text-navy`}>

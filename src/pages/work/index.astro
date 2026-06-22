@@ -4,7 +4,7 @@ import { eq, desc, inArray, and, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
-import { imgSrc, imgSrcset } from '../../lib/img';
+import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../../lib/img';
 
 export const prerender = false;
 
@@ -230,8 +230,8 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                         {thumb ? (
                           <img
                             class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-[1.05]"
-                            src={imgSrc(thumb.imageLKey, 800)}
-                            srcset={imgSrcset(thumb.imageLKey)}
+                            src={thumbSrc(thumb.imageLKey, 800, 4 / 5)}
+                            srcset={thumbSrcset(thumb.imageLKey, 4 / 5)}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                             alt={thumb.altL}
                             loading="lazy"

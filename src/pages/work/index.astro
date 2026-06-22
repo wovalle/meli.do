@@ -4,7 +4,7 @@ import { eq, desc, inArray, and, asc } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
-import { imgSrc, imgSrcset } from '../../lib/img';
+import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../../lib/img';
 
 export const prerender = false;
 
@@ -230,8 +230,8 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                         {thumb ? (
                           <img
                             class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-[1.05]"
-                            src={imgSrc(thumb.imageLKey, 600)}
-                            srcset={imgSrcset(thumb.imageLKey)}
+                            src={thumbSrc(thumb.imageLKey, 800, 4 / 5)}
+                            srcset={thumbSrcset(thumb.imageLKey, 4 / 5)}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                             alt={thumb.altL}
                             loading="lazy"
@@ -281,9 +281,12 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         <div class="max-w-shell mx-auto px-6 lg:px-10 text-center relative">
           <div class="font-hand text-[24px] lg:text-[28px] opacity-90">— like what you see?</div>
           <h2 class="font-display italic text-[44px] lg:text-[80px] leading-[0.95] mt-3">let's make<br/>something next ✦</h2>
-          <a href="/#contact" class="mt-8 inline-block bg-cream text-hot-pink rounded-pill px-7 py-3.5 text-[14px] font-semibold hover:bg-navy hover:text-cream transition">
-            Start a project →
+          <a href="mailto:hola@mellen.do" class="mt-8 inline-block bg-cream text-hot-pink rounded-pill px-7 py-3.5 text-[14px] font-semibold hover:bg-navy hover:text-cream transition">
+            Write me →
           </a>
+          <div class="mt-4 font-hand text-[20px] lg:text-[22px] opacity-90">
+            or say hola at <a href="mailto:hola@mellen.do" class="underline underline-offset-4 decoration-cream/50 hover:decoration-cream transition">hola@mellen.do</a>
+          </div>
         </div>
       </section>
     </>

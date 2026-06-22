@@ -87,6 +87,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 
 .dashed-b { border: 2px dashed #1A2B4A; }
 
+/* Classic airmail "par avion" diagonal-stripe border, in brand colors.
+   Used as a padding frame so it follows the card's rounded corners. */
+.airmail-frame {
+  background: repeating-linear-gradient(
+    -45deg,
+    #FF1493 0 10px,
+    #FFF5EC 10px 20px,
+    #1A2B4A 20px 30px,
+    #FFF5EC 30px 40px
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .soft-up, .wave, .float-a, .float-b, .float-c, .spin-slow, .marquee {
     animation: none !important;

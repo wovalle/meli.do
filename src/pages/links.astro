@@ -3,11 +3,11 @@ import PublicLayout from "../layouts/PublicLayout.astro";
 
 const links = [
   {
-    label: "Behance",
-    handle: "@melissaencaa0c",
-    href: "https://www.behance.net/melissaencaa0c",
-    accent: "bg-[#1769FF]",
-    svg: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 1.202.83 1.102 1.602 1.102.582 0 .975-.4 1.154-.625h3zm-5.848-5.037c-.048.39-.19.883-.622.883h-1.895c.044-.408.167-.883.598-.883h1.919zM5 12.714c.848 0 1.542-.366 1.542-1.428 0-1.05-.745-1.442-1.542-1.442H3v2.87h2zm-.184 3.429c.947 0 1.728-.338 1.728-1.46 0-1.124-.835-1.49-1.728-1.49H3v2.95h1.816zM0 6h6.812C9.24 6 11 7.328 11 9.783 11 11.97 9.668 12.854 8.33 13.004v.062c1.715.143 3.133 1.162 3.133 3.192C11.463 19.237 9.038 21 6.34 21H0V6z"/></svg>`,
+    label: "Portfolio",
+    handle: "mellen.do",
+    href: "/",
+    accent: "bg-navy",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5 text-white"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
   },
   {
     label: "Instagram",
@@ -56,8 +56,8 @@ const links = [
         {links.map((link) => (
           <a
             href={link.href}
-            target={link.href.startsWith("mailto") ? undefined : "_blank"}
-            rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+            target={link.href.startsWith("http") ? "_blank" : undefined}
+            rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
             class="group flex items-center gap-4 w-full bg-white border border-navy/10 rounded-xxl px-5 py-4 shadow-sm hover:shadow-md hover:border-navy/20 transition-all duration-200 lift"
           >
             <div class={`flex-none flex items-center justify-center w-10 h-10 rounded-full ${link.accent} shadow-sm`} set:html={link.svg} />
@@ -70,13 +70,6 @@ const links = [
             </svg>
           </a>
         ))}
-      </div>
-
-      <!-- Back -->
-      <div class="mt-10 text-center soft-up d-200">
-        <a href="/" class="text-[13px] text-navy/40 hover:text-hot-pink transition font-hand text-[16px]">
-          ← back to portfolio
-        </a>
       </div>
 
     </div>

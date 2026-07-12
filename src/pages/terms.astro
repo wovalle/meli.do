@@ -1,0 +1,143 @@
+---
+import PublicLayout from "../layouts/PublicLayout.astro";
+
+// Content transcribed from the signed project Terms & Conditions document.
+// Bold spans are preserved as inline HTML and rendered with set:html.
+const terms = [
+  {
+    n: "01",
+    title: "Alcance del proyecto",
+    body: [
+      `La presente propuesta contempla únicamente los entregables descritos en la cotización aprobada. Cualquier solicitud que represente nuevas piezas, formatos, cambios de alcance o desarrollos adicionales podrá ser evaluada y cotizada por separado.`,
+    ],
+  },
+  {
+    n: "02",
+    title: "Flexibilidad y solicitudes adicionales",
+    body: [
+      `Como parte de mi metodología de trabajo, suelo brindar apoyo en pequeñas solicitudes adicionales relacionadas directamente con el proyecto, siempre que no representen un incremento significativo en el tiempo de ejecución.`,
+      `Esta flexibilidad aplica únicamente a ajustes, adaptaciones adicionales o piezas digitales menores. Cualquier solicitud que implique un despliegue mayor de impresión, animación, storyboards, nuevos formatos o una ampliación del alcance podrá requerir una cotización adicional.`,
+    ],
+  },
+  {
+    n: "03",
+    title: "Cronograma y desarrollo",
+    body: [
+      `El proyecto iniciará una vez aprobada la cotización y recibido el material necesario para su ejecución. <strong class="font-medium text-navy">La primera propuesta para revisión se presentará en un plazo mínimo estimado de una (1) semana,</strong> salvo que la cotización indique un cronograma diferente.`,
+      `Los tiempos de entrega posteriores podrán ajustarse en caso de retrasos en aprobaciones, retroalimentación o entrega de información por parte del cliente. Esta propuesta contempla <strong class="font-medium text-navy">tiempos de ejecución regulares.</strong> Solicitudes con tiempos de entrega reducidos (rush) estarán sujetas a disponibilidad y podrán requerir una cotización o ajuste adicional.`,
+    ],
+  },
+  {
+    n: "04",
+    title: "Revisiones y aprobaciones",
+    body: [
+      `La propuesta <strong class="font-medium text-navy">incluye hasta tres (3) rondas de ajustes</strong> por cada etapa o entregable.`,
+      `Cada ronda deberá consolidar todas las observaciones en una única devolución. Comentarios enviados de forma fragmentada podrán considerarse como rondas independientes.`,
+      `La aprobación de una etapa se entenderá como conformidad para continuar con el proyecto. Cualquier modificación posterior o cambio de concepto sobre una etapa previamente aprobada podrá cotizarse como un servicio adicional.`,
+    ],
+  },
+  {
+    n: "05",
+    title: "Facturación y modalidad de pago",
+    body: [
+      `En estos proyectos de larga duración <strong class="font-medium text-navy">la facturación se realizará por etapas o hitos</strong> previamente acordados entre ambas partes.`,
+      `El pago corresponde al trabajo ejecutado y no dependerá del lanzamiento, publicación o implementación del proyecto. En caso de pausa o cancelación, se facturará el trabajo realizado hasta ese momento.`,
+    ],
+  },
+  {
+    n: "06",
+    title: "Comunicación y reuniones",
+    body: [
+      `La propuesta contempla <strong class="font-medium text-navy">reuniones de seguimiento</strong> y espacios de retroalimentación razonables que serán coordinadas según disponibilidad para el correcto desarrollo del proyecto.`,
+    ],
+  },
+  {
+    n: "07",
+    title: "Entregables y recursos",
+    body: [
+      `Los archivos y assets finales serán entregados en los formatos especificados en la cotización. Los archivos de trabajo, propuestas descartadas y exploraciones creativas no forman parte de los entregables finales, salvo acuerdo previo.`,
+      `Fotografías de stock, tipografías comerciales, licencias, recursos de terceros o cualquier otro insumo externo requerido para el desarrollo del proyecto <strong class="font-medium text-navy">no están incluidos</strong> en la presente propuesta. En caso de ser necesarios, serán cotizados o facturados de manera independiente.`,
+    ],
+  },
+  {
+    n: "08",
+    title: "Discreción profesional",
+    body: [
+      `La información y los materiales compartidos durante el proyecto serán manejados con la debida discreción.`,
+      `Como parte de mi práctica profesional, mantengo una exposición limitada de los proyectos en los que participo. Cualquier publicación en mi portafolio o redes profesionales se realizará únicamente una vez el proyecto haya sido lanzado oficialmente y siempre que no represente un conflicto para las partes involucradas.`,
+    ],
+  },
+  {
+    n: "09",
+    title: "Vigencia",
+    body: [
+      `La presente propuesta económica y estas condiciones tendrán una vigencia de <strong class="font-medium text-navy">30 días calendario</strong> a partir de su fecha de emisión.`,
+    ],
+  },
+];
+---
+
+<PublicLayout
+  title="Términos y condiciones del proyecto — Melissa Encarnación"
+  description="Condiciones que complementan la propuesta económica y forman parte del alcance del servicio contratado."
+  noindex={true}
+>
+  <main class="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
+    <article class="max-w-3xl mx-auto">
+
+      <!-- Header -->
+      <header class="soft-up">
+        <p class="font-hand text-[18px] text-hot-pink mb-3">Términos del servicio</p>
+        <h1 class="font-display text-[38px] sm:text-[52px] lg:text-[64px] leading-[1.02] text-navy">
+          Términos y condiciones <span class="italic text-hot-pink">del proyecto</span>
+        </h1>
+        <p class="mt-5 text-navy/60 text-[15px] sm:text-[16px] leading-relaxed max-w-xl">
+          Estas condiciones complementan la propuesta económica presentada y forman parte
+          del alcance del servicio contratado.
+        </p>
+        <div class="mt-8 h-px w-full bg-gradient-to-r from-hot-pink/60 via-navy/10 to-transparent"></div>
+      </header>
+
+      <!-- Terms -->
+      <div class="mt-4 divide-y divide-navy/10">
+        {terms.map((term) => (
+          <section class="grid grid-cols-1 md:grid-cols-[168px_1fr] gap-4 md:gap-10 py-9 sm:py-11">
+            <div class="md:sticky md:top-28 md:self-start">
+              <div class="font-display text-[52px] sm:text-[60px] leading-none text-coral/70">{term.n}.</div>
+              <h2 class="mt-1.5 font-semibold text-[18px] sm:text-[19px] text-hot-pink leading-snug">
+                {term.title}
+              </h2>
+            </div>
+            <div class="md:border-l md:border-hot-pink/25 md:pl-10 space-y-4">
+              {term.body.map((p) => (
+                <p
+                  class="text-navy/70 text-[15px] sm:text-[16px] leading-relaxed"
+                  set:html={p}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <!-- Signature -->
+      <div class="mt-12 pt-2 flex flex-col items-start">
+        <span class="font-hand text-[40px] sm:text-[46px] text-navy leading-none -rotate-2">Melissa Encarnación</span>
+        <span class="mt-4 font-semibold text-[15px] text-coral">Melissa Encarnación</span>
+        <span class="text-navy/55 text-[13px]">Diseño Gráfico &amp; Dirección de Arte</span>
+      </div>
+
+      <!-- Document meta -->
+      <footer class="mt-12 rounded-xxl bg-cream/70 border border-navy/10 px-5 py-4 sm:px-6 sm:py-5">
+        <p class="text-navy/50 text-[12px] sm:text-[13px] leading-relaxed flex flex-wrap gap-x-2 gap-y-1">
+          <span>Documento: Términos y Condiciones del Proyecto</span>
+          <span class="text-navy/25">·</span>
+          <span>Versión: 1.0</span>
+          <span class="text-navy/25">·</span>
+          <span>Última actualización: Julio 2026</span>
+        </p>
+      </footer>
+
+    </article>
+  </main>
+</PublicLayout>

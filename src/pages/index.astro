@@ -90,10 +90,18 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
       <div class="col-span-12 md:col-span-5 lg:col-span-4 relative">
         <div class="bg-cream p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[-3deg] lift">
-          <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden flex items-end p-5">
-            <div class="w-full">
-              <div class="w-10 h-10 bg-hot-pink rounded-full"></div>
-              <div class="font-hand text-[28px] text-cream mt-4">hi, it's me ✦</div>
+          <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden relative flex items-end p-5">
+            <img
+              class="absolute inset-0 w-full h-full object-cover"
+              src={thumbSrc('site/melissa-headshot.jpg', 800, 4 / 5)}
+              srcset={thumbSrcset('site/melissa-headshot.jpg', 4 / 5)}
+              sizes="(max-width: 768px) 90vw, 400px"
+              alt="Melissa Encarnación smiling"
+              loading="eager"
+              decoding="async"
+            />
+            <div class="w-full relative">
+              <div class="font-hand text-[28px] text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,.45)]">hi, it's me ✦</div>
             </div>
           </div>
           <div class="font-hand text-[22px] text-navy text-center mt-3">— Santo Domingo, 2026</div>

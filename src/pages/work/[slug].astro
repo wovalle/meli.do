@@ -52,7 +52,7 @@ if (isDraft) {
   Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
 }
 ---
-<PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description}>
+<PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description} ogImage={`/og/work/${slug}.png`} ogType="article">
 
   {isDraft && (
     <div class="bg-amber-100 border-b border-amber-300 text-amber-950">

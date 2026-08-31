@@ -44,6 +44,34 @@ const next = idx >= 0 && idx < allPublished.length - 1 ? allPublished[idx + 1] :
 
 const description = study.summary ?? `Case study by Melissa Encarnacion — ${study.title}`;
 
+const site = (Astro.site ?? Astro.url).toString().replace(/\/$/, '');
+const caseStudySchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: study.title,
+  headline: study.title,
+  description,
+  url: `${site}/work/${slug}`,
+  ...(studyBlocks[0] ? { image: `${site}/images/${studyBlocks[0].imageLKey}` } : {}),
+  ...(study.publishedAt ? { datePublished: new Date(study.publishedAt).toISOString() } : {}),
+  dateModified: new Date(study.updatedAt).toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Melissa Encarnación',
+    url: site,
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site },
+    { '@type': 'ListItem', position: 2, name: 'Work', item: `${site}/work` },
+    { '@type': 'ListItem', position: 3, name: study.title },
+  ],
+};
+
 const isDraft = study.status !== 'published';
 
 if (isDraft) {
@@ -52,7 +80,9 @@ if (isDraft) {
   Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
 }
 ---
-<PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description}>
+<PublicLayout title={`${study.title} — Melissa Encarnacion`} description={description} ogImage={`/og/work/${slug}.png`} ogType="article">
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(caseStudySchema)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
 
   {isDraft && (
     <div class="bg-amber-100 border-b border-amber-300 text-amber-950">

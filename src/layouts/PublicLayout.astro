@@ -12,7 +12,7 @@ interface Props {
 const {
   title,
   description = "Melissa Encarnación — Dominican Art Director & Head of Design. Warm, playful, considered brand work.",
-  ogImage = "/og-default.png",
+  ogImage = "/og/home.png",
   ogType = "website",
   noindex = false,
 } = Astro.props;
@@ -24,11 +24,28 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Melissa Encarnación",
-  jobTitle: "Art Director",
+  alternateName: "mellen",
+  jobTitle: "Art Director & Head of Design",
+  description:
+    "Dominican Art Director and Head of Design with 10+ years of experience in brand identity, art direction, packaging and editorial design.",
+  image: "https://mellen.do/images/site/melissa-headshot.jpg",
   worksFor: {
     "@type": "Organization",
     name: "Liquid Digital",
   },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Santo Domingo",
+    addressCountry: "DO",
+  },
+  knowsAbout: [
+    "Brand Identity",
+    "Art Direction",
+    "Packaging Design",
+    "Editorial Design",
+    "Campaigns",
+  ],
+  knowsLanguage: ["es", "en"],
   url: "https://mellen.do",
   email: "hola@mellen.do",
   sameAs: [
@@ -36,6 +53,14 @@ const personSchema = {
     "https://instagram.com/mell.en",
     "https://www.linkedin.com/in/melissa-encarnación-108ab497/",
   ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Melissa Encarnación",
+  alternateName: "mellen.do",
+  url: "https://mellen.do",
 };
 ---
 <!doctype html>
@@ -54,6 +79,9 @@ const personSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
     <meta property="og:site_name" content="Melissa Encarnación" />
     <meta property="og:locale" content="en_US" />
 
@@ -62,11 +90,13 @@ const personSchema = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={title} />
 
     <meta name="theme-color" content="#D9D0F5" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

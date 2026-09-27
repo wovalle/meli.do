@@ -94,8 +94,9 @@ export function initPolaroid(root: HTMLElement): void {
 
   const kick = (): void => {
     if (reducedMotion()) return;
-    r.velocity += (Math.random() < 0.5 ? -1 : 1) * (140 + Math.random() * 80);
-    y.velocity -= 90;
+    // set (not add) so rapid taps wobble instead of spinning the photo round
+    r.velocity = (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 40);
+    y.velocity = -40;
     settle();
   };
 

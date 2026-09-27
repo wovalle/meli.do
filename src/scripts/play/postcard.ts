@@ -39,10 +39,10 @@ export function initPostcard(root: HTMLElement): void {
   const aimAtEnvelope = (): void => {
     const card = flipper.getBoundingClientRect();
     const env = envelope.getBoundingClientRect();
-    const scale = Math.min((env.width * 0.86) / card.width, (env.height * 0.92) / card.height);
+    const scale = Math.min((env.width * 0.86) / card.width, (env.height * 0.9) / card.height);
     const dx = env.left + env.width / 2 - (card.left + card.width / 2);
     const peek = env.top + env.height * 0.42 - (card.top + card.height / 2);
-    const inside = env.top + env.height * 0.6 - (card.top + card.height / 2);
+    const inside = env.top + env.height * 0.5 - (card.top + card.height / 2);
     root.style.setProperty('--mail-scale', scale.toFixed(3));
     root.style.setProperty('--mail-x', `${dx.toFixed(1)}px`);
     root.style.setProperty('--mail-y', `${peek.toFixed(1)}px`);

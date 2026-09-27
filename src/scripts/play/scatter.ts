@@ -1,8 +1,10 @@
 // "Scatter" the selected-work tiles like printed proofs dropped on a table.
 // Scattered tiles can be dragged around; a tap still opens the case study;
 // "tidy up" puts them back in the grid.
-import { scatterPoses } from '../../lib/play/motion';
+import { clamp, scatterPoses } from '../../lib/play/motion';
 import { draggable, reducedMotion } from './shared';
+
+const EDGE_SLACK = 12;
 
 interface Pose {
   x: number;
@@ -32,7 +34,11 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
     grid.classList.add('is-scattered');
     tiles.forEach((tile, i) => {
       const f = fresh[i] ?? { x: 0, y: 0, rotate: 0 };
-      const p: Pose = { x: f.x * tile.offsetWidth, y: f.y * tile.offsetHeight, rotate: f.rotate };
+      // keep each proof on the table: edge tiles may only slide inwards
+      // (offsetLeft ignores transforms; the grid is the offsetParent)
+      const minX = -tile.offsetLeft - EDGE_SLACK;
+      const maxX = grid.clientWidth - (tile.offsetLeft + tile.offsetWidth) + EDGE_SLACK;
+      const p: Pose = { x: clamp(f.x * tile.offsetWidth, minX, maxX), y: f.y * tile.offsetHeight, rotate: f.rotate };
       poses[i] = p;
       place(tile, p);
       if (!reducedMotion()) {

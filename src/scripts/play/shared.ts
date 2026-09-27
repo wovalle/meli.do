@@ -56,7 +56,11 @@ export function draggable(el: HTMLElement | SVGElement, h: DragHandlers): () => 
     lt = e.timeStamp;
     vx = vy = 0;
     moved = false;
-    el.setPointerCapture(e.pointerId);
+    try {
+      el.setPointerCapture(e.pointerId);
+    } catch {
+      // the pointer was already released (fast tap / synthetic event): moves still arrive on `el`
+    }
   };
   const move = (e: PointerEvent): void => {
     if (e.pointerId !== id) return;

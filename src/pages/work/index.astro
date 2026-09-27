@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
 import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../../lib/img';
+import { DISCIPLINES, findDiscipline, matchesDiscipline } from '../../lib/disciplines';
 
 export const prerender = false;
 
@@ -27,8 +28,15 @@ const firstBlocks = studyIds.length
   : [];
 const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
 
-const featured = published.filter((s) => s.featured);
-const rest = published.filter((s) => !s.featured);
+// ?d=<discipline> (linked from the home marquee) narrows the list. If nothing
+// matches we still show everything, with a note, rather than an empty page.
+const activeDiscipline = findDiscipline(Astro.url.searchParams.get('d'));
+const matching = activeDiscipline ? published.filter((s) => matchesDiscipline(s, activeDiscipline)) : published;
+const noMatches = activeDiscipline !== undefined && matching.length === 0;
+const shown = noMatches ? published : matching;
+
+const featured = shown.filter((s) => s.featured);
+const rest = shown.filter((s) => !s.featured);
 
 function fmtDate(ts: number | null): string {
   if (!ts) return '';
@@ -98,12 +106,28 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
               : `${published.length} project${published.length === 1 ? '' : 's'} — brand systems, editorial, and digital work shaped over the last decade. Pick one and dig in.`}
           </p>
           {published.length > 0 && (
-            <div class="mt-5 flex flex-wrap items-center gap-3 text-[12px] uppercase tracking-wider text-navy/60">
-              <span class="bg-cream rounded-pill px-3 py-1">Brand</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Editorial</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Digital</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Art Direction</span>
-            </div>
+            <nav aria-label="Filter by discipline" class="mt-5 flex flex-wrap items-center gap-2 text-[12px] uppercase tracking-wider">
+              {DISCIPLINES.map((d) => {
+                const on = d.slug === activeDiscipline?.slug;
+                return (
+                  <a
+                    href={on ? '/work' : `/work?d=${d.slug}`}
+                    aria-current={on ? 'true' : undefined}
+                    class={`rounded-pill px-3 py-1 transition ${on ? 'bg-hot-pink text-cream' : 'bg-cream text-navy/60 hover:bg-butter hover:text-navy'}`}
+                  >
+                    {d.label}{on && <span aria-hidden="true"> ✕</span>}
+                  </a>
+                );
+              })}
+            </nav>
+          )}
+          {activeDiscipline && (
+            <p class="mt-4 font-hand text-[18px] lg:text-[20px] text-hot-pink">
+              {noMatches
+                ? `— nothing tagged ${activeDiscipline.label} yet, so here's everything`
+                : `— ${shown.length} in ${activeDiscipline.label}`}
+              <a href="/work" class="ml-2 text-navy/60 hover:text-hot-pink underline underline-offset-4">show all</a>
+            </p>
           )}
         </div>
       </div>

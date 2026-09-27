@@ -1,0 +1,228 @@
+/* Home page toys (see src/scripts/play). Every motion rule has a static
+   fallback under prefers-reduced-motion at the bottom. */
+
+/* ---------- sabor dial ---------- */
+:root { --sabor: 0.25; }
+
+.sabor { position: relative; display: inline-block; }
+.sabor-word {
+  display: inline-block;
+  transform: skewX(calc(var(--sabor) * -14deg));
+  transform-origin: 50% 100%;
+  color: color-mix(in oklab, var(--color-hot-pink) calc(var(--sabor) * 100%), var(--color-navy));
+  transition: color 200ms linear;
+}
+.sabor-dial {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -0.06em;
+  width: 104%;
+  height: 28px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 40 2, 80 2, 118 6 S 180 10, 198 5' stroke='%23FF1493' stroke-width='3' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 12px;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+.sabor-dial[hidden] { display: none; }
+.sabor-dial:focus-visible { outline: 2px dashed var(--color-hot-pink); outline-offset: 6px; border-radius: 8px; }
+.sabor-dial::-webkit-slider-runnable-track { height: 28px; background: transparent; }
+.sabor-dial::-moz-range-track { height: 28px; background: transparent; }
+.sabor-dial::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; border: 0; border-radius: 50%;
+  background: var(--color-butter) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 6 L27 21 L42 24 L27 27 L24 42 L21 27 L6 24 L21 21 Z' fill='%23FF1493'/></svg>") center / 70% no-repeat;
+  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.35);
+}
+.sabor-dial::-moz-range-thumb {
+  width: 28px; height: 28px; border: 0; border-radius: 50%;
+  background: var(--color-butter) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 6 L27 21 L42 24 L27 27 L24 42 L21 27 L6 24 L21 21 Z' fill='%23FF1493'/></svg>") center / 70% no-repeat;
+  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.35);
+}
+
+/* ---------- marquee ---------- */
+.marquee.is-driven { animation: none; will-change: transform; }
+.marquee a { text-decoration: none; transition: color 200ms; }
+.marquee a:hover, .marquee a:focus-visible { color: var(--color-hot-pink); }
+
+/* ---------- draggable sparkles ---------- */
+svg[data-sparkle] { touch-action: none; cursor: grab; z-index: 10; user-select: none; -webkit-user-select: none; }
+svg[data-sparkle].is-held { cursor: grabbing; animation-play-state: paused; }
+svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back); }
+@keyframes sparkle-pop { 0% { scale: 1; } 40% { scale: 1.35; } 100% { scale: 1; } }
+
+/* ---------- polaroid ---------- */
+[data-polaroid] { touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; will-change: transform; }
+[data-polaroid].is-held { cursor: grabbing; }
+[data-polaroid]:focus-visible { outline: 3px dashed var(--color-hot-pink); outline-offset: 10px; border-radius: 28px; }
+[data-polaroid] img { -webkit-user-drag: none; pointer-events: none; }
+.polaroid-caption.is-new { animation: caption-pop 450ms var(--ease-out-back); }
+@keyframes caption-pop { from { opacity: 0; transform: translateY(8px) rotate(-4deg); } to { opacity: 1; transform: none; } }
+
+/* ---------- scatter grid ---------- */
+[data-scatter-tile] { position: relative; }
+[data-scatter-grid].is-scattered [data-scatter-tile] {
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: 8px solid var(--color-cream);
+  box-shadow: 0 18px 30px -14px rgba(26, 43, 74, 0.45);
+}
+[data-scatter-grid].is-scattered [data-scatter-tile].is-held { cursor: grabbing; scale: 1.04; box-shadow: 0 30px 40px -18px rgba(26, 43, 74, 0.5); }
+[data-scatter-grid].is-scattered [data-scatter-tile] img { -webkit-user-drag: none; pointer-events: none; }
+[data-scatter-grid].is-tidying [data-scatter-tile] { transition: translate 600ms var(--ease-out-quint), rotate 600ms var(--ease-out-quint), transform 500ms var(--ease-out-back), box-shadow 500ms var(--ease-out-quint); }
+
+/* ---------- mailable postcard ---------- */
+.postcard-scene { position: relative; perspective: 2000px; }
+.postcard-mail { position: relative; transition: transform 900ms cubic-bezier(0.55, 0, 0.8, 0.2), opacity 700ms ease-in 200ms; }
+.postcard-flipper {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 850ms var(--ease-out-back);
+}
+.postcard-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.postcard-back { transform: rotateY(180deg); }
+.postcard-back[hidden] { display: none; }
+.postcard-scene.is-flipped .postcard-flipper { transform: rotateY(180deg); }
+
+.postcard-line, .postcard-lines {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px dashed color-mix(in oklab, var(--color-navy) 30%, transparent);
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--color-navy);
+  padding: 2px 0;
+  border-radius: 0;
+}
+.postcard-lines {
+  border-bottom: 0;
+  resize: none;
+  line-height: 34px;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 32px, color-mix(in oklab, var(--color-navy) 22%, transparent) 32px 34px);
+}
+.postcard-line:focus, .postcard-lines:focus { outline: none; border-color: var(--color-hot-pink); }
+.postcard-lines:focus { background-image: repeating-linear-gradient(to bottom, transparent 0 32px, var(--color-hot-pink) 32px 34px); }
+.postcard-line::placeholder, .postcard-lines::placeholder { color: color-mix(in oklab, var(--color-navy) 38%, transparent); }
+
+/* postmark: SDQ + date, thunked onto the stamp */
+.postmark {
+  position: absolute;
+  left: -34px;
+  bottom: -26px;
+  width: 124px;
+  height: 124px;
+  color: var(--color-navy);
+  opacity: 0;
+  transform: rotate(-16deg) scale(1.6);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.postcard-scene.is-postmarked .postmark { opacity: 0.85; transform: rotate(-16deg) scale(1); transition: transform 260ms cubic-bezier(0.5, 0, 0.3, 1.4), opacity 120ms; }
+
+/* envelope: a back piece behind the card, a pocket + flap in front of it */
+.envelope {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: min(70%, 520px);
+  aspect-ratio: 1.6;
+  translate: -50% 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease, translate 700ms var(--ease-out-back);
+}
+.envelope-back { z-index: 0; }
+.envelope-front { z-index: 2; }
+.envelope-back::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 14px;
+  background: #C9BDF0;
+  box-shadow: 0 30px 50px -24px rgba(26, 43, 74, 0.55);
+}
+.envelope-back::after { /* open flap, pointing up behind the card */
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 100%;
+  height: 48%;
+  background: #C3B6EE;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+  transition: opacity 150ms linear 150ms;
+}
+.envelope-pocket {
+  position: absolute; inset: 0;
+  border-radius: 0 0 14px 14px;
+  background:
+    linear-gradient(to top, rgba(26, 43, 74, 0.06), transparent 40%),
+    var(--color-lavender);
+  clip-path: polygon(0 34%, 50% 66%, 100% 34%, 100% 100%, 0 100%);
+}
+.envelope-pocket::after { /* airmail stripe along the bottom */
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 10px;
+  background: repeating-linear-gradient(-45deg, #FF1493 0 8px, #FFF5EC 8px 16px, #1A2B4A 16px 24px, #FFF5EC 24px 32px);
+  border-radius: 0 0 14px 14px;
+}
+.envelope-flap {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 62%;
+  background: #D2C7F3;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 450ms var(--ease-out-back);
+  filter: drop-shadow(0 2px 2px rgba(26, 43, 74, 0.15));
+}
+.envelope-seal {
+  position: absolute; left: 50%; top: 62%;
+  width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: var(--color-hot-pink);
+  color: var(--color-butter);
+  display: grid; place-items: center;
+  font-size: 22px;
+  scale: 0;
+  transition: scale 350ms var(--ease-out-back) 300ms;
+}
+
+.postcard-scene.is-enveloping .envelope { opacity: 1; translate: -50% 0; }
+.postcard-scene.is-enveloping .postcard-tape { opacity: 0; transition: opacity 300ms; }
+.postcard-scene.is-enveloping .postcard-flipper {
+  transform: translate(var(--mail-x, 0px), var(--mail-y, 0px)) rotateY(180deg) scale(var(--mail-scale, 0.5));
+  transition: transform 900ms var(--ease-out-quint);
+}
+.postcard-scene.is-sealed .postcard-flipper {
+  transform: translate(var(--mail-x, 0px), var(--mail-y-in, 0px)) rotateY(180deg) scale(var(--mail-scale, 0.5));
+  transition: transform 350ms ease-in;
+}
+.postcard-scene.is-sealed .envelope-back::after { opacity: 0; }
+.postcard-scene.is-sealed .envelope-flap { transform: scaleY(1); transition-delay: 250ms; }
+.postcard-scene.is-sealed .envelope-seal { scale: 1; }
+.postcard-scene.is-flying .postcard-mail { transform: translate(70vw, -90vh) rotate(28deg) scale(0.5); opacity: 0; }
+.postcard-scene.is-sent .postcard-mail { visibility: hidden; }
+
+.postcard-sent { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; }
+.postcard-sent[hidden] { display: none; }
+.postcard-scene.is-sent .postcard-sent > * { animation: soft-up 700ms var(--ease-out-quint) both; }
+
+/* ---------- quiet settings always take priority ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sabor-word, .postcard-flipper, .postcard-mail, .envelope, .envelope-flap, .envelope-seal,
+  .postmark, [data-scatter-grid] [data-scatter-tile] { transition: none !important; }
+  svg[data-sparkle].is-popped, .polaroid-caption.is-new, .postcard-scene.is-sent .postcard-sent > * { animation: none !important; }
+  /* no 3D spin: swap faces in place */
+  .postcard-back { transform: none; }
+  .postcard-scene.is-flipped .postcard-flipper { transform: none; }
+  .postcard-scene .postcard-face { backface-visibility: visible; -webkit-backface-visibility: visible; }
+  .postcard-scene:not(.is-flipped) .postcard-back { visibility: hidden; }
+  .postcard-scene.is-flipped .postcard-front { visibility: hidden; }
+  .postcard-scene.is-postmarked .postmark { transform: rotate(-16deg); }
+  /* marquee stands still, so let people scroll it */
+  [data-marquee] { overflow-x: auto; }
+}

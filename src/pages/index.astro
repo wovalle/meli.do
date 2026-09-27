@@ -5,6 +5,10 @@ import { env } from 'cloudflare:workers';
 import PublicLayout from '../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../db/schema';
 import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../lib/img';
+import { DISCIPLINES } from '../lib/disciplines';
+import { POLAROID_PHOTOS, POLAROID_CAPTIONS, SABOR_DEFAULT } from '../lib/play/toys';
+import { BUDGETS, CONTACT_EMAIL } from '../lib/play/postcard';
+import '../styles/play.css';
 
 const db = drizzle((env as { db: D1Database }).db);
 
@@ -27,6 +31,12 @@ const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
 
 const cardColors = ['butter', 'coral', 'mint', 'sky'];
 
+const polaroidPhotos = POLAROID_PHOTOS.map((p) => ({
+  src: thumbSrc(p.key, 800, 4 / 5),
+  srcset: thumbSrcset(p.key, 4 / 5),
+  alt: p.alt,
+}));
+
 Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
 ---
 <PublicLayout title="Melissa Encarnación — Art Director & Designer in Santo Domingo">
@@ -34,14 +44,14 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
   <section class="relative pt-16 lg:pt-24 pb-24 lg:pb-32 overflow-hidden">
     <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
 
-      <svg class="absolute -top-6 right-[12%] float-a" width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF1493" />
+      <svg data-sparkle aria-hidden="true" class="absolute -top-6 right-[12%] float-a" width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF1493" data-sparkle-paint />
       </svg>
-      <svg class="absolute top-[40%] -left-2 lg:left-8 float-b" width="60" height="60" viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="20" fill="none" stroke="#FF7F50" stroke-width="3" stroke-dasharray="4 6" />
+      <svg data-sparkle aria-hidden="true" class="absolute top-[40%] -left-2 lg:left-8 float-b" width="60" height="60" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="#FF7F50" stroke-width="3" stroke-dasharray="4 6" data-sparkle-paint />
       </svg>
-      <svg class="absolute top-[18%] right-0 float-c" width="96" height="96" viewBox="0 0 96 96" fill="none">
-        <path d="M48 6 Q 60 30 84 40 Q 60 50 48 84 Q 36 50 12 40 Q 36 30 48 6 Z" fill="#FFE484" />
+      <svg data-sparkle aria-hidden="true" class="absolute top-[18%] right-0 float-c" width="96" height="96" viewBox="0 0 96 96" fill="none">
+        <path d="M48 6 Q 60 30 84 40 Q 60 50 48 84 Q 36 50 12 40 Q 36 30 48 6 Z" fill="#FFE484" data-sparkle-paint />
       </svg>
 
       <div class="flex flex-wrap items-center gap-3 soft-up">
@@ -56,8 +66,14 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         ¡Hola! <span class="wave inline-block">👋🏽</span><br/>
         I'm <span class="italic text-hot-pink">Melissa</span>,<br/>
         an <span class="hand-underline">art director</span><br/>
-        who loves <em class="font-display">sabor</em>.
+        who loves <span class="sabor"><em class="sabor-word font-display">sabor</em><input
+          type="range" min="0" max="100" value={SABOR_DEFAULT} step="1" hidden data-sabor-dial
+          class="sabor-dial" aria-label="Sabor: slide for more italic, hotter pink and a faster marquee"
+        /></span>.
       </h1>
+      <p hidden data-sabor-hint class="font-hand text-[16px] lg:text-[18px] text-navy/60 mt-3 soft-up d-200">
+        ↑ psst — slide the sabor
+      </p>
 
       <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-10 items-end">
         <p class="col-span-12 lg:col-span-7 text-[18px] lg:text-[22px] leading-[1.55] max-w-[40ch] soft-up d-200">
@@ -78,10 +94,19 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
     </div>
   </section>
 
-  <section class="py-6 border-y border-navy/10 bg-cream overflow-hidden">
-    <div class="marquee flex gap-10 whitespace-nowrap text-navy/70 font-display text-[28px] lg:text-[44px] italic">
-      <span>✦ brand identity ✦ art direction ✦ packaging ✦ editorial ✦ campaigns ✦ digital ✦</span>
-      <span>✦ brand identity ✦ art direction ✦ packaging ✦ editorial ✦ campaigns ✦ digital ✦</span>
+  <section class="py-6 border-y border-navy/10 bg-cream overflow-hidden" data-marquee aria-label="Disciplines — pick one to filter the archive">
+    <div class="marquee flex gap-10 whitespace-nowrap text-navy/70 font-display text-[28px] lg:text-[44px] italic" data-marquee-track>
+      {[false, true].map((dupe) => (
+        <ul class="flex gap-4 shrink-0 list-none m-0 p-0" aria-hidden={dupe ? 'true' : undefined}>
+          {DISCIPLINES.map((d) => (
+            <li class="flex gap-4">
+              <span aria-hidden="true">✦</span>
+              <a href={`/work?d=${d.slug}`} tabindex={dupe ? -1 : undefined}>{d.label}</a>
+            </li>
+          ))}
+          <li aria-hidden="true">✦</li>
+        </ul>
+      ))}
     </div>
   </section>
 
@@ -89,25 +114,35 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
     <div class="max-w-shell mx-auto px-6 lg:px-10 grid grid-cols-12 gap-6 lg:gap-10 items-start">
 
       <div class="col-span-12 md:col-span-5 lg:col-span-4 relative">
-        <div class="bg-cream p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[-3deg] lift">
-          <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden relative flex items-end p-5">
-            <img
-              class="absolute inset-0 w-full h-full object-cover"
-              src={thumbSrc('site/melissa-headshot.jpg', 800, 4 / 5)}
-              srcset={thumbSrcset('site/melissa-headshot.jpg', 4 / 5)}
-              sizes="(max-width: 768px) 90vw, 400px"
-              alt="Melissa Encarnación smiling"
-              loading="eager"
-              decoding="async"
-            />
-            <div class="w-full relative">
-              <div class="font-hand text-[28px] text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,.45)]">hi, it's me ✦</div>
+        <div
+          data-polaroid
+          data-photos={JSON.stringify(polaroidPhotos)}
+          role="button"
+          tabindex="0"
+          aria-label="Polaroid of Melissa — tap or shake it for another caption"
+        >
+          <div class="bg-cream p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[-3deg] lift">
+            <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden relative flex items-end p-5">
+              <img
+                data-polaroid-img
+                class="absolute inset-0 w-full h-full object-cover"
+                src={polaroidPhotos[0]?.src}
+                srcset={polaroidPhotos[0]?.srcset}
+                sizes="(max-width: 768px) 90vw, 400px"
+                alt={polaroidPhotos[0]?.alt}
+                loading="eager"
+                decoding="async"
+                draggable="false"
+              />
+              <div class="w-full relative">
+                <div data-polaroid-caption aria-live="polite" class="polaroid-caption font-hand text-[28px] text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,.45)]">{POLAROID_CAPTIONS[0]}</div>
+              </div>
             </div>
+            <div class="font-hand text-[22px] text-navy text-center mt-3">— Santo Domingo, 2026</div>
           </div>
-          <div class="font-hand text-[22px] text-navy text-center mt-3">— Santo Domingo, 2026</div>
         </div>
-        <svg class="absolute -top-6 -right-4 float-a" width="80" height="80" viewBox="0 0 48 48" fill="none">
-          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF7F50" />
+        <svg data-sparkle aria-hidden="true" class="absolute -top-6 -right-4 float-a" width="80" height="80" viewBox="0 0 48 48" fill="none">
+          <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FF7F50" data-sparkle-paint />
         </svg>
       </div>
 
@@ -175,7 +210,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 <div class={`col-span-12 md:col-span-7 lg:col-span-8 relative lift ${isReversed ? 'order-1 md:order-2' : ''}`}>
                   <a href={`/work/${s.slug}`} class="block rounded-xxl overflow-hidden border border-navy/10 bg-navy aspect-[4/3] md:aspect-[16/10]">
                     {thumb ? (
-                      <img class="w-full h-full object-cover" src={imgSrc(thumb.imageLKey, 1200)} srcset={imgSrcset(thumb.imageLKey)} sizes="(max-width: 768px) 100vw, 66vw" alt={thumb.altL} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" />
+                      <img class="w-full h-full object-cover" src={imgSrc(thumb.imageLKey, 1200)} srcset={imgSrcset(thumb.imageLKey)} sizes="(max-width: 768px) 100vw, 66vw" alt={thumb.altL} loading="eager" fetchpriority={idx === 0 ? 'high' : 'low'} decoding="async" />
                     ) : (
                       <div class="w-full h-full bg-navy"></div>
                     )}
@@ -207,16 +242,27 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           })}
 
           {published.length > 2 && (
-            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+            <div class="mt-16 flex justify-end">
+              <button
+                type="button"
+                hidden
+                data-scatter-toggle
+                aria-pressed="false"
+                class="inline-flex items-center gap-2 bg-lavender border border-navy/15 rounded-pill px-5 py-2 text-[13px] font-medium hover:bg-butter transition"
+              >
+                <span aria-hidden="true">✦</span><span data-scatter-label>scatter</span>
+              </button>
+            </div>
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6" data-scatter-grid>
               {published.slice(2, 8).map((s, idx) => {
                 const thumb = thumbByStudy.get(s.id);
                 const color = cardColors[idx % cardColors.length];
                 return thumb ? (
-                  <a href={`/work/${s.slug}`} class={`rounded-xxl overflow-hidden aspect-square bg-${color} lift block`}>
-                    <img class="w-full h-full object-cover" src={thumbSrc(thumb.imageLKey, 800, 1)} srcset={thumbSrcset(thumb.imageLKey, 1, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="lazy" decoding="async" />
+                  <a href={`/work/${s.slug}`} aria-label={s.title} draggable="false" data-scatter-tile class={`rounded-xxl overflow-hidden aspect-square bg-${color} lift block`}>
+                    <img class="w-full h-full object-cover" src={thumbSrc(thumb.imageLKey, 800, 1)} srcset={thumbSrcset(thumb.imageLKey, 1, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="eager" fetchpriority="low" decoding="async" draggable="false" />
                   </a>
                 ) : (
-                  <a href={`/work/${s.slug}`} class={`rounded-xxl aspect-square bg-${color} p-5 lift flex flex-col justify-between text-navy`}>
+                  <a href={`/work/${s.slug}`} draggable="false" data-scatter-tile class={`rounded-xxl aspect-square bg-${color} p-5 lift flex flex-col justify-between text-navy`}>
                     <div class="text-[11px] font-medium opacity-70">
                       {s.publishedAt ? new Date(s.publishedAt).toLocaleDateString(undefined, { year: 'numeric' }) : ''}
                     </div>
@@ -249,45 +295,160 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
         <div class="font-hand text-[28px] lg:text-[36px] text-butter text-center">— let's make something warm</div>
 
-        <div class="mt-6 airmail-frame rounded-xxl p-[7px] shadow-[0_30px_60px_-30px_rgba(26,43,74,.45)] relative rotate-[-1deg]">
-          <div class="tape tape-r" style="top:-14px; left:44%; width:140px; height:28px;"></div>
+        <div class="mt-6 postcard-scene rotate-[-1deg]" data-postcard>
+          <div class="tape tape-r postcard-tape" style="top:-14px; left:44%; width:140px; height:28px;"></div>
 
-          <div class="bg-cream text-navy rounded-[18px] p-6 sm:p-8 lg:p-12">
-          <div class="grid grid-cols-12 gap-4 lg:gap-8">
-            <div class="col-span-12 md:col-span-7 md:pr-8 md:border-r-2 md:border-dashed md:border-navy/30">
-              <div class="font-hand text-[28px] text-hot-pink">Dear Melissa,</div>
+          <div class="postcard-mail">
+            <div class="envelope envelope-back" data-postcard-envelope aria-hidden="true"></div>
 
-              <h2 class="font-display text-[44px] sm:text-[64px] lg:text-[88px] leading-[0.95] mt-3">
-                Write me<br/>a <em class="text-hot-pink">love letter</em>.
-              </h2>
+            <div class="postcard-flipper" data-postcard-flipper>
+              <!-- front: the original card; its mailto link works with or without JS -->
+              <div class="postcard-face postcard-front airmail-frame rounded-xxl p-[7px] shadow-[0_30px_60px_-30px_rgba(26,43,74,.45)]" data-postcard-front>
+                <div class="bg-cream text-navy rounded-[18px] p-6 sm:p-8 lg:p-12 h-full">
+                <div class="grid grid-cols-12 gap-4 lg:gap-8">
+                  <div class="col-span-12 md:col-span-7 md:pr-8 md:border-r-2 md:border-dashed md:border-navy/30">
+                    <div class="font-hand text-[28px] text-hot-pink">Dear Melissa,</div>
 
-              <p class="mt-6 font-hand text-[22px] text-navy/75">
-                A project, a collab, or just design in general —<br/>
-                I'd love to hear from you.
-              </p>
+                    <h2 class="font-display text-[44px] sm:text-[64px] lg:text-[88px] leading-[0.95] mt-3">
+                      Write me<br/>a <em class="text-hot-pink">love letter</em>.
+                    </h2>
 
-              <a href="mailto:hola@mellen.do" class="mt-8 inline-block font-display italic text-[22px] lg:text-[28px] border-b-2 border-navy hover:text-hot-pink hover:border-hot-pink transition">
-                hola@mellen.do →
-              </a>
-            </div>
+                    <p class="mt-6 font-hand text-[22px] text-navy/75">
+                      A project, a collab, or just design in general —<br/>
+                      I'd love to hear from you.
+                    </p>
 
-            <div class="col-span-12 md:col-span-5 md:pl-4 mt-2 pt-6 border-t-2 border-dashed border-navy/25 md:mt-0 md:pt-0 md:border-t-0">
-              <div class="flex flex-row items-start justify-between gap-4 md:flex-col md:items-end">
-                <div class="stamp-perf p-4 pt-5 pb-5 bg-butter rotate-[4deg] inline-block w-[132px] sm:w-[148px] text-center flex-none">
-                  <div class="font-hand text-[22px] text-hot-pink leading-[1]">postal<br/>express</div>
-                  <div class="font-display italic text-[18px] mt-2">MDO · DR</div>
-                  <div class="font-hand text-[14px] mt-1 text-navy/60">2026</div>
+                    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+                      <button type="button" hidden data-postcard-flip class="bg-hot-pink text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-navy transition">
+                        Write it on the back ✦
+                      </button>
+                      <a href={`mailto:${CONTACT_EMAIL}`} class="inline-block font-display italic text-[22px] lg:text-[28px] border-b-2 border-navy hover:text-hot-pink hover:border-hot-pink transition">
+                        {CONTACT_EMAIL} →
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-span-12 md:col-span-5 md:pl-4 mt-2 pt-6 border-t-2 border-dashed border-navy/25 md:mt-0 md:pt-0 md:border-t-0">
+                    <div class="flex flex-row items-start justify-between gap-4 md:flex-col md:items-end">
+                      <div class="stamp-perf p-4 pt-5 pb-5 bg-butter rotate-[4deg] inline-block w-[132px] sm:w-[148px] text-center flex-none">
+                        <div class="font-hand text-[22px] text-hot-pink leading-[1]">postal<br/>express</div>
+                        <div class="font-display italic text-[18px] mt-2">MDO · DR</div>
+                        <div class="font-hand text-[14px] mt-1 text-navy/60">2026</div>
+                      </div>
+                      <div class="font-hand text-[18px] text-navy/80 text-right leading-[1.5] md:mt-6">
+                        To:<br/>
+                        <span class="text-navy text-[22px]">future client ✦</span><br/>
+                        anywhere, everywhere<br/>
+                        the world — 00000
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="font-hand text-[18px] text-navy/80 text-right leading-[1.5] md:mt-6">
-                  To:<br/>
-                  <span class="text-navy text-[22px]">future client ✦</span><br/>
-                  anywhere, everywhere<br/>
-                  the world — 00000
                 </div>
               </div>
+
+              <!-- back: the writing side (JS only) -->
+              <div class="postcard-face postcard-back airmail-frame rounded-xxl p-[7px] shadow-[0_30px_60px_-30px_rgba(26,43,74,.45)]" data-postcard-back hidden inert aria-hidden="true">
+                <form class="bg-cream text-navy rounded-[18px] p-6 sm:p-8 lg:p-12 h-full" data-postcard-form>
+                <div class="grid grid-cols-12 gap-4 lg:gap-8">
+                  <div class="col-span-12 md:col-span-7 md:pr-8 md:border-r-2 md:border-dashed md:border-navy/30">
+                    <div class="font-hand text-[28px] text-hot-pink">Dear Melissa,</div>
+
+                    <label class="block mt-4">
+                      <span class="font-hand text-[18px] text-navy/70">my name is</span>
+                      <input name="name" required maxlength="80" autocomplete="name" class="postcard-line" placeholder="your name" />
+                    </label>
+
+                    <label class="block mt-4">
+                      <span class="font-hand text-[18px] text-navy/70">and I'd love your help with</span>
+                      <textarea name="project" required rows="3" maxlength="1200" class="postcard-lines" placeholder="a rebrand, a label, a love letter back…"></textarea>
+                    </label>
+
+                    <fieldset class="mt-3">
+                      <legend class="font-hand text-[18px] text-navy/70">budget-ish</legend>
+                      <div class="mt-2 flex flex-wrap gap-2">
+                        {BUDGETS.map((b) => (
+                          <label class="rounded-pill border border-navy/20 px-3 py-1.5 text-[13px] font-medium cursor-pointer transition hover:bg-butter has-checked:bg-hot-pink has-checked:text-cream has-checked:border-hot-pink has-focus-visible:outline-2 has-focus-visible:outline-dashed has-focus-visible:outline-hot-pink">
+                            <input type="radio" name="budget" value={b.value} class="sr-only" />
+                            {b.label}
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+
+                    <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+                      <button type="submit" class="bg-hot-pink text-cream rounded-pill px-6 py-3 text-[14px] font-medium hover:bg-navy transition">
+                        Stamp it &amp; send ✦
+                      </button>
+                      <button type="button" data-postcard-unflip class="font-hand text-[18px] text-navy/70 hover:text-hot-pink transition">
+                        ← flip back
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-span-12 md:col-span-5 md:pl-4 mt-2 pt-6 border-t-2 border-dashed border-navy/25 md:mt-0 md:pt-0 md:border-t-0">
+                    <div class="flex flex-row items-start justify-between gap-4 md:flex-col md:items-end">
+                      <div class="relative flex-none">
+                        <div class="stamp-perf p-4 pt-5 pb-5 bg-mint rotate-[-3deg] inline-block w-[132px] sm:w-[148px] text-center">
+                          <div class="font-hand text-[22px] text-hot-pink leading-[1]">postal<br/>express</div>
+                          <div class="font-display italic text-[18px] mt-2">SDQ · DR</div>
+                          <div class="font-hand text-[14px] mt-1 text-navy/60">air mail ✦</div>
+                        </div>
+                        <svg class="postmark" viewBox="0 0 220 124" aria-hidden="true">
+                          <defs>
+                            <path id="postmark-arc" d="M 22 62 A 40 40 0 0 1 102 62" />
+                          </defs>
+                          <g fill="none" stroke="currentColor">
+                            <circle cx="62" cy="62" r="54" stroke-width="3" />
+                            <circle cx="62" cy="62" r="44" stroke-width="1.5" />
+                            <path d="M120 40 q 12 -8 24 0 t 24 0 t 24 0 t 24 0" stroke-width="3" />
+                            <path d="M120 56 q 12 -8 24 0 t 24 0 t 24 0 t 24 0" stroke-width="3" />
+                            <path d="M120 72 q 12 -8 24 0 t 24 0 t 24 0 t 24 0" stroke-width="3" />
+                            <path d="M120 88 q 12 -8 24 0 t 24 0 t 24 0 t 24 0" stroke-width="3" />
+                          </g>
+                          <g fill="currentColor" font-family="Poppins, sans-serif" text-anchor="middle">
+                            <text font-size="9" letter-spacing="2"><textPath href="#postmark-arc" startOffset="50%">POSTAL EXPRESS</textPath></text>
+                            <text x="62" y="70" font-size="24" font-weight="600" letter-spacing="1">SDQ</text>
+                            <text x="62" y="88" font-size="10" font-weight="500" data-postmark-date>DD MMM YYYY</text>
+                          </g>
+                        </svg>
+                      </div>
+                      <div class="font-hand text-[18px] text-navy/80 text-right leading-[1.5] md:mt-10">
+                        To:<br/>
+                        <span class="text-navy text-[22px]">Melissa ✦</span><br/>
+                        {CONTACT_EMAIL}<br/>
+                        Santo Domingo, DR
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="envelope envelope-front" aria-hidden="true">
+              <div class="envelope-pocket"></div>
+              <div class="envelope-flap"></div>
+              <div class="envelope-seal">✦</div>
             </div>
           </div>
+
+          <div class="postcard-sent" data-postcard-sent hidden>
+            <div>
+              <div class="font-hand text-[28px] lg:text-[36px] text-butter">✦ it's in the mail ✦</div>
+              <p class="font-display text-[40px] sm:text-[56px] lg:text-[72px] leading-[0.95] mt-3">
+                Thank you — <em>talk soon</em>.
+              </p>
+              <p class="mt-5 font-hand text-[20px] text-cream/90">
+                Your email app has the letter ready to send.
+                Didn't open? <a data-postcard-fallback href={`mailto:${CONTACT_EMAIL}`} class="underline underline-offset-4">send it from here</a>.
+              </p>
+              <button type="button" data-postcard-again class="mt-6 bg-cream text-hot-pink rounded-pill px-6 py-3 text-[14px] font-semibold hover:bg-navy hover:text-cream transition">
+                Write another ✦
+              </button>
+            </div>
           </div>
+          <p class="sr-only" aria-live="polite" data-postcard-status></p>
         </div>
 
         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[13px]">
@@ -345,3 +506,8 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
   </section>
 
 </PublicLayout>
+
+<script>
+  import { initHomePlay } from '../scripts/play';
+  initHomePlay();
+</script>

@@ -131,7 +131,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 sizes="(max-width: 768px) 90vw, 400px"
                 alt={polaroidPhotos[0]?.alt}
                 loading="eager"
-                decoding="async"
+               
                 draggable="false"
               />
               <div class="w-full relative">
@@ -210,7 +210,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 <div class={`col-span-12 md:col-span-7 lg:col-span-8 relative lift ${isReversed ? 'order-1 md:order-2' : ''}`}>
                   <a href={`/work/${s.slug}`} class="block rounded-xxl overflow-hidden border border-navy/10 bg-navy aspect-[4/3] md:aspect-[16/10]">
                     {thumb ? (
-                      <img class="w-full h-full object-cover" src={imgSrc(thumb.imageLKey, 1200)} srcset={imgSrcset(thumb.imageLKey)} sizes="(max-width: 768px) 100vw, 66vw" alt={thumb.altL} loading="eager" fetchpriority={idx === 0 ? 'high' : 'low'} decoding="async" />
+                      <img class="w-full h-full object-cover" src={imgSrc(thumb.imageLKey, 1200)} srcset={imgSrcset(thumb.imageLKey)} sizes="(max-width: 768px) 100vw, 66vw" alt={thumb.altL} loading="eager" fetchpriority={idx === 0 ? 'high' : 'low'} />
                     ) : (
                       <div class="w-full h-full bg-navy"></div>
                     )}
@@ -259,7 +259,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 const color = cardColors[idx % cardColors.length];
                 return thumb ? (
                   <a href={`/work/${s.slug}`} aria-label={s.title} draggable="false" data-scatter-tile class={`rounded-xxl overflow-hidden aspect-square bg-${color} lift block`}>
-                    <img class="w-full h-full object-cover" src={thumbSrc(thumb.imageLKey, 800, 1)} srcset={thumbSrcset(thumb.imageLKey, 1, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="eager" fetchpriority="low" decoding="async" draggable="false" />
+                    <img class="w-full h-full object-cover" src={thumbSrc(thumb.imageLKey, 800, 1)} srcset={thumbSrcset(thumb.imageLKey, 1, [400, 600, 800])} sizes="(max-width: 768px) 50vw, 25vw" alt={thumb.altL} loading="eager" fetchpriority="low" draggable="false" />
                   </a>
                 ) : (
                   <a href={`/work/${s.slug}`} draggable="false" data-scatter-tile class={`rounded-xxl aspect-square bg-${color} p-5 lift flex flex-col justify-between text-navy`}>

@@ -1,6 +1,8 @@
+import type { MiddlewareHandler } from 'astro';
 import { defineMiddleware } from 'astro:middleware';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
 import { env } from 'cloudflare:workers';
+import { supportsImageTransforms, withImageTransforms } from './lib/img-transforms';
 
 const PROTECTED_PREFIXES = ['/admin', '/api'];
 
@@ -21,7 +23,11 @@ function isProtected(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export const onRequest = defineMiddleware((context, next) =>
+  withImageTransforms(supportsImageTransforms(new URL(context.request.url).hostname), () => handle(context, next)),
+);
+
+const handle: MiddlewareHandler = async (context, next) => {
   try {
     const { pathname } = new URL(context.request.url);
     const protectedRoute = isProtected(pathname);
@@ -74,4 +80,4 @@ export const onRequest = defineMiddleware(async (context, next) => {
       headers: { 'content-type': 'text/plain' },
     });
   }
-});
+};

@@ -1,3 +1,5 @@
+import { imageTransformsEnabled } from './img-transforms';
+
 const DEFAULT_WIDTHS = [400, 800, 1600] as const;
 const DEFAULT_QUALITY = 80;
 
@@ -10,7 +12,7 @@ export function imgUrl(
   width: number,
   opts?: { quality?: number; fit?: 'scale-down' | 'cover' | 'contain'; height?: number }
 ): string {
-  if (isGif(key) || import.meta.env.DEV) return `/images/${key}`;
+  if (isGif(key) || import.meta.env.DEV || !imageTransformsEnabled()) return `/images/${key}`;
   const q = opts?.quality ?? DEFAULT_QUALITY;
   const fit = opts?.fit ?? 'scale-down';
   const height = opts?.height ? `,height=${opts.height}` : '';
@@ -22,7 +24,7 @@ export function imgSrcset(
   widths: readonly number[] = DEFAULT_WIDTHS
 ): string {
   if (isGif(key)) return `/images/${key}`;
-  if (import.meta.env.DEV) return '';
+  if (import.meta.env.DEV || !imageTransformsEnabled()) return '';
   return widths.map((w) => `${imgUrl(key, w)} ${w}w`).join(', ');
 }
 
@@ -48,6 +50,6 @@ export function thumbSrcset(
   widths: readonly number[] = DEFAULT_WIDTHS
 ): string {
   if (isGif(key)) return `/images/${key}`;
-  if (import.meta.env.DEV) return '';
+  if (import.meta.env.DEV || !imageTransformsEnabled()) return '';
   return widths.map((w) => `${thumbSrc(key, w, aspect)} ${w}w`).join(', ');
 }

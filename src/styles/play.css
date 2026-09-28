@@ -62,7 +62,8 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 @keyframes caption-pop { from { opacity: 0; transform: translateY(8px) rotate(-4deg); } to { opacity: 1; transform: none; } }
 
 /* ---------- scatter grid ---------- */
-[data-scatter-grid] { position: relative; }
+/* its own stacking context, so dragged tiles (z-index++) never cover the scatter/tidy button */
+[data-scatter-grid] { position: relative; isolation: isolate; }
 [data-scatter-tile] { position: relative; }
 [data-scatter-grid].is-scattered [data-scatter-tile] {
   touch-action: none;
@@ -131,10 +132,10 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 .envelope {
   position: absolute;
   left: 50%;
-  bottom: 6%;
+  top: 50%; /* centred on the card: on a tall mobile card the bottom is below the fold */
   width: min(70%, 520px);
   aspect-ratio: 1.6;
-  translate: -50% 40px;
+  translate: -50% calc(-50% + 40px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 400ms ease, translate 700ms var(--ease-out-back);
@@ -192,7 +193,7 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
   transition: scale 350ms var(--ease-out-back) 300ms;
 }
 
-.postcard-scene.is-enveloping .envelope { opacity: 1; translate: -50% 0; }
+.postcard-scene.is-enveloping .envelope { opacity: 1; translate: -50% -50%; }
 .postcard-scene.is-enveloping .postcard-tape { opacity: 0; transition: opacity 300ms; }
 .postcard-scene.is-enveloping .postcard-flipper {
   transform: translate(var(--mail-x, 0px), var(--mail-y, 0px)) rotateY(180deg) scale(var(--mail-scale, 0.5));

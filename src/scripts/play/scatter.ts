@@ -4,7 +4,7 @@
 import { clamp, scatterPoses } from '../../lib/play/motion';
 import { draggable, reducedMotion } from './shared';
 
-const EDGE_SLACK = 12;
+const EDGE_SLACK = 4;
 
 interface Pose {
   x: number;
@@ -34,11 +34,16 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
     grid.classList.add('is-scattered');
     tiles.forEach((tile, i) => {
       const f = fresh[i] ?? { x: 0, y: 0, rotate: 0 };
-      // keep each proof on the table: edge tiles may only slide inwards
+      // keep each proof on the table: edge tiles may only slide inwards, far
+      // enough that their rotated corners stay inside the grid too
       // (offsetLeft ignores transforms; the grid is the offsetParent)
-      const minX = -tile.offsetLeft - EDGE_SLACK;
-      const maxX = grid.clientWidth - (tile.offsetLeft + tile.offsetWidth) + EDGE_SLACK;
-      const p: Pose = { x: clamp(f.x * tile.offsetWidth, minX, maxX), y: f.y * tile.offsetHeight, rotate: f.rotate };
+      const w = tile.offsetWidth;
+      const h = tile.offsetHeight;
+      const rad = (Math.abs(f.rotate) * Math.PI) / 180;
+      const overhang = (w * Math.cos(rad) + h * Math.sin(rad) - w) / 2;
+      const minX = -tile.offsetLeft + overhang - EDGE_SLACK;
+      const maxX = grid.clientWidth - (tile.offsetLeft + w) - overhang + EDGE_SLACK;
+      const p: Pose = { x: clamp(f.x * w, minX, maxX), y: f.y * h, rotate: f.rotate };
       poses[i] = p;
       place(tile, p);
       if (!reducedMotion()) {

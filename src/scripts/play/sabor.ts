@@ -13,20 +13,26 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
 
   // ✦ twinkle around the word while the dial moves: more, bigger and faster the higher it is.
   // Only transform/opacity animate; each star removes itself; never more than a dozen alive.
-  let lastSpark = 0;
   let live = 0;
-  const sparkle = (level: number): void => {
-    if (reducedMotion() || level < 0.03) return;
-    const now = performance.now();
-    if (live >= 3 + level * 9 || now - lastSpark < 240 - level * 190) return;
-    lastSpark = now;
+  let level = 0;
+  let onScreen = true;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const sparkle = (): void => {
+    if (reducedMotion() || level < 0.02 || live >= 2 + level * 12) return;
     const star = document.createElement('span');
     star.className = 'sabor-spark';
     star.textContent = '✦';
     star.setAttribute('aria-hidden', 'true');
     star.style.left = `${-6 + Math.random() * 108}%`;
     star.style.top = `${-12 + Math.random() * 96}%`;
-    star.style.fontSize = `${10 + Math.random() * (10 + level * 16)}px`;
+    star.style.fontSize = `${8 + Math.random() * (6 + level * 18)}px`;
+    // at low sabor they barely move; at max they drift/orbit far and twinkle fast
+    const angle = Math.random() * Math.PI * 2;
+    const reach = 4 + level * 46;
+    star.style.setProperty('--dx', `${(Math.cos(angle) * reach).toFixed(1)}px`);
+    star.style.setProperty('--dy', `${(Math.sin(angle) * reach).toFixed(1)}px`);
+    star.style.setProperty('--spin', `${Math.round((Math.random() < 0.5 ? -1 : 1) * (15 + level * 120))}deg`);
+    star.style.setProperty('--dur', `${Math.round(1300 - level * 750)}ms`);
     star.style.color = Math.random() < 0.55 ? 'var(--color-butter)' : 'var(--color-hot-pink)';
     live++;
     let gone = false;
@@ -39,17 +45,32 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
     // cancelled (e.g. reduced motion switched on mid-twinkle) counts as done too
     star.addEventListener('animationend', done, { once: true });
     star.addEventListener('animationcancel', done, { once: true });
-    setTimeout(done, 1500);
+    setTimeout(done, 1600);
     root.appendChild(star);
   };
 
-  let shown = Number.NaN;
+  // one self-scheduling timer: a star every 1000ms at the bottom of the range, every ~70ms at the top;
+  // it stops at 0, off screen and under reduced motion
+  const tick = (): void => {
+    timer = undefined;
+    if (reducedMotion() || level < 0.02 || !onScreen) return;
+    sparkle();
+    timer = setTimeout(tick, 1000 - level * 930);
+  };
+  const wake = (): void => {
+    if (timer === undefined) tick();
+  };
+  new IntersectionObserver(([e]) => {
+    onScreen = e?.isIntersecting ?? true;
+    wake();
+  }).observe(root);
+
   const apply = (value: number): void => {
     const s = saborFromDial(value);
     root.style.setProperty('--sabor', s.level.toFixed(3));
     onSpeed(s.marqueeSpeed);
-    if (!Number.isNaN(shown) && Math.abs(value - shown) > 0.2) sparkle(s.level);
-    shown = value;
+    level = s.level;
+    wake();
   };
 
   let end = 0; // scrollY at which the sabor line has left the top of the viewport
@@ -101,7 +122,6 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
   });
 
   dial.hidden = false;
-  document.querySelectorAll<HTMLElement>('[data-sabor-hint]').forEach((el) => (el.hidden = false));
 
   measure();
   if (!reducedMotion()) {

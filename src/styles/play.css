@@ -36,12 +36,14 @@
 .sabor-hint {
   position: absolute;
   left: 0;
-  top: calc(100% + 20px);
-  white-space: nowrap;
+  top: calc(100% + 16px);
+  /* wraps inside the word's width, so on a phone it never runs off-screen */
+  width: max-content;
+  max-width: 100%;
   font-family: var(--font-hand);
   font-style: normal;
   font-size: 16px;
-  line-height: 1;
+  line-height: 1.15;
   letter-spacing: 0;
   color: color-mix(in oklab, var(--color-navy) 60%, transparent);
   pointer-events: none;
@@ -103,6 +105,11 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 [data-scatter-grid].is-scattered [data-scatter-tile].is-held { cursor: grabbing; scale: 1.04; box-shadow: 0 30px 40px -18px rgba(26, 43, 74, 0.5); }
 [data-scatter-grid].is-scattered [data-scatter-tile] img { -webkit-user-drag: none; pointer-events: none; }
 [data-scatter-grid].is-scattered { z-index: 20; }
+/* on a phone the proofs are almost screen-wide: shrink them so they can actually spread */
+@media (max-width: 767px) {
+  [data-scatter-grid].is-scattered [data-scatter-tile] { scale: 0.72; }
+  [data-scatter-grid].is-scattered [data-scatter-tile].is-held { scale: 0.76; }
+}
 
 /* ---------- mailable postcard ---------- */
 .postcard-scene { position: relative; perspective: 2000px; }

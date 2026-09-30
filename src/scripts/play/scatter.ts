@@ -92,9 +92,13 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
     const vw = document.documentElement.clientWidth;
     const vh = window.innerHeight;
     const gridBox = grid.getBoundingClientRect();
+    grid.classList.add('is-scattered');
     const first = tiles[0];
-    const tileW = first?.offsetWidth ?? 0;
-    const tileH = first?.offsetHeight ?? 0;
+    const k = first ? parseFloat(getComputedStyle(first).scale) || 1 : 1;
+    const fullW = first?.offsetWidth ?? 0;
+    const fullH = first?.offsetHeight ?? 0;
+    const tileW = fullW * k;
+    const tileH = fullH * k;
     const targets = scatterTargets(tiles.length, Math.floor(Math.random() * 2 ** 31), {
       left: MARGIN,
       top: NAV_CLEARANCE,
@@ -103,14 +107,15 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
       tileW,
       tileH,
     });
-    grid.classList.add('is-scattered');
     tiles.forEach((tile, i) => {
       const s = states[i];
       const t = targets[i];
       if (!s || !t) return;
       // targets are viewport px; the tile's resting spot is its grid slot
       // (offsetLeft/Top ignore transforms; the grid is the offsetParent)
-      s.target = { x: t.x - (gridBox.left + tile.offsetLeft), y: t.y - (gridBox.top + tile.offsetTop), rotate: t.rotate };
+      // (a scaled tile shrinks around its centre, so its box starts (1-k)/2 in)
+      const inset = { x: (fullW - tileW) / 2, y: (fullH - tileH) / 2 };
+      s.target = { x: t.x - (gridBox.left + tile.offsetLeft + inset.x), y: t.y - (gridBox.top + tile.offsetTop + inset.y), rotate: t.rotate };
       // a little upward kick so they get thrown, not slid
       s.y.velocity -= 250 + Math.random() * 250;
       s.r.velocity += (i % 2 ? 1 : -1) * 120;

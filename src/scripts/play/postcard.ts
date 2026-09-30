@@ -1,7 +1,7 @@
 // Mailable postcard: flip the "love letter" card to write on its back; sending
 // postmarks the stamp (SDQ + today), slides the card into an envelope and
 // flies it off. The letter itself goes out through a prefilled mailto: link.
-import { buildLoveLetterMailto, isBudgetValue, postmarkDate, type LoveLetter } from '../../lib/play/postcard';
+import { buildLoveLetterMailto, isServiceValue, postmarkDate, type LoveLetter } from '../../lib/play/postcard';
 import { reducedMotion, wait } from './shared';
 
 const STATES = ['is-flipped', 'is-postmarked', 'is-enveloping', 'is-sealed', 'is-flying', 'is-sent'] as const;
@@ -87,11 +87,10 @@ export function initPostcard(root: HTMLElement): void {
     e.preventDefault();
     if (busy || !form.reportValidity()) return;
     const data = new FormData(form);
-    const budget = String(data.get('budget') ?? '');
     void send({
       name: String(data.get('name') ?? ''),
       project: String(data.get('project') ?? ''),
-      budget: isBudgetValue(budget) ? budget : '',
+      services: data.getAll('services').map(String).filter(isServiceValue),
     });
   });
 

@@ -17,7 +17,7 @@ export const POLAROID_PHOTOS: readonly PolaroidPhoto[] = [
 export const POLAROID_CAPTIONS: readonly string[] = [
   "hi, it's me ✦",
   'yes, the pink is on purpose',
-  'café con leche, extra sabor',
+  "i'm probably drinking coffee rn",
   'picking a typeface, probably',
   '10 years & still giddy',
   'hecho en Santo Domingo ♥',
@@ -63,4 +63,13 @@ export function saborFromDial(value: number): Sabor {
   const v = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : SABOR_DEFAULT;
   const level = v / 100;
   return { level, marqueeSpeed: MARQUEE_BASE_SPEED * (1 + level * 4) };
+}
+
+/**
+ * Scroll-driven sabor: 0 with the page at the top, 100 once the sabor line has
+ * scrolled out of view (`end` = the scrollY where that happens).
+ */
+export function saborFromScroll(scrollY: number, end: number): number {
+  if (!(end > 0)) return 0;
+  return Math.round(Math.min(1, Math.max(0, scrollY / end)) * 100);
 }

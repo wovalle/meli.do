@@ -1,10 +1,13 @@
-// "Scatter" the selected-work tiles like printed proofs dropped on a table.
-// Scattered tiles can be dragged around; a tap still opens the case study;
-// "tidy up" puts them back in the grid.
-import { clamp, scatterPoses } from '../../lib/play/motion';
-import { draggable, reducedMotion } from './shared';
+// "Scatter" throws the selected-work tiles across the whole screen like printed
+// proofs, on springs. Scattered tiles can be dragged around; a tap still opens
+// the case study; "tidy up" springs them back into the grid.
+// Reduced motion: the same positions, set instantly — no flight.
+import { TOSS, isSettled, scatterTargets, stepSpring, type SpringState } from '../../lib/play/motion';
+import { animate, draggable, reducedMotion } from './shared';
 
-const EDGE_SLACK = 4;
+/** Room kept clear at the top for the sticky nav pill. */
+const NAV_CLEARANCE = 96;
+const MARGIN = 8;
 
 interface Pose {
   x: number;
@@ -12,67 +15,122 @@ interface Pose {
   rotate: number;
 }
 
+interface TileState {
+  x: SpringState;
+  y: SpringState;
+  r: SpringState;
+  target: Pose;
+  held: boolean;
+}
+
+const still = (v: number): SpringState => ({ value: v, velocity: 0 });
+
 export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void {
   const tiles = Array.from(grid.querySelectorAll<HTMLElement>('[data-scatter-tile]'));
   if (tiles.length === 0) return;
   const label = toggle.querySelector<HTMLElement>('[data-scatter-label]') ?? toggle;
 
   let scattered = false;
-  let poses: Pose[] = tiles.map(() => ({ x: 0, y: 0, rotate: 0 }));
   let z = 1;
+  let stop: (() => void) | null = null;
+  const states: TileState[] = tiles.map(() => ({ x: still(0), y: still(0), r: still(0), target: { x: 0, y: 0, rotate: 0 }, held: false }));
 
-  const place = (tile: HTMLElement, p: Pose): void => {
-    tile.style.translate = `${p.x.toFixed(1)}px ${p.y.toFixed(1)}px`;
-    tile.style.rotate = `${p.rotate.toFixed(2)}deg`;
+  const render = (tile: HTMLElement, s: TileState): void => {
+    tile.style.translate = `${s.x.value.toFixed(1)}px ${s.y.value.toFixed(1)}px`;
+    tile.style.rotate = `${s.r.value.toFixed(2)}deg`;
   };
 
-  const scatter = (): void => {
-    scattered = true;
-    const seed = Math.floor(Math.random() * 2 ** 31);
-    const fresh = scatterPoses(tiles.length, seed);
-    grid.classList.remove('is-tidying');
-    grid.classList.add('is-scattered');
+  const snap = (): void => {
     tiles.forEach((tile, i) => {
-      const f = fresh[i] ?? { x: 0, y: 0, rotate: 0 };
-      // keep each proof on the table: edge tiles may only slide inwards, far
-      // enough that their rotated corners stay inside the grid too
-      // (offsetLeft ignores transforms; the grid is the offsetParent)
-      const w = tile.offsetWidth;
-      const h = tile.offsetHeight;
-      const rad = (Math.abs(f.rotate) * Math.PI) / 180;
-      const overhang = (w * Math.cos(rad) + h * Math.sin(rad) - w) / 2;
-      const minX = -tile.offsetLeft + overhang - EDGE_SLACK;
-      const maxX = grid.clientWidth - (tile.offsetLeft + w) - overhang + EDGE_SLACK;
-      const p: Pose = { x: clamp(f.x * w, minX, maxX), y: f.y * h, rotate: f.rotate };
-      poses[i] = p;
-      place(tile, p);
-      if (!reducedMotion()) {
-        // drop in from above, spinning a bit more, and land with a bounce
-        tile.animate(
-          [
-            { translate: `${p.x}px ${p.y - 90}px`, rotate: `${p.rotate * 2}deg`, scale: '1.08', opacity: 0.4 },
-            { translate: `${p.x}px ${p.y}px`, rotate: `${p.rotate}deg`, scale: '1', opacity: 1 },
-          ],
-          { duration: 650, delay: i * 55, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'backwards' },
-        );
-      }
+      const s = states[i];
+      if (!s) return;
+      s.x = still(s.target.x);
+      s.y = still(s.target.y);
+      s.r = still(s.target.rotate);
+      render(tile, s);
     });
-    toggle.setAttribute('aria-pressed', 'true');
-    label.textContent = 'tidy up';
   };
 
-  const tidy = (): void => {
-    scattered = false;
-    grid.classList.add('is-tidying');
+  /** One rAF loop drives every tile until they've all settled. */
+  const run = (): void => {
+    if (reducedMotion()) {
+      snap();
+      return;
+    }
+    if (stop) return;
+    stop = animate((dt) => {
+      let moving = false;
+      tiles.forEach((tile, i) => {
+        const s = states[i];
+        if (!s || s.held) return;
+        s.x = stepSpring(s.x, s.target.x, dt, TOSS);
+        s.y = stepSpring(s.y, s.target.y, dt, TOSS);
+        s.r = stepSpring(s.r, s.target.rotate, dt, TOSS);
+        render(tile, s);
+        if (!isSettled(s.x, s.target.x, 0.3) || !isSettled(s.y, s.target.y, 0.3) || !isSettled(s.r, s.target.rotate, 0.05)) moving = true;
+      });
+      if (!moving) {
+        stop = null;
+        snap();
+        if (!scattered) finishTidy();
+      }
+      return moving;
+    });
+  };
+
+  const finishTidy = (): void => {
     grid.classList.remove('is-scattered');
-    poses = tiles.map(() => ({ x: 0, y: 0, rotate: 0 }));
     for (const tile of tiles) {
       tile.style.translate = '';
       tile.style.rotate = '';
       tile.style.zIndex = '';
     }
+  };
+
+  const scatter = (): void => {
+    scattered = true;
+    const vw = document.documentElement.clientWidth;
+    const vh = window.innerHeight;
+    const gridBox = grid.getBoundingClientRect();
+    const first = tiles[0];
+    const tileW = first?.offsetWidth ?? 0;
+    const tileH = first?.offsetHeight ?? 0;
+    const targets = scatterTargets(tiles.length, Math.floor(Math.random() * 2 ** 31), {
+      left: MARGIN,
+      top: NAV_CLEARANCE,
+      width: vw - MARGIN * 2,
+      height: vh - NAV_CLEARANCE - MARGIN,
+      tileW,
+      tileH,
+    });
+    grid.classList.add('is-scattered');
+    tiles.forEach((tile, i) => {
+      const s = states[i];
+      const t = targets[i];
+      if (!s || !t) return;
+      // targets are viewport px; the tile's resting spot is its grid slot
+      // (offsetLeft/Top ignore transforms; the grid is the offsetParent)
+      s.target = { x: t.x - (gridBox.left + tile.offsetLeft), y: t.y - (gridBox.top + tile.offsetTop), rotate: t.rotate };
+      // a little upward kick so they get thrown, not slid
+      s.y.velocity -= 250 + Math.random() * 250;
+      s.r.velocity += (i % 2 ? 1 : -1) * 120;
+    });
+    toggle.setAttribute('aria-pressed', 'true');
+    label.textContent = 'tidy up';
+    run();
+  };
+
+  const tidy = (): void => {
+    scattered = false;
+    for (const s of states) s.target = { x: 0, y: 0, rotate: 0 };
     toggle.setAttribute('aria-pressed', 'false');
     label.textContent = 'scatter';
+    if (reducedMotion()) {
+      snap();
+      finishTidy();
+    } else {
+      run();
+    }
   };
 
   toggle.hidden = false;
@@ -98,20 +156,27 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
 
     draggable(tile, {
       onStart: () => {
-        if (!scattered) return false;
-        base = poses[i] ?? base;
+        const s = states[i];
+        if (!scattered || !s) return false;
+        s.held = true;
+        base = { x: s.x.value, y: s.y.value, rotate: s.r.value };
         tile.style.zIndex = String(++z);
         tile.classList.add('is-held');
         return true;
       },
       onMove: (m) => {
-        const p: Pose = { x: base.x + m.dx, y: base.y + m.dy, rotate: base.rotate };
-        poses[i] = p;
-        place(tile, p);
+        const s = states[i];
+        if (!s) return;
+        s.x = still(base.x + m.dx);
+        s.y = still(base.y + m.dy);
+        s.target = { x: s.x.value, y: s.y.value, rotate: base.rotate };
+        render(tile, s);
       },
       onEnd: (m) => {
+        const s = states[i];
         tile.classList.remove('is-held');
         justDragged = !m.tap;
+        if (s) s.held = false;
       },
     });
   });

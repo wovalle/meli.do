@@ -4,27 +4,31 @@
 
 export const CONTACT_EMAIL = 'hola@mellen.do';
 
-export const BUDGETS = [
-  { value: 'under-2k', label: 'under $2k' },
-  { value: '2k-8k', label: '$2k – $8k' },
-  { value: '8k-plus', label: '$8k +' },
-  { value: 'not-sure', label: 'not sure yet' },
+// The three things her portfolio actually shows (see /work): brand identities
+// (Alkasa, Bien Picaíto, Paseo One Four, Probanding…), packaging (Liquid Beer,
+// Estelar) and campaigns / art direction (Estelar's NY launch, Alkasa's 30th).
+export const SERVICES = [
+  { value: 'branding', label: 'branding & identity' },
+  { value: 'packaging', label: 'packaging' },
+  { value: 'campaigns', label: 'campaigns & art direction' },
 ] as const;
 
-export type BudgetValue = (typeof BUDGETS)[number]['value'];
+export type ServiceValue = (typeof SERVICES)[number]['value'];
 
 export interface LoveLetter {
   name: string;
   project: string;
-  budget: BudgetValue | '';
+  services: readonly ServiceValue[];
 }
 
-export function isBudgetValue(v: string): v is BudgetValue {
-  return BUDGETS.some((b) => b.value === v);
+export function isServiceValue(v: string): v is ServiceValue {
+  return SERVICES.some((s) => s.value === v);
 }
 
-export function budgetLabel(v: BudgetValue | ''): string {
-  return BUDGETS.find((b) => b.value === v)?.label ?? 'not sure yet';
+/** Labels in the picker's order, whatever order they were ticked in. */
+export function servicesLabel(picked: readonly ServiceValue[]): string {
+  const labels = SERVICES.filter((s) => picked.includes(s.value)).map((s) => s.label);
+  return labels.length ? labels.join(', ') : 'not sure yet';
 }
 
 export function loveLetterSubject(letter: LoveLetter): string {
@@ -39,7 +43,7 @@ export function loveLetterBody(letter: LoveLetter): string {
     '',
     letter.project.trim(),
     '',
-    `Budget-ish: ${budgetLabel(letter.budget)}`,
+    `Services: ${servicesLabel(letter.services)}`,
     '',
     `— ${name}`,
     '(sent from the postcard on mellen.do)',

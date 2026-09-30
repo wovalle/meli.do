@@ -7,6 +7,12 @@
 .sabor { position: relative; display: inline-block; }
 .sabor-word {
   display: inline-block;
+  /* Italic glyphs overhang their advance box (the entry of the "s", the tail
+     of the "r"). Outside a transformed box that overhang wasn't repainted when
+     the colour changed, leaving pink slivers at sabor 0. Pad the box so the
+     ink is inside it, and give the room back with a negative margin. */
+  padding: 0 0.14em;
+  margin: 0 -0.14em;
   transform: skewX(calc(var(--sabor) * -14deg));
   transform-origin: 50% 100%;
   color: color-mix(in oklab, var(--color-hot-pink) calc(var(--sabor) * 100%), var(--color-navy));
@@ -23,23 +29,41 @@
   appearance: none;
   -webkit-appearance: none;
   background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 40 2, 80 2, 118 6 S 180 10, 198 5' stroke='%23FF1493' stroke-width='3' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 12px;
-  cursor: ew-resize;
+  cursor: pointer;
   touch-action: pan-y;
 }
 .sabor-dial[hidden] { display: none; }
+.sabor-hint {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 20px);
+  white-space: nowrap;
+  font-family: var(--font-hand);
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: color-mix(in oklab, var(--color-navy) 60%, transparent);
+  pointer-events: none;
+}
+@media (min-width: 1024px) { .sabor-hint { font-size: 18px; } }
+.sabor-hint[hidden] { display: none; }
 .sabor-dial:focus-visible { outline: 2px dashed var(--color-hot-pink); outline-offset: 6px; border-radius: 8px; }
 .sabor-dial::-webkit-slider-runnable-track { height: 28px; background: transparent; }
 .sabor-dial::-moz-range-track { height: 28px; background: transparent; }
 .sabor-dial::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 28px; height: 28px; border: 0; border-radius: 50%;
-  background: var(--color-butter) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 6 L27 21 L42 24 L27 27 L24 42 L21 27 L6 24 L21 21 Z' fill='%23FF1493'/></svg>") center / 70% no-repeat;
-  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.35);
+  width: 40px; height: 24px; margin-top: 2px; border: 2px solid var(--color-cream); border-radius: 999px;
+  background: var(--color-hot-pink) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24'><path d='M15 7v10M20 7v10M25 7v10' stroke='%23FFF5EC' stroke-width='2' stroke-linecap='round'/></svg>") center / 100% 100% no-repeat;
+  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.45), 0 0 0 1px rgba(26, 43, 74, 0.12);
+  cursor: grab;
 }
+.sabor-dial:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.08); }
 .sabor-dial::-moz-range-thumb {
-  width: 28px; height: 28px; border: 0; border-radius: 50%;
-  background: var(--color-butter) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 6 L27 21 L42 24 L27 27 L24 42 L21 27 L6 24 L21 21 Z' fill='%23FF1493'/></svg>") center / 70% no-repeat;
-  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.35);
+  width: 36px; height: 20px; border: 2px solid var(--color-cream); border-radius: 999px;
+  background: var(--color-hot-pink) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24'><path d='M15 7v10M20 7v10M25 7v10' stroke='%23FFF5EC' stroke-width='2' stroke-linecap='round'/></svg>") center / 100% 100% no-repeat;
+  box-shadow: 0 4px 10px -2px rgba(26, 43, 74, 0.45), 0 0 0 1px rgba(26, 43, 74, 0.12);
+  cursor: grab;
 }
 
 /* ---------- marquee ---------- */
@@ -58,6 +82,9 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 [data-polaroid].is-held { cursor: grabbing; }
 [data-polaroid]:focus-visible { outline: 3px dashed var(--color-hot-pink); outline-offset: 10px; border-radius: 28px; }
 [data-polaroid] img { -webkit-user-drag: none; pointer-events: none; }
+.polaroid-hint[hidden] { display: none; }
+.polaroid-hint .on-touch { display: none; }
+@media (hover: none) { .polaroid-hint .on-mouse { display: none; } .polaroid-hint .on-touch { display: inline; } }
 .polaroid-caption.is-new { animation: caption-pop 450ms var(--ease-out-back); }
 @keyframes caption-pop { from { opacity: 0; transform: translateY(8px) rotate(-4deg); } to { opacity: 1; transform: none; } }
 
@@ -75,7 +102,7 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 }
 [data-scatter-grid].is-scattered [data-scatter-tile].is-held { cursor: grabbing; scale: 1.04; box-shadow: 0 30px 40px -18px rgba(26, 43, 74, 0.5); }
 [data-scatter-grid].is-scattered [data-scatter-tile] img { -webkit-user-drag: none; pointer-events: none; }
-[data-scatter-grid].is-tidying [data-scatter-tile] { transition: translate 600ms var(--ease-out-quint), rotate 600ms var(--ease-out-quint), transform 500ms var(--ease-out-back), box-shadow 500ms var(--ease-out-quint); }
+[data-scatter-grid].is-scattered { z-index: 20; }
 
 /* ---------- mailable postcard ---------- */
 .postcard-scene { position: relative; perspective: 2000px; }

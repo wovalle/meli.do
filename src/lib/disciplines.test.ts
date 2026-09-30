@@ -20,7 +20,7 @@ test('every discipline slug resolves; unknown slugs do not', () => {
 });
 
 test('normalizeText strips accents and punctuation', () => {
-  assert.equal(normalizeText('Menú — Línea Gráfica!'), 'menu linea grafica');
+  assert.equal(normalizeText('Menú, Línea Gráfica!'), 'menu linea grafica');
 });
 
 test('keyword matching works across English and Spanish summaries', () => {

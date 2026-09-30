@@ -23,7 +23,7 @@ export function isSettled(s: SpringState, target: number, eps = 0.01): boolean {
   return Math.abs(s.value - target) < eps && Math.abs(s.velocity) < eps;
 }
 
-/** mulberry32 — small seeded PRNG so a scatter looks the same for the same seed. */
+/** mulberry32, small seeded PRNG so a scatter looks the same for the same seed. */
 export function seededRandom(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
@@ -66,7 +66,7 @@ export function rotatedOverhang(w: number, h: number, deg: number): { x: number;
 /**
  * Where `count` proofs land when thrown across the screen: one per cell of a
  * jittered grid over the visible area (so they spread out instead of piling
- * up), shuffled, tilted, and always fully on screen — rotated corners included.
+ * up), shuffled, tilted, and always fully on screen, rotated corners included.
  */
 export function scatterTargets(count: number, seed: number, area: ScatterArea): ScatterTarget[] {
   const rnd = seededRandom(seed);

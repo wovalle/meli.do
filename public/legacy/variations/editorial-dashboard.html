@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Melissa Encarnacion — Art Director & Designer</title>
+<title>Melissa Encarnacion, Art Director & Designer</title>
 <meta name="description" content="Dominican Art Director. Head of Design at Liquid Digital Agency. Portfolio of brand, editorial, and digital work." />
 
 <!-- FONTS -->
@@ -44,7 +44,7 @@
   html { background: #F5F0E8; }
   body { font-feature-settings: "ss01","cv11"; -webkit-font-smoothing: antialiased; }
 
-  /* HEADLINE REVEAL — clip-path mask up. 900ms ease-out-quint. staggered by line. */
+  /* HEADLINE REVEAL, clip-path mask up. 900ms ease-out-quint. staggered by line. */
   .reveal-line { overflow: hidden; }
   .reveal-line > span {
     display: inline-block;
@@ -56,7 +56,7 @@
   .reveal-line.d-300 > span { animation-delay: 300ms; }
   @keyframes line-up { to { transform: translateY(0); } }
 
-  /* MARQUEE TICKER — infinite x-scroll, 40s linear */
+  /* MARQUEE TICKER, infinite x-scroll, 40s linear */
   .ticker-track {
     animation: ticker 40s linear infinite;
     will-change: transform;
@@ -66,7 +66,7 @@
     to { transform: translateX(-50%); }
   }
 
-  /* CASE CARD HOVER — image zoom 1 → 1.06 600ms, plus title slide-in */
+  /* CASE CARD HOVER, image zoom 1 → 1.06 600ms, plus title slide-in */
   .case-card .case-img { transition: transform 900ms var(--ease-out-quint); }
   .case-card:hover .case-img { transform: scale(1.06); }
   .case-card .case-arrow { transition: transform 400ms var(--ease-out-quint); }
@@ -76,7 +76,7 @@
   .cursor-blink { animation: blink 1s steps(2,end) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* NUMBER TICK — counter-up on scroll. fallback: static shown. */
+  /* NUMBER TICK, counter-up on scroll. fallback: static shown. */
   @keyframes count-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .metric-fade { animation: count-up 700ms 250ms var(--ease-out-quint) backwards; }
 
@@ -131,7 +131,7 @@
     <!-- meta row -->
     <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-10 lg:mb-16">
       <span>Portfolio <span class="text-ink">/ 2026</span></span>
-      <span class="hidden sm:inline">Santo Domingo <span class="text-ink mx-2">—</span> Remote</span>
+      <span class="hidden sm:inline">Santo Domingo <span class="text-ink mx-2"></span> Remote</span>
       <span class="flex items-center gap-2"><span class="w-2 h-2 bg-mustard rounded-full inline-block"></span>Open for work</span>
     </div>
 
@@ -184,7 +184,7 @@
 
     <div class="flex items-end justify-between mb-12 lg:mb-16">
       <div>
-        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 01 — Selected Work</div>
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 01, Selected Work</div>
         <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Two stories,<br/>told in full.</h2>
       </div>
       <a href="#" class="hidden md:inline-flex font-mono text-[12px] uppercase tracking-[0.18em] border-b border-ink pb-1 hover:text-mustard hover:border-mustard transition">
@@ -192,14 +192,14 @@
       </a>
     </div>
 
-    <!-- CASE 1 — ESTELAR -->
+    <!-- CASE 1, ESTELAR -->
     <!-- anim on scroll: image clip-path reveal bottom-to-top 1000ms. Meta fades in 300ms after. -->
     <a href="#case-estelar" class="case-card group block border border-ink mb-8 lg:mb-12 overflow-hidden">
       <div class="grid grid-cols-12">
         <div class="col-span-12 lg:col-span-7 aspect-[4/3] lg:aspect-auto lg:min-h-[520px] overflow-hidden bg-ink">
           <img class="case-img lazy-fade w-full h-full object-cover"
                src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/3666ab229654899.68685cc14afa5.jpg"
-               alt="Estelar — Made by Tú Sabe. Package of artisanal Dominican salami."
+               alt="Estelar, Made by Tú Sabe. Package of artisanal Dominican salami."
                onload="this.classList.add('loaded')" />
         </div>
         <div class="col-span-12 lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between">
@@ -210,7 +210,7 @@
             </div>
             <h3 class="font-display text-[40px] lg:text-[56px] leading-[0.95] tracking-tight">Estelar<br/><span class="text-ink/40">by Tú Sabe</span></h3>
             <p class="mt-6 text-[16px] leading-relaxed text-ink/80 max-w-[36ch]">
-              Branding, packaging and art direction for the first Dominican salami in New York — an artisanal product that reaches America with flavor, history, and identity.
+              Branding, packaging and art direction for the first Dominican salami in New York, an artisanal product that reaches America with flavor, history, and identity.
             </p>
           </div>
           <div class="mt-10 flex items-end justify-between">
@@ -225,7 +225,7 @@
       </div>
     </a>
 
-    <!-- CASE 2 — ALKASA -->
+    <!-- CASE 2, ALKASA -->
     <a href="#case-alkasa" class="case-card group block border border-ink overflow-hidden">
       <div class="grid grid-cols-12">
         <div class="col-span-12 lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between order-2 lg:order-1 bg-volt">
@@ -236,7 +236,7 @@
             </div>
             <h3 class="font-display text-[40px] lg:text-[56px] leading-[0.95] tracking-tight">Alkasa<br/><span class="text-ink/50">30 Años</span></h3>
             <p class="mt-6 text-[16px] leading-relaxed text-ink max-w-[36ch]">
-              A 30th anniversary visual system for Dominican construction leader Alkasa — a flexible graphic language that honors three decades of building the country.
+              A 30th anniversary visual system for Dominican construction leader Alkasa, a flexible graphic language that honors three decades of building the country.
             </p>
           </div>
           <div class="mt-10 flex items-end justify-between">
@@ -251,7 +251,7 @@
         <div class="col-span-12 lg:col-span-7 aspect-[4/3] lg:aspect-auto lg:min-h-[520px] overflow-hidden bg-ink order-1 lg:order-2">
           <img class="case-img lazy-fade w-full h-full object-cover"
                src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/6f22aa231578247.68d6abb0e599d.png"
-               alt="Alkasa — 30 Años anniversary graphic system."
+               alt="Alkasa, 30 Años anniversary graphic system."
                onload="this.classList.add('loaded')" />
         </div>
       </div>
@@ -260,13 +260,13 @@
   </div>
 </section>
 
-<!-- ============== FEATURED DETAIL — ESTELAR STRIP ============== -->
+<!-- ============== FEATURED DETAIL, ESTELAR STRIP ============== -->
 <!-- anim: horizontal scroll-linked parallax (slower than scroll). 3 full-bleed images. -->
 <section id="case-estelar" class="bg-ink text-bone border-b border-ink/40">
   <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
     <div class="grid grid-cols-12 gap-6 lg:gap-10 mb-12 lg:mb-16">
       <div class="col-span-12 lg:col-span-4 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">
-        / 02 — In focus
+        / 02, In focus
       </div>
       <h2 class="col-span-12 lg:col-span-8 font-display text-[40px] lg:text-[80px] leading-[0.95] tracking-tight">
         A salami, a story,<br/><span class="text-mustard">a taste of home.</span>
@@ -290,14 +290,14 @@
           </div>
         </dl>
         <p class="text-[16px] leading-relaxed text-bone/80 mt-6 max-w-[40ch]">
-          Every detail — from the warm color palette to the artisanal typography — evokes authenticity, tradition, and a bit of Dominican sabor. A proud moment for the team and for every Dominican represented on an American shelf.
+          Every detail, from the warm color palette to the artisanal typography, evokes authenticity, tradition, and a bit of Dominican sabor. A proud moment for the team and for every Dominican represented on an American shelf.
         </p>
       </div>
 
       <figure class="col-span-12 lg:col-span-7 aspect-[4/3] overflow-hidden">
         <img class="lazy-fade w-full h-full object-cover"
              src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/4cc2c3229654899.68685cc14eafb.jpg"
-             alt="Estelar — Packaging system on-shelf."
+             alt="Estelar, Packaging system on-shelf."
              onload="this.classList.add('loaded')" />
       </figure>
     </div>
@@ -306,13 +306,13 @@
       <figure class="col-span-12 lg:col-span-7 aspect-[21/9] overflow-hidden">
         <img class="lazy-fade w-full h-full object-cover"
              src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/f5169f229654899.68685cc14c409.jpg"
-             alt="Estelar — Lockup and label system."
+             alt="Estelar, Lockup and label system."
              onload="this.classList.add('loaded')" />
       </figure>
       <figure class="col-span-12 lg:col-span-5 aspect-[4/5] overflow-hidden">
         <img class="lazy-fade w-full h-full object-cover"
              src="https://mir-s3-cdn-cf.behance.net/project_modules/fs_webp/29e68e229654899.68685cc14d550.jpg"
-             alt="Estelar — Product photography."
+             alt="Estelar, Product photography."
              onload="this.classList.add('loaded')" />
       </figure>
     </div>
@@ -324,7 +324,7 @@
   <div class="max-w-shell mx-auto px-6 lg:px-10 py-20 lg:py-28">
     <div class="flex items-end justify-between mb-12 lg:mb-16">
       <div>
-        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 03 — What I do</div>
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 mb-3">/ 03, What I do</div>
         <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Services, stacked.</h2>
       </div>
     </div>
@@ -365,13 +365,13 @@
           <!-- Placeholder for portrait. In production, swap to real image. -->
           <div class="w-full">
             <div class="w-full h-1 bg-volt mb-4"></div>
-            <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Portrait placeholder — Melissa, 2024</div>
+            <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Portrait placeholder, Melissa, 2024</div>
           </div>
         </div>
       </div>
 
       <div class="col-span-12 lg:col-span-7">
-        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60 mb-3">/ 04 — About</div>
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60 mb-3">/ 04, About</div>
         <h2 class="font-display text-[40px] lg:text-[72px] leading-[0.95] tracking-tight">Design<br/>with <span class="text-mustard">sabor.</span></h2>
 
         <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 text-[16px] leading-relaxed text-bone/80">
@@ -432,7 +432,7 @@
 <!-- anim: giant email slides up on view. Background rotates subtly. -->
 <section id="contact" class="bg-volt text-ink border-b border-ink">
   <div class="max-w-shell mx-auto px-6 lg:px-10 py-24 lg:py-36">
-    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/70 mb-6">/ 05 — Let's build something</div>
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/70 mb-6">/ 05, Let's build something</div>
     <h2 class="font-display text-[48px] sm:text-[96px] lg:text-[160px] leading-[0.9] tracking-[-0.02em]">
       Say<br/>hola<span class="text-ink/50">.</span>
     </h2>

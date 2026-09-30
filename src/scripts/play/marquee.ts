@@ -68,7 +68,16 @@ export function initMarquee(root: HTMLElement): MarqueeControl {
   };
   root.addEventListener('pointerup', release);
   root.addEventListener('pointercancel', release);
-  root.addEventListener('focusin', () => (focused = true));
+  root.addEventListener('focusin', (e) => {
+    focused = true;
+    // bring the focused link on screen (the track may have carried it off to the left)
+    const link = e.target instanceof HTMLElement ? e.target : null;
+    root.scrollLeft = 0;
+    if (link && loopWidth > 0) {
+      offset = Math.max(0, link.offsetLeft - 24) % loopWidth;
+      track.style.transform = `translate3d(${(-offset).toFixed(2)}px, 0, 0)`;
+    }
+  });
   root.addEventListener('focusout', () => (focused = false));
 
   new IntersectionObserver(([entry]) => {

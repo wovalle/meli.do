@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * P4a — Import Wix portfolio into meli.do CMS
+ * P4a, Import Wix portfolio into meli.do CMS
  *
  * Usage:
  *   node scripts/import-wix.mjs            # real run (remote D1 + real R2)
@@ -30,7 +30,7 @@ const SQL_FILE = path.join(process.cwd(), 'tmp', 'import-wix.sql');
 const DRY_RUN = process.argv.includes('--dry-run');
 const REMOTE = !process.argv.includes('--local');
 
-// Melissa's Wix user media prefix — filters out UI/chrome images
+// Melissa's Wix user media prefix, filters out UI/chrome images
 const MEDIA_PREFIX = '31a255_';
 
 async function fetchHtml(url, retries = 3) {
@@ -114,13 +114,13 @@ function parseImageUrls(html) {
   return [...byHash.values()];
 }
 
-// Wix CDN transform URL — h_9999 constrains width only; enc_webp for smaller sizes
+// Wix CDN transform URL, h_9999 constrains width only; enc_webp for smaller sizes
 // Full-size (index 0): original format (often smaller than webp at full res)
 // Smaller sizes: webp for better compression
 function wixUrl(hash, origExt, width, isFullSize) {
   if (origExt === 'gif') return `https://static.wixstatic.com/media/${hash}~mv2.gif`;
   if (isFullSize) {
-    // Original at full resolution — no transform needed
+    // Original at full resolution, no transform needed
     return `https://static.wixstatic.com/media/${hash}~mv2.${origExt}`;
   }
   return `https://static.wixstatic.com/media/${hash}~mv2.${origExt}/v1/fill/w_${width},h_9999,q_85,enc_webp/${hash}~mv2.webp`;
@@ -154,7 +154,7 @@ async function processProject(url) {
   try {
     html = await fetchHtml(url);
   } catch (err) {
-    console.warn(`  SKIP — fetch failed: ${err.message}`);
+    console.warn(`  SKIP, fetch failed: ${err.message}`);
     return null;
   }
 
@@ -163,12 +163,12 @@ async function processProject(url) {
   const imageUrls = parseImageUrls(html);
 
   if (!title) {
-    console.warn('  SKIP — could not extract title');
+    console.warn('  SKIP, could not extract title');
     return null;
   }
 
   if (imageUrls.length === 0) {
-    console.warn('  SKIP — no content images found');
+    console.warn('  SKIP, no content images found');
     return null;
   }
 
@@ -177,7 +177,7 @@ async function processProject(url) {
 
   const exists = checkSlugExists(slug, REMOTE);
   if (exists) {
-    console.log('  SKIP — slug already in D1');
+    console.log('  SKIP, slug already in D1');
     return null;
   }
 
@@ -219,7 +219,7 @@ async function processProject(url) {
           uploadToR2(localPath, variantKey, detectMime(varExt), DRY_RUN);
           if (isMain) mainUploaded = true;
         } catch (err) {
-          console.warn(`    SKIP ${suffix || 'main'} — ${err.message}`);
+          console.warn(`    SKIP ${suffix || 'main'}, ${err.message}`);
         }
         await sleep(150);
       }

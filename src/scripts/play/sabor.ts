@@ -11,10 +11,38 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
   // --sabor lives on the word's wrapper, not :root, so a change restyles only the word
   const root = dial.closest<HTMLElement>('.sabor') ?? document.documentElement;
 
+  // ✦ twinkle around the word while the dial moves: more, bigger and faster the higher it is.
+  // Only transform/opacity animate; each star removes itself; never more than a dozen alive.
+  let lastSpark = 0;
+  let live = 0;
+  const sparkle = (level: number): void => {
+    if (reducedMotion() || level < 0.03) return;
+    const now = performance.now();
+    if (live >= 3 + level * 9 || now - lastSpark < 240 - level * 190) return;
+    lastSpark = now;
+    const star = document.createElement('span');
+    star.className = 'sabor-spark';
+    star.textContent = '✦';
+    star.setAttribute('aria-hidden', 'true');
+    star.style.left = `${-6 + Math.random() * 108}%`;
+    star.style.top = `${-12 + Math.random() * 96}%`;
+    star.style.fontSize = `${10 + Math.random() * (10 + level * 16)}px`;
+    star.style.color = Math.random() < 0.55 ? 'var(--color-butter)' : 'var(--color-hot-pink)';
+    live++;
+    star.addEventListener('animationend', () => {
+      star.remove();
+      live--;
+    }, { once: true });
+    root.appendChild(star);
+  };
+
+  let shown = Number.NaN;
   const apply = (value: number): void => {
     const s = saborFromDial(value);
     root.style.setProperty('--sabor', s.level.toFixed(3));
     onSpeed(s.marqueeSpeed);
+    if (!Number.isNaN(shown) && Math.abs(value - shown) > 0.2) sparkle(s.level);
+    shown = value;
   };
 
   let end = 0; // scrollY at which the sabor line has left the top of the viewport
@@ -24,7 +52,7 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
   let manualAt = 0;
   let stop: (() => void) | null = null;
 
-  // Layout is read here only — on load, resize and font swap — never per scroll.
+  // Layout is read here only, on load, resize and font swap, never per scroll.
   const measure = (): void => {
     end = root.getBoundingClientRect().bottom + window.scrollY;
   };
@@ -80,6 +108,11 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
     measure();
     follow();
   }, { passive: true });
+  // the h1 slides in (soft-up): measure again once it has landed
+  root.closest('h1')?.addEventListener('animationend', () => {
+    measure();
+    follow();
+  }, { once: true });
   void document.fonts?.ready.then(() => {
     measure();
     follow();

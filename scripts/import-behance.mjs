@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * P4a — Import Behance portfolio into meli.do CMS
+ * P4a, Import Behance portfolio into meli.do CMS
  *
  * Usage:
  *   node scripts/import-behance.mjs            # real run (remote D1 + real R2)
@@ -8,7 +8,7 @@
  *   node scripts/import-behance.mjs --local    # target local D1 (wrangler dev)
  *
  * Note: Run import-wix.mjs first. This script skips slugs already in D1.
- * Behance has 3 projects that overlap with Wix — only imports if not already present.
+ * Behance has 3 projects that overlap with Wix, only imports if not already present.
  */
 
 import { mkdirSync, writeFileSync } from 'fs';
@@ -73,7 +73,7 @@ function parseSummary(html) {
 }
 
 function parseImageUrls(html) {
-  // Match any size variant — we extract the hash+ext and build all sizes ourselves
+  // Match any size variant, we extract the hash+ext and build all sizes ourselves
   const pattern = /https:\/\/mir-s3-cdn-cf\.behance\.net\/project_modules\/[^/]+\/([^"'\s<>]+\.(?:jpg|jpeg|png|webp|gif))/gi;
   const seen = new Set();
   const images = [];
@@ -130,7 +130,7 @@ async function processProject(projectUrl) {
   try {
     html = await fetchHtml(projectUrl);
   } catch (err) {
-    console.warn(`  SKIP — fetch failed: ${err.message}`);
+    console.warn(`  SKIP, fetch failed: ${err.message}`);
     return null;
   }
 
@@ -139,12 +139,12 @@ async function processProject(projectUrl) {
   const imageFilenames = parseImageUrls(html);
 
   if (!title) {
-    console.warn('  SKIP — could not extract title');
+    console.warn('  SKIP, could not extract title');
     return null;
   }
 
   if (imageFilenames.length === 0) {
-    console.warn('  SKIP — no images found');
+    console.warn('  SKIP, no images found');
     return null;
   }
 
@@ -153,7 +153,7 @@ async function processProject(projectUrl) {
 
   const exists = checkSlugExists(slug, REMOTE);
   if (exists) {
-    console.log('  SKIP — slug already in D1 (Wix import likely ran first)');
+    console.log('  SKIP, slug already in D1 (Wix import likely ran first)');
     return null;
   }
 
@@ -191,7 +191,7 @@ async function processProject(projectUrl) {
           uploadToR2(localPath, variantKey, detectMime(storeExt), DRY_RUN);
           if (!mainUploaded) mainUploaded = true;
         } catch (err) {
-          console.warn(`    SKIP ${width}w — ${err.message}`);
+          console.warn(`    SKIP ${width}w, ${err.message}`);
         }
         await sleep(200);
       }

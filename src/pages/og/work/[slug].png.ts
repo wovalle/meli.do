@@ -31,6 +31,6 @@ export const GET: APIRoute = ({ params, request }) =>
     return renderCaseStudyCard({
       imageKey: firstBlock?.imageKey ?? 'site/melissa-headshot.jpg',
       title: study.title,
-      subtitle: 'Case study — Melissa Encarnación',
+      subtitle: 'Case study by Melissa Encarnación',
     });
   });

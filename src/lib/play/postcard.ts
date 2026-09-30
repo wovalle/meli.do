@@ -45,7 +45,7 @@ export function loveLetterBody(letter: LoveLetter): string {
     '',
     `Services: ${servicesLabel(letter.services)}`,
     '',
-    `— ${name}`,
+    `xo, ${name}`,
     '(sent from the postcard on mellen.do)',
   ].join('\n');
 }

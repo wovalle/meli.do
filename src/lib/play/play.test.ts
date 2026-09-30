@@ -13,7 +13,7 @@ test('mailto goes to hola@mellen.do with subject and body prefilled', () => {
   assert.match(body, /^Dear Melissa,/);
   assert.match(body, /A rebrand for my café/);
   assert.match(body, /Services: branding & identity, packaging/);
-  assert.match(body, /— Ana & Co/);
+  assert.match(body, /xo, Ana & Co/);
   // spaces must be %20, never "+", or some mail clients show pluses
   assert.ok(!url.includes('+'));
 });
@@ -21,7 +21,7 @@ test('mailto goes to hola@mellen.do with subject and body prefilled', () => {
 test('empty name falls back gracefully', () => {
   const body = loveLetterBody({ name: '  ', project: 'hi', services: [] });
   assert.match(body, /Services: not sure yet/);
-  assert.match(body, /— a future client/);
+  assert.match(body, /xo, a future client/);
 });
 
 test('services come from her real work and are validated', () => {

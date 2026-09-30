@@ -39,10 +39,12 @@ export function initPostcard(root: HTMLElement): void {
   const aimAtEnvelope = (): void => {
     const card = flipper.getBoundingClientRect();
     const env = envelope.getBoundingClientRect();
+    // the envelope still sits 40px low (its pre-slide-in offset, play.css); aim at where it lands
+    const envTop = env.top - 40;
     const scale = Math.min((env.width * 0.86) / card.width, (env.height * 0.9) / card.height);
     const dx = env.left + env.width / 2 - (card.left + card.width / 2);
-    const peek = env.top + env.height * 0.42 - (card.top + card.height / 2);
-    const inside = env.top + env.height * 0.5 - (card.top + card.height / 2);
+    const peek = envTop + env.height * 0.42 - (card.top + card.height / 2);
+    const inside = envTop + env.height * 0.5 - (card.top + card.height / 2);
     root.style.setProperty('--mail-scale', scale.toFixed(3));
     root.style.setProperty('--mail-x', `${dx.toFixed(1)}px`);
     root.style.setProperty('--mail-y', `${peek.toFixed(1)}px`);
@@ -51,6 +53,7 @@ export function initPostcard(root: HTMLElement): void {
 
   const send = async (letter: LoveLetter): Promise<void> => {
     busy = true;
+    back.inert = true; // the letter is in the mail: no more edits or flipping back mid-flight
     const href = buildLoveLetterMailto(letter);
     if (fallback) fallback.href = href;
     if (dateEl) dateEl.textContent = postmarkDate(new Date());
@@ -71,7 +74,7 @@ export function initPostcard(root: HTMLElement): void {
     back.inert = true;
     root.classList.add('is-sent');
     sent.hidden = false;
-    if (status) status.textContent = "It's in the mail — your email app has the letter ready to send.";
+    if (status) status.textContent = "It's in the mail, your email app has the letter ready to send.";
     againBtn.focus({ preventScroll: true });
     busy = false;
   };

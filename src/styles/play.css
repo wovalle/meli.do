@@ -2,7 +2,8 @@
    fallback under prefers-reduced-motion at the bottom. */
 
 /* ---------- sabor dial ---------- */
-:root { --sabor: 0.25; }
+:root { --sabor: 0; }
+@media (prefers-reduced-motion: reduce) { :root { --sabor: 0.25; } }
 
 .sabor { position: relative; display: inline-block; }
 .sabor-word {
@@ -50,6 +51,25 @@
 }
 @media (min-width: 1024px) { .sabor-hint { font-size: 18px; } }
 .sabor-hint[hidden] { display: none; }
+
+/* ✦ that twinkle around "sabor" while the dial moves; more of them the higher it goes */
+.sabor-spark {
+  position: absolute;
+  z-index: 1;
+  font-style: normal;
+  font-family: var(--font-sans);
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(26, 43, 74, 0.25);
+  animation: sabor-twinkle 900ms var(--ease-out-quint) forwards;
+}
+@keyframes sabor-twinkle {
+  0% { opacity: 0; transform: scale(0.2) rotate(-40deg); }
+  30% { opacity: 1; transform: scale(1.15) rotate(0deg); }
+  55% { opacity: 0.7; transform: scale(0.8) rotate(10deg); }
+  70% { opacity: 1; transform: scale(1) rotate(15deg); }
+  100% { opacity: 0; transform: scale(0.4) rotate(40deg) translateY(-6px); }
+}
 .sabor-dial:focus-visible { outline: 2px dashed var(--color-hot-pink); outline-offset: 6px; border-radius: 8px; }
 .sabor-dial::-webkit-slider-runnable-track { height: 28px; background: transparent; }
 .sabor-dial::-moz-range-track { height: 28px; background: transparent; }
@@ -74,19 +94,40 @@
 .marquee a:hover, .marquee a:focus-visible { color: var(--color-hot-pink); }
 
 /* ---------- draggable sparkles ---------- */
-svg[data-sparkle] { touch-action: none; cursor: grab; z-index: 10; user-select: none; -webkit-user-select: none; }
+svg[data-sparkle] { -webkit-touch-callout: none; touch-action: none; cursor: grab; z-index: 10; user-select: none; -webkit-user-select: none; }
 svg[data-sparkle].is-held { cursor: grabbing; animation-play-state: paused; }
-svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back); }
 @keyframes sparkle-pop { 0% { scale: 1; } 40% { scale: 1.35; } 100% { scale: 1; } }
 
 /* ---------- polaroid ---------- */
-[data-polaroid] { touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; will-change: transform; }
+[data-polaroid] { -webkit-touch-callout: none; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; will-change: transform; }
 [data-polaroid].is-held { cursor: grabbing; }
 [data-polaroid]:focus-visible { outline: 3px dashed var(--color-hot-pink); outline-offset: 10px; border-radius: 28px; }
 [data-polaroid] img { -webkit-user-drag: none; pointer-events: none; }
 .polaroid-hint[hidden] { display: none; }
 .polaroid-hint .on-touch { display: none; }
 @media (hover: none) { .polaroid-hint .on-mouse { display: none; } .polaroid-hint .on-touch { display: inline; } }
+/* the caption is a little paper label in navy ink: readable on any part of the photo (≈13:1) */
+.polaroid-caption {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 2px 12px 4px;
+  border-radius: 4px;
+  background: var(--color-cream);
+  color: var(--color-navy);
+  rotate: -2deg;
+  box-shadow: 0 6px 14px -6px rgba(26, 43, 74, 0.5);
+}
+.polaroid-caption::before { /* a scrap of tape */
+  content: "";
+  position: absolute;
+  top: -9px; left: 50%;
+  width: 54px; height: 16px;
+  translate: -50% 0;
+  rotate: 4deg;
+  background: rgba(255, 228, 132, 0.9);
+  box-shadow: 0 1px 3px rgba(26, 43, 74, 0.15);
+}
 .polaroid-caption.is-new { animation: caption-pop 450ms var(--ease-out-back); }
 @keyframes caption-pop { from { opacity: 0; transform: translateY(8px) rotate(-4deg); } to { opacity: 1; transform: none; } }
 
@@ -99,10 +140,12 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  outline: 8px solid var(--color-cream);
-  box-shadow: 0 18px 30px -14px rgba(26, 43, 74, 0.45);
+  -webkit-touch-callout: none;
+  /* the paper edge is a shadow ring, so the focus outline stays free */
+  box-shadow: 0 0 0 8px var(--color-cream), 0 18px 30px -14px rgba(26, 43, 74, 0.45);
 }
-[data-scatter-grid].is-scattered [data-scatter-tile].is-held { cursor: grabbing; scale: 1.04; box-shadow: 0 30px 40px -18px rgba(26, 43, 74, 0.5); }
+[data-scatter-grid].is-scattered [data-scatter-tile]:focus-visible { outline: 3px dashed var(--color-hot-pink); outline-offset: 12px; }
+[data-scatter-grid].is-scattered [data-scatter-tile].is-held { cursor: grabbing; scale: 1.04; box-shadow: 0 0 0 8px var(--color-cream), 0 30px 40px -18px rgba(26, 43, 74, 0.5); }
 [data-scatter-grid].is-scattered [data-scatter-tile] img { -webkit-user-drag: none; pointer-events: none; }
 [data-scatter-grid].is-scattered { z-index: 20; }
 /* on a phone the proofs are almost screen-wide: shrink them so they can actually spread */
@@ -251,7 +294,8 @@ svg[data-sparkle].is-popped { animation: sparkle-pop 420ms var(--ease-out-back);
 @media (prefers-reduced-motion: reduce) {
   .sabor-word, .postcard-flipper, .postcard-mail, .envelope, .envelope-flap, .envelope-seal,
   .postmark, [data-scatter-grid] [data-scatter-tile] { transition: none !important; }
-  svg[data-sparkle].is-popped, .polaroid-caption.is-new, .postcard-scene.is-sent .postcard-sent > * { animation: none !important; }
+  .sabor-spark { display: none; }
+  .polaroid-caption.is-new, .postcard-scene.is-sent .postcard-sent > * { animation: none !important; }
   /* no 3D spin: swap faces in place */
   .postcard-back { transform: none; }
   .postcard-scene.is-flipped .postcard-flipper { transform: none; }

@@ -17,11 +17,8 @@ export function initSparkles(sparkles: Iterable<SVGSVGElement>): void {
       if (!paint) return;
       const attr = paint.getAttribute('fill') === 'none' ? 'stroke' : 'fill';
       paint.setAttribute(attr, nextSparkleColor(paint.getAttribute(attr) ?? ''));
-      if (!reducedMotion()) {
-        el.classList.remove('is-popped');
-        void el.getBoundingClientRect(); // restart the pop animation
-        el.classList.add('is-popped');
-      }
+      // a Web Animation on `scale` composes with the CSS float (on `transform`) instead of replacing it
+      if (!reducedMotion()) el.animate([{ scale: '1' }, { scale: '1.35' }, { scale: '1' }], { duration: 420, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
     };
 
     draggable(el, {

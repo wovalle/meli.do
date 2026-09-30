@@ -123,7 +123,7 @@ async function ensureApp(group) {
   const org = await ensureOrg();
   console.log(`org: ${org.auth_domain}`);
   const group = await ensureGroup();
-  console.log(`group: meli-admins (${group.id}) — ${EMAILS.length} member(s)`);
+  console.log(`group: meli-admins (${group.id}), ${EMAILS.length} member(s)`);
   const app = await ensureApp(group);
   console.log(`app: ${app.name} (${app.id}) → ${DOMAIN}/{admin,api} + *-${DOMAIN}/{admin,api}`);
   console.log('');

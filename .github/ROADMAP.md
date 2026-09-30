@@ -6,7 +6,7 @@ Melissa Encarnacion (Art Director, Head of Design at Liquid Digital) needs a por
 
 ## Architecture
 
-- **Astro 5.x hybrid** — `output: 'server'` + `@astrojs/cloudflare`. Admin/API routes SSR; public routes `prerender=true` (static assets).
+- **Astro 5.x hybrid**, `output: 'server'` + `@astrojs/cloudflare`. Admin/API routes SSR; public routes `prerender=true` (static assets).
 - **Storage**: D1 (case studies + blocks) + R2 (images). KV skipped.
 - **Build-time D1 read** for public pages via D1 REST API (`CF_API_TOKEN` secret).
 - **Publish pipeline**: admin PATCH → `DEPLOY_HOOK_URL` → CF Workers Builds rebuilds → ~60-90s to live.
@@ -20,12 +20,12 @@ Cost: $0/mo within CF + Access free tiers.
 
 ## Phases
 
-- [ ] **P1 — Kickstart**: Astro + CF adapter scaffold, D1 + R2 bindings, Drizzle schema (`case_studies`, `blocks`), Access middleware + `scripts/setup-access.mjs`, Deploy Hook secret. Verify: `/admin` gated by Access, D1 tables exist, R2 bucket exists, push-to-deploy works. Legacy picker moved to `/legacy/picker/`.
-- [ ] **P2 — Dynamic CRUD + rebuild**: Astro Actions for meta/publish/delete/create. Vanilla-TS blocks editor with SortableJS. Direct-to-R2 presigned upload. Public home + `/work/[slug]` prerender from D1 REST. Publish → Deploy Hook fires → ~90s rebuild.
-- [ ] **P3 — Merge winning design**: port `current.html` (Nav/Hero/Marquee/About/WorkGrid/Playlist/Contact/Footer) to Astro components. Work section dynamic from D1. Admin keeps neutral wireframe look.
-- [ ] **P4a — Data migration**: `scripts/import-behance.mjs` + `scripts/import-wix.mjs` → R2 + D1 drafts. Melissa curates + publishes via admin.
-- [ ] **P4b — UI polish**: lazy-load, prev/next nav, 404 page, a11y (alt text enforced, keyboard nav), toasts, orphan R2 cleanup cron.
-- [ ] **P5 — SEO + AI + custom domain**: `mellen.do` DNS, sitemap, `robots.txt` (allow GPTBot/ClaudeBot/CCBot/PerplexityBot/Google-Extended), OG/Twitter/JSON-LD, CF Web Analytics, submit to GSC.
+- [ ] **P1, Kickstart**: Astro + CF adapter scaffold, D1 + R2 bindings, Drizzle schema (`case_studies`, `blocks`), Access middleware + `scripts/setup-access.mjs`, Deploy Hook secret. Verify: `/admin` gated by Access, D1 tables exist, R2 bucket exists, push-to-deploy works. Legacy picker moved to `/legacy/picker/`.
+- [ ] **P2, Dynamic CRUD + rebuild**: Astro Actions for meta/publish/delete/create. Vanilla-TS blocks editor with SortableJS. Direct-to-R2 presigned upload. Public home + `/work/[slug]` prerender from D1 REST. Publish → Deploy Hook fires → ~90s rebuild.
+- [ ] **P3, Merge winning design**: port `current.html` (Nav/Hero/Marquee/About/WorkGrid/Playlist/Contact/Footer) to Astro components. Work section dynamic from D1. Admin keeps neutral wireframe look.
+- [ ] **P4a, Data migration**: `scripts/import-behance.mjs` + `scripts/import-wix.mjs` → R2 + D1 drafts. Melissa curates + publishes via admin.
+- [ ] **P4b, UI polish**: lazy-load, prev/next nav, 404 page, a11y (alt text enforced, keyboard nav), toasts, orphan R2 cleanup cron.
+- [ ] **P5, SEO + AI + custom domain**: `mellen.do` DNS, sitemap, `robots.txt` (allow GPTBot/ClaudeBot/CCBot/PerplexityBot/Google-Extended), OG/Twitter/JSON-LD, CF Web Analytics, submit to GSC.
 
 ## Progress
 

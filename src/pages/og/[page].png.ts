@@ -15,7 +15,7 @@ const CARDS: Record<string, SiteCard> = {
       ['who loves ', { text: 'sabor', italic: true }, '.'],
     ],
     fontSize: 104,
-    subtitle: 'Dominican Art Director & Head of Design — Santo Domingo',
+    subtitle: 'Dominican Art Director & Head of Design, Santo Domingo',
   },
   work: {
     badges: [
@@ -28,13 +28,13 @@ const CARDS: Record<string, SiteCard> = {
       ['Caribbean ', { text: 'warmth', italic: true }, '.'],
     ],
     fontSize: 96,
-    subtitle: 'Brand, editorial & digital design — Melissa Encarnación',
+    subtitle: 'Brand, editorial & digital design by Melissa Encarnación',
   },
   links: {
     badges: [{ text: 'Open for 2026 projects', variant: 'cream', dot: true }],
     lines: [['Say ', { text: 'hola', pink: true, italic: true }, '.']],
     fontSize: 160,
-    subtitle: 'Links, socials & contact — Melissa Encarnación',
+    subtitle: 'Links, socials & contact by Melissa Encarnación',
   },
   terms: {
     badges: [{ text: 'Melissa Encarnación', variant: 'pink' }],

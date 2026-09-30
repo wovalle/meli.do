@@ -1,7 +1,7 @@
 // "Scatter" throws the selected-work tiles across the whole screen like printed
 // proofs, on springs. Scattered tiles can be dragged around; a tap still opens
 // the case study; "tidy up" springs them back into the grid.
-// Reduced motion: the same positions, set instantly — no flight.
+// Reduced motion: the same positions, set instantly, no flight.
 import { TOSS, isSettled, scatterTargets, stepSpring, type SpringState } from '../../lib/play/motion';
 import { animate, draggable, reducedMotion } from './shared';
 
@@ -127,7 +127,11 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
 
   const tidy = (): void => {
     scattered = false;
-    for (const s of states) s.target = { x: 0, y: 0, rotate: 0 };
+    for (const s of states) {
+      s.target = { x: 0, y: 0, rotate: 0 };
+      s.held = false;
+    }
+    for (const tile of tiles) tile.classList.remove('is-held');
     toggle.setAttribute('aria-pressed', 'false');
     label.textContent = 'scatter';
     if (reducedMotion()) {
@@ -137,6 +141,14 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
       run();
     }
   };
+
+  // re-aim at the new viewport after a resize / rotation, so nothing is stranded off-screen
+  let resizeRaf = 0;
+  window.addEventListener('resize', () => {
+    if (!scattered) return;
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => scattered && scatter());
+  }, { passive: true });
 
   toggle.hidden = false;
   toggle.addEventListener('click', () => (scattered ? tidy() : scatter()));
@@ -148,7 +160,7 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
     tile.addEventListener('dragstart', (e) => {
       if (scattered) e.preventDefault();
     });
-    // a drag ends with a click on the link — swallow that one so dragging doesn't navigate
+    // a drag ends with a click on the link, swallow that one so dragging doesn't navigate
     tile.addEventListener(
       'click',
       (e) => {
@@ -171,7 +183,7 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
       },
       onMove: (m) => {
         const s = states[i];
-        if (!s) return;
+        if (!s || !scattered) return;
         s.x = still(base.x + m.dx);
         s.y = still(base.y + m.dy);
         s.target = { x: s.x.value, y: s.y.value, rotate: base.rotate };
@@ -181,7 +193,10 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
         const s = states[i];
         tile.classList.remove('is-held');
         justDragged = !m.tap;
+        // only the click that ends this drag is swallowed, not the next tap
+        if (justDragged) setTimeout(() => (justDragged = false), 0);
         if (s) s.held = false;
+        if (!scattered) run(); // tidied while held: spring home too
       },
     });
   });

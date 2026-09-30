@@ -35,7 +35,7 @@ export function imgSrc(key: string, width = 1200): string {
 /**
  * Thumbnail cropped to a fixed aspect ratio (width / height) via Cloudflare
  * fit=cover. Use for fixed-aspect cards whose source image is a different
- * shape — e.g. a landscape source in a portrait 4:5 card. Cropping at the edge
+ * shape, e.g. a landscape source in a portrait 4:5 card. Cropping at the edge
  * (instead of letting CSS object-cover crop a scale-down image) keeps the
  * declared srcset widths in step with the pixels actually painted, so the
  * browser stops under-fetching and upscaling.

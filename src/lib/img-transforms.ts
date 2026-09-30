@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 // Cloudflare Image Transformations (/cdn-cgi/image/…) only exist on a zone
-// (mellen.do). On *.workers.dev — the preview URLs of branch builds — every
+// (mellen.do). On *.workers.dev, the preview URLs of branch builds, every
 // such URL 404s, so there we fall back to the raw /images/ route.
 // The middleware records the answer per request; src/lib/img.ts reads it.
 

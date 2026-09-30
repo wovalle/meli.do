@@ -39,7 +39,7 @@ const polaroidPhotos = POLAROID_PHOTOS.map((p) => ({
 
 Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
 ---
-<PublicLayout title="Melissa Encarnación — Art Director & Designer in Santo Domingo">
+<PublicLayout title="Melissa Encarnación | Art Director & Designer in Santo Domingo">
 
   <section class="relative pt-16 lg:pt-24 pb-24 lg:pb-32 overflow-hidden">
     <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
@@ -62,19 +62,19 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         <span class="bg-hot-pink text-cream rounded-pill px-4 py-1.5 text-[12px] font-medium">10 years designing</span>
       </div>
 
-      <h1 class="font-display text-[64px] sm:text-[96px] lg:text-[152px] leading-[0.95] tracking-[-0.02em] mt-4 lg:mt-8 mb-8 lg:mb-0 soft-up d-100">
+      <h1 aria-label="¡Hola! I'm Melissa, an art director who loves sabor." class="font-display text-[64px] sm:text-[96px] lg:text-[152px] leading-[0.95] tracking-[-0.02em] mt-4 lg:mt-8 mb-8 lg:mb-0 soft-up d-100">
         ¡Hola! <span class="wave inline-block">👋🏽</span><br/>
         I'm <span class="italic text-hot-pink">Melissa</span>,<br/>
         an <span class="hand-underline">art director</span><br/>
         who loves <span class="sabor"><em class="sabor-word font-display">sabor</em><input
           type="range" min="0" max="100" value={SABOR_DEFAULT} step="1" hidden data-sabor-dial
           class="sabor-dial" aria-label="Sabor: slide for more italic, hotter pink and a faster marquee"
-        /><span hidden data-sabor-hint class="sabor-hint" aria-hidden="true">↑ psst — slide the sabor</span></span>.
+        /><span hidden data-sabor-hint class="sabor-hint" aria-hidden="true">↑ psst, slide the sabor</span></span>.
       </h1>
 
       <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-10 items-end">
         <p class="col-span-12 lg:col-span-7 text-[18px] lg:text-[22px] leading-[1.55] max-w-[40ch] soft-up d-200">
-          I'm a Dominican designer leading a design team at Liquid Digital Agency. For the past decade I've been building brand systems that feel warm, specific, and a little bit homemade — even when they're running at scale.
+          I'm a Dominican designer leading a design team at Liquid Digital Agency. For the past decade I've been building brand systems that feel warm, specific, and a little bit homemade, even when they're running at scale.
         </p>
 
         <div class="col-span-12 lg:col-span-5 flex flex-col gap-3 soft-up d-300">
@@ -91,7 +91,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
     </div>
   </section>
 
-  <section class="py-6 border-y border-navy/10 bg-cream overflow-hidden" data-marquee aria-label="Disciplines — pick one to filter the archive">
+  <section class="py-6 border-y border-navy/10 bg-cream overflow-hidden" data-marquee aria-label="Disciplines: pick one to filter the archive">
     <div class="marquee flex gap-10 whitespace-nowrap text-navy/70 font-display text-[28px] lg:text-[44px] italic" data-marquee-track>
       {[false, true].map((dupe) => (
         <ul class="flex gap-4 shrink-0 list-none m-0 p-0" aria-hidden={dupe ? 'true' : undefined}>
@@ -116,7 +116,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           data-photos={JSON.stringify(polaroidPhotos)}
           role="button"
           tabindex="0"
-          aria-label="Polaroid of Melissa — click, tap or shake it for another caption"
+          aria-label="Polaroid of Melissa: click, tap or shake it for another caption"
         >
           <div class="bg-cream p-4 pb-10 rounded-xxl shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] rotate-[-3deg] lift">
             <div class="aspect-[4/5] bg-navy rounded-[18px] overflow-hidden relative flex items-end p-5">
@@ -132,10 +132,10 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 draggable="false"
               />
               <div class="w-full relative">
-                <div data-polaroid-caption aria-live="polite" class="polaroid-caption font-hand text-[28px] text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,.45)]">{POLAROID_CAPTIONS[0]}</div>
+                <div data-polaroid-caption aria-live="polite" class="polaroid-caption font-hand text-[20px] lg:text-[22px] leading-[1.25]">{POLAROID_CAPTIONS[0]}</div>
               </div>
             </div>
-            <div class="font-hand text-[22px] text-navy text-center mt-3">— Santo Domingo, 2026</div>
+            <div class="font-hand text-[22px] text-navy text-center mt-3">Santo Domingo, 2026</div>
           </div>
         </div>
         <p hidden data-polaroid-hint aria-hidden="true" class="polaroid-hint absolute -top-9 left-3 rotate-[-5deg] font-hand text-[18px] text-hot-pink pointer-events-none">
@@ -164,7 +164,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
         <div class="bg-cream rounded-xxl p-6 lg:p-8">
           <p class="text-[16px] lg:text-[18px] leading-[1.7]">
-            I lead a design team at <strong>Liquid Digital Agency</strong> in Santo Domingo. Our work ranges from FMCG and finance to cultural and small founder-led brands. I care about craft, but more than anything, I care about whether a brand <em>feels</em> like where it's from — like it knows who it's talking to.
+            I lead a design team at <strong>Liquid Digital Agency</strong> in Santo Domingo. Our work ranges from FMCG and finance to cultural and small founder-led brands. I care about craft, but more than anything, I care about whether a brand <em>feels</em> like where it's from, like it knows who it's talking to.
           </p>
           <div class="flex flex-wrap gap-2 mt-6">
             <span class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">Brand Identity</span>
@@ -184,7 +184,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
       <div class="flex flex-wrap items-end justify-between gap-6 mb-12 lg:mb-16">
         <div>
-          <a href="/work" class="font-hand text-[28px] lg:text-[36px] text-hot-pink hover:underline underline-offset-4 decoration-2 transition">— selected work</a>
+          <a href="/work" class="font-hand text-[28px] lg:text-[36px] text-hot-pink hover:underline underline-offset-4 decoration-2 transition">selected work</a>
         </div>
         {published.length > 0 && (
           <a href="/work" class="group hidden md:inline-flex items-center gap-2 text-[14px] font-medium border-b-2 border-navy pb-1 hover:text-hot-pink hover:border-hot-pink transition">
@@ -196,7 +196,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
       {published.length === 0 ? (
         <div class="text-center py-16">
-          <p class="font-hand text-[28px] text-navy/60">— new case studies in the studio —</p>
+          <p class="font-hand text-[28px] text-navy/60">new case studies in the studio</p>
         </div>
       ) : (
         <>
@@ -219,7 +219,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                 <div class={`col-span-12 md:col-span-5 lg:col-span-4 flex flex-col justify-between gap-6 ${isReversed ? 'order-2 md:order-1' : ''}`}>
                   <div>
                     <div class="flex items-center gap-3">
-                      <span class={`bg-${accent} text-cream rounded-pill px-3 py-1 text-[11px] font-semibold`}>{number} — Featured</span>
+                      <span class={`bg-${accent} text-cream rounded-pill px-3 py-1 text-[11px] font-semibold`}>{number} · Featured</span>
                       {s.publishedAt && (
                         <span class="text-[12px] text-navy/60">
                           {new Date(s.publishedAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
@@ -293,7 +293,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
     <div class="max-w-shell mx-auto px-6 lg:px-10 relative">
       <div class="max-w-[920px] mx-auto">
 
-        <div class="font-hand text-[28px] lg:text-[36px] text-butter text-center">— let's make something warm</div>
+        <div class="font-hand text-[28px] lg:text-[36px] text-butter text-center">let's make something warm</div>
 
         <div class="mt-6 postcard-scene rotate-[-1deg]" data-postcard>
           <div class="tape tape-r postcard-tape" style="top:-14px; left:44%; width:140px; height:28px;"></div>
@@ -314,7 +314,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                     </h2>
 
                     <p class="mt-6 font-hand text-[22px] text-navy/75">
-                      A project, a collab, or just design in general —<br/>
+                      A project, a collab, or just design in general,<br/>
                       I'd love to hear from you.
                     </p>
 
@@ -339,7 +339,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                         To:<br/>
                         <span class="text-navy text-[22px]">future client ✦</span><br/>
                         anywhere, everywhere<br/>
-                        the world — 00000
+                        the world, 00000
                       </div>
                     </div>
                   </div>
@@ -438,7 +438,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
             <div>
               <div class="font-hand text-[28px] lg:text-[36px] text-butter">✦ it's in the mail ✦</div>
               <p class="font-display text-[40px] sm:text-[56px] lg:text-[72px] leading-[0.95] mt-3">
-                Thank you — <em>talk soon</em>.
+                Thank you, <em>talk soon</em>.
               </p>
               <p class="mt-5 font-hand text-[20px] text-cream/90">
                 Your email app has the letter ready to send.

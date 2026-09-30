@@ -29,10 +29,17 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
     star.style.fontSize = `${10 + Math.random() * (10 + level * 16)}px`;
     star.style.color = Math.random() < 0.55 ? 'var(--color-butter)' : 'var(--color-hot-pink)';
     live++;
-    star.addEventListener('animationend', () => {
+    let gone = false;
+    const done = (): void => {
+      if (gone) return;
+      gone = true;
       star.remove();
       live--;
-    }, { once: true });
+    };
+    // cancelled (e.g. reduced motion switched on mid-twinkle) counts as done too
+    star.addEventListener('animationend', done, { once: true });
+    star.addEventListener('animationcancel', done, { once: true });
+    setTimeout(done, 1500);
     root.appendChild(star);
   };
 

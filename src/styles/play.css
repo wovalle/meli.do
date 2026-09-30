@@ -96,7 +96,6 @@
 /* ---------- draggable sparkles ---------- */
 svg[data-sparkle] { -webkit-touch-callout: none; touch-action: none; cursor: grab; z-index: 10; user-select: none; -webkit-user-select: none; }
 svg[data-sparkle].is-held { cursor: grabbing; animation-play-state: paused; }
-@keyframes sparkle-pop { 0% { scale: 1; } 40% { scale: 1.35; } 100% { scale: 1; } }
 
 /* ---------- polaroid ---------- */
 [data-polaroid] { -webkit-touch-callout: none; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; will-change: transform; }

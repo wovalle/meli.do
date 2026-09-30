@@ -143,8 +143,13 @@ export function initScatter(toggle: HTMLButtonElement, grid: HTMLElement): void 
   };
 
   // re-aim at the new viewport after a resize / rotation, so nothing is stranded off-screen
+  // (width changes only: phones fire resize whenever the URL bar collapses on scroll)
   let resizeRaf = 0;
+  let lastWidth = document.documentElement.clientWidth;
   window.addEventListener('resize', () => {
+    const w = document.documentElement.clientWidth;
+    if (w === lastWidth) return;
+    lastWidth = w;
     if (!scattered) return;
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => scattered && scatter());

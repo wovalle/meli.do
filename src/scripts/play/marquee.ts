@@ -71,9 +71,15 @@ export function initMarquee(root: HTMLElement): MarqueeControl {
   root.addEventListener('focusin', (e) => {
     focused = true;
     // bring the focused link on screen (the track may have carried it off to the left)
+    // keyboard focus only (a mouse/touch press focuses the link too: moving it then would eat the click),
+    // only when it is actually off screen, and never in the reduced-motion scrollable strip
     const link = e.target instanceof HTMLElement ? e.target : null;
+    if (!link || reducedMotion() || !link.matches(':focus-visible')) return;
+    const r = link.getBoundingClientRect();
+    const box = root.getBoundingClientRect();
+    if (r.left >= box.left && r.right <= box.right) return;
     root.scrollLeft = 0;
-    if (link && loopWidth > 0) {
+    if (loopWidth > 0) {
       offset = Math.max(0, link.offsetLeft - 24) % loopWidth;
       track.style.transform = `translate3d(${(-offset).toFixed(2)}px, 0, 0)`;
     }

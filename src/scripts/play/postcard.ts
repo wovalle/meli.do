@@ -74,7 +74,7 @@ export function initPostcard(root: HTMLElement): void {
     back.inert = true;
     root.classList.add('is-sent');
     sent.hidden = false;
-    if (status) status.textContent = "It's in the mail, your email app has the letter ready to send.";
+    if (status) status.textContent = "It's in the mail! Your email app has the letter ready to send.";
     againBtn.focus({ preventScroll: true });
     busy = false;
   };

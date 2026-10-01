@@ -25,7 +25,7 @@ test('the Tailwind theme matches the logo colors', () => {
 });
 
 test('the OG renderer and theme-color match the logo colors', () => {
-  const og = read('src/lib/og.ts');
+  const og = read('src/lib/og-cards.ts');
   assert.match(og, new RegExp(`HOT_PINK = '${LOGO_PINK}'`));
   assert.match(og, new RegExp(`LAVENDER = '${LOGO_LAVENDER}'`));
   assert.match(read('src/layouts/PublicLayout.astro'), new RegExp(`name="theme-color" content="${LOGO_LAVENDER}"`));
@@ -42,6 +42,7 @@ test('no pre-logo pink or lavender is left in the site code', () => {
     'src/styles/global.css',
     'src/styles/play.css',
     'src/lib/og.ts',
+    'src/lib/og-cards.ts',
     'src/lib/play/toys.ts',
     'src/layouts/PublicLayout.astro',
     'src/pages/index.astro',

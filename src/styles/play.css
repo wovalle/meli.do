@@ -80,11 +80,14 @@
    these), and lifts it again once the page scrolls on. */
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
+    /* one named timeline for the page scroll, shared by every part: an anonymous
+       scroll() per element is a timeline each, all serviced every frame */
+    :root { scroll-timeline: --sabor-page block; }
     .sabor.is-scroll-driven :is(.sabor-word, .sabor-ink, .sabor-ink-pink, .sabor-sparks, .sabor-spark, .sabor-thumb-rail) {
       animation-duration: auto;
       animation-timing-function: linear;
       animation-fill-mode: both;
-      animation-timeline: scroll(root block);
+      animation-timeline: --sabor-page;
       animation-range: 0px var(--sabor-end, 100vh);
     }
     .sabor.is-scroll-driven .sabor-word { animation-name: sabor-word; }
@@ -95,7 +98,7 @@
     /* each spark: switch on at its own level (--on), and grow with the whole range */
     .sabor.is-scroll-driven .sabor-spark {
       animation-name: sabor-spark-on, sabor-spark-grow;
-      animation-timeline: scroll(root block), scroll(root block);
+      animation-timeline: --sabor-page, --sabor-page;
       animation-range:
         calc(var(--sabor-end, 100vh) * var(--on)) calc(var(--sabor-end, 100vh) * (var(--on) + 0.05)),
         0px var(--sabor-end, 100vh);
@@ -107,7 +110,7 @@
 @keyframes sabor-pink { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sabor-sparks { 0%, 2% { opacity: 0; } 25%, 100% { opacity: 1; } }
 @keyframes sabor-spark-on { from { opacity: 0; } to { opacity: 1; } }
-@keyframes sabor-spark-grow { from { transform: scale(0.6); } to { transform: scale(1.35); } }
+@keyframes sabor-spark-grow { from { transform: scale(0.6); } to { transform: scale(1.3); } }
 @keyframes sabor-thumb { from { transform: translateX(0%); } to { transform: translateX(100%); } }
 
 .sabor-dial {

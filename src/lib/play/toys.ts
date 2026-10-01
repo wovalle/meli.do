@@ -101,7 +101,7 @@ export const SABOR_KEYFRAMES = {
   /** the pool of ✦ as a whole */
   sparks: [{ opacity: 0 }, { opacity: 0, offset: SABOR_SPARK_FROM }, { opacity: 1, offset: 0.25 }, { opacity: 1 }],
   /** every ✦ grows with the level */
-  sparkGrow: [{ transform: 'scale(0.6)' }, { transform: 'scale(1.35)' }],
+  sparkGrow: [{ transform: 'scale(0.6)' }, { transform: 'scale(1.3)' }],
   /** the dial's drawn thumb slides along its rail */
   thumb: [{ transform: 'translateX(0%)' }, { transform: 'translateX(100%)' }],
 } satisfies Record<string, SaborKeyframes>;
@@ -141,7 +141,7 @@ export function saborSparkPool(random: () => number, count = SABOR_SPARK_COUNT):
     return {
       left: Math.round(-6 + random() * 108),
       top: Math.round(-12 + random() * 96),
-      size: Math.round(10 + random() * 16),
+      size: Math.round(7 + random() * 13),
       color: random() < 0.55 ? 'butter' : 'hot-pink',
       path: paths[i % paths.length] ?? 'a',
       durationMs,

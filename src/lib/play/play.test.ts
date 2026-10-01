@@ -155,6 +155,8 @@ test('play.css scroll-driven keyframes match the ones the dial holds', () => {
   assert.match(css, new RegExp(`@keyframes sabor-word \\{ from \\{ transform: skewX\\(0deg\\); \\} to \\{ transform: skewX\\(-${SABOR_SKEW_DEG}deg\\); \\} \\}`));
   assert.match(css, /@keyframes sabor-pink \{ from \{ opacity: 0; \} to \{ opacity: 1; \} \}/);
   assert.match(css, /@keyframes sabor-thumb \{ from \{ transform: translateX\(0%\); \} to \{ transform: translateX\(100%\); \} \}/);
+  assert.match(css, /@keyframes sabor-spark-grow \{ from \{ transform: scale\(0\.6\); \} to \{ transform: scale\(1\.3\); \} \}/);
+  assert.deepEqual(SABOR_KEYFRAMES.sparkGrow, [{ transform: 'scale(0.6)' }, { transform: 'scale(1.3)' }]);
   // each spark's CSS range is its --on level plus the same fade
   assert.match(css, new RegExp(`\\(var\\(--on\\) \\+ ${SABOR_SPARK_FADE}\\)`));
   // the word never transitions or animates its colour again

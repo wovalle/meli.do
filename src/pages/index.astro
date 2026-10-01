@@ -73,7 +73,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         who loves <span class="sabor"><em class="sabor-word font-display"><span class="sabor-ink">sabor</span><span class="sabor-ink-pink" aria-hidden="true">sabor</span></em><span class="sabor-sparks" aria-hidden="true">{saborSparks.map((p) => (
           <span class="sabor-spark" style={`left:${p.left}%;top:${p.top}%;width:${p.size}px;height:${p.size}px;--on:${p.on}`}><svg
             viewBox="0 0 48 48" class={`sabor-twinkle-${p.path}`} style={`animation-duration:${p.durationMs}ms;animation-delay:${p.delayMs}ms`}
-          ><path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill={p.color === 'butter' ? '#FFE484' : '#FF1392'} stroke="rgba(26,43,74,0.28)" stroke-width="1.5" stroke-linejoin="round" /></svg></span>
+          ><path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill={p.color === 'butter' ? '#FFE484' : '#FF1392'} stroke="rgba(26,43,74,0.2)" stroke-width="1.2" stroke-linejoin="round" /></svg></span>
         ))}</span><input
           type="range" min="0" max="100" value={SABOR_DEFAULT} step="1" hidden data-sabor-dial
           class="sabor-dial" aria-label="Sabor: slide for more italic, hotter pink and a faster marquee"

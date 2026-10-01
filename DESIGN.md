@@ -3,20 +3,26 @@ version: alpha
 name: mellen.do
 description: >-
   Design system of mellen.do, the portfolio of Melissa Encarnación, a
-  Dominican art director. Lavender paper, navy ink, hot-pink accents, an
-  editorial serif with a handwritten aside. Warm, playful, con sabor.
-  Every value below is extracted from the code; the comment next to each one
-  says where it lives. Read this before generating anything for the brand
-  (OG cards, social posts, new pages).
+  Dominican art director, built around her 2026 logo (public/brand/*.svg):
+  a pink four-petal flower and a navy "mellen" wordmark. Lavender paper, navy
+  ink, hot-pink accents, an editorial serif with a handwritten aside. Warm,
+  playful, con sabor. Every value below is extracted from the logo files or
+  the code; the comment next to each one says where it lives. Read this
+  before generating anything for the brand (OG cards, social posts, new
+  pages).
 
-# Source of truth for colors: the Tailwind v4 @theme block in
-# src/styles/global.css (lines 3-21). The OG renderer repeats them as
-# constants in src/lib/og.ts (lines 7-12).
+# Source of truth for colors: the 2026 logo (public/brand/*.svg fills) for
+# pink, navy, lavender and white; the Tailwind v4 @theme block in
+# src/styles/global.css (lines 3-21) for the rest. The OG renderer repeats
+# them as constants in src/lib/og.ts (lines 7-12). Pink and lavender were
+# #FF1493 / #D9D0F5 before the logo; they now match it exactly
+# (src/lib/brand.test.ts keeps them in sync).
 colors:
-  primary: "#FF1493"          # --color-hot-pink, global.css:7 · HOT_PINK og.ts:10
-  secondary: "#1A2B4A"        # --color-navy, global.css:6 · NAVY og.ts:7
+  primary: "#FF1392"          # logo pink, public/brand/mellen-mark.svg · --color-hot-pink global.css:7 · HOT_PINK og.ts:10
+  secondary: "#1A2B4A"        # logo navy, public/brand/mellen-wordmark.svg · --color-navy global.css:6 · NAVY og.ts:7
   tertiary: "#FFE484"         # --color-butter, global.css:9 · BUTTER og.ts:12
-  neutral: "#D9D0F5"          # --color-lavender, global.css:4 · LAVENDER og.ts:8 · theme-color PublicLayout.astro:95
+  neutral: "#D9CFF4"          # logo lavender, public/brand/mellen-wordmark-on-navy.svg · --color-lavender global.css:4 · LAVENDER og.ts:8 · theme-color PublicLayout.astro:95
+  logo-white: "#FFFFFF"       # logo white, public/brand/mellen-wordmark-on-pink.svg, -mono-white, mellen-mark-white.svg (logo only)
   surface: "#FFF5EC"          # --color-cream, global.css:5 · CREAM og.ts:9
   on-surface: "#1A2B4A"       # body text-navy, PublicLayout.astro:120
   on-primary: "#FFF5EC"       # bg-hot-pink text-cream, index.astro:62, 289
@@ -26,9 +32,9 @@ colors:
   envelope-back: "#C9BDF0"    # hard-coded, play.css:210
   envelope-flap-open: "#C3B6EE" # hard-coded, play.css:217
   envelope-flap: "#D2C7F3"    # hard-coded, play.css:238
-  # Case-study OG card only — these DISAGREE with the theme, see "Known
-  # inconsistencies" below. Kept here so the file mirrors the code.
-  og-case-pink: "#FF2E88"     # og.ts:254 (accent bar) vs hot-pink #FF1493
+  # Case-study OG card only — these DISAGREE with the theme, see "What
+  # still needs updating" below. Kept here so the file mirrors the code.
+  og-case-pink: "#FF2E88"     # og.ts:254 (accent bar) vs hot-pink #FF1392
   og-case-cream: "#FFF9F0"    # og.ts:257, 260 (title, subtitle) vs cream #FFF5EC
   og-case-shade: "#0F1424"    # rgba(15,20,36,…) gradient, og.ts:251 vs navy #1A2B4A
 
@@ -37,6 +43,9 @@ colors:
 # and mapped in global.css:13-15 (--font-display / --font-sans / --font-hand).
 # The OG renderer loads Instrument Serif 400 + italic, Poppins 500, Kalam 400
 # (og.ts:43-55).
+# The logo's own fonts (Ohno Blazeface, Neue Machina) are deliberately NOT
+# tokens: they are commercial, not web fonts, and live only as outlines in
+# public/brand/*.svg. See "Logo".
 typography:
   display-xl:                 # home h1, index.astro:65 (64px → sm 96px → lg 152px)
     fontFamily: Instrument Serif
@@ -69,11 +78,6 @@ typography:
     fontFamily: Instrument Serif
     fontSize: 44px
     fontWeight: 400
-  wordmark:                   # "mellen" in the header, PublicLayout.astro:128 (tracking-tight)
-    fontFamily: Instrument Serif
-    fontSize: 22px
-    fontWeight: 400
-    letterSpacing: -0.025em
   body-lg:                    # hero intro, index.astro:76 (18 → lg 22px)
     fontFamily: Poppins
     fontSize: 22px
@@ -128,10 +132,6 @@ typography:
     fontFamily: Poppins
     fontSize: 24px
     fontWeight: 500
-  og-signature:               # "mellen.do" in hot pink, og.ts:187
-    fontFamily: Kalam
-    fontSize: 30px
-    fontWeight: 400
 
 # Tailwind v4 default scale (--spacing: 0.25rem = 4px); no override in
 # global.css. Named values are the ones the pages actually use.
@@ -160,6 +160,29 @@ rounded:
   full: 999px                 # --radius-pill, global.css:18 (buttons, badges, header)
 
 components:
+  # Logo colorways, from the artboards of the source file. textColor = the
+  # "mellen" text; the mark color is noted per entry. Sizes are minimums
+  # (height of the artwork; X = that height). Ratios are from the viewBoxes.
+  logo-on-white:              # public/brand/mellen-wordmark.svg, mellen-lockup.svg (pink mark)
+    backgroundColor: "{colors.logo-white}"
+    textColor: "{colors.secondary}"
+  logo-on-lavender:           # public/brand/mellen-wordmark.svg, mellen-lockup.svg (pink mark)
+    backgroundColor: "{colors.neutral}"
+    textColor: "{colors.secondary}"
+  logo-on-pink:               # public/brand/mellen-wordmark-on-pink.svg (navy mark)
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.logo-white}"
+  logo-on-navy:               # public/brand/mellen-wordmark-on-navy.svg, mellen-lockup-on-navy.svg (pink mark)
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.neutral}"
+  logo-mark:                  # public/brand/mellen-mark*.svg, viewBox 47.875 × 47.875 (1:1)
+    size: 24px                # 16px only for the favicon
+  logo-mark-favicon:
+    size: 16px
+  logo-wordmark:              # public/brand/mellen-wordmark*.svg, viewBox 234.25 × 47.875 (4.89:1)
+    height: 20px              # ≈ 98px wide
+  logo-lockup:                # public/brand/mellen-lockup*.svg, viewBox 356.875 × 73.75 (4.84:1)
+    height: 64px              # ≈ 310px wide; the tagline is 18% of the height
   button-primary:             # "See my work →", index.astro:82; header CTA PublicLayout.astro:135
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.surface}"
@@ -281,7 +304,7 @@ components:
     textColor: "{colors.tertiary}"
     size: 44px
     rounded: "{rounded.full}"
-  header:                     # PublicLayout.astro:123 (bg-cream/80 + blur 14px)
+  header:                     # PublicLayout.astro:123 (bg-cream/80 + blur 14px); logo still the pre-2026 star, see "What still needs updating" #1
     backgroundColor: "{colors.surface}"
     textColor: "{colors.on-surface}"
     rounded: "{rounded.full}"
@@ -312,8 +335,10 @@ components:
 This file follows Google Labs' [DESIGN.md spec](https://github.com/google-labs-code/design.md)
 (version `alpha`). The front matter holds the tokens; this body explains how
 to use them. **Agents: read this before you generate anything for mellen.do**
-— OG cards, social posts, new pages, decks. Don't invent new colors or fonts;
-everything here already lives in the code, and the YAML comments say where.
+— OG cards, social posts, new pages, decks. Start from the logo
+(`public/brand/`), then the tokens. Don't invent new colors or fonts;
+everything here already lives in the logo files or the code, and the YAML
+comments say where.
 
 Lint it with `npx @google/design.md lint DESIGN.md`.
 
@@ -338,26 +363,101 @@ use it on CTAs and as a list separator. Caribbean warmth over hype: say
 paper being handled (see Elevation & Depth). Every motion has a still
 fallback under `prefers-reduced-motion`.
 
+## Logo
+
+The 2026 logo is the anchor of the identity, and the palette comes from it:
+a **pink four-petal flower** (four overlapping circles around a filled
+centre) and a chunky, soft serif **"mellen"** in navy. The full lockup adds
+the tagline **"art direction & branding"**, with a pink "&".
+
+The files are in `public/brand/`, served at `/brand/…`. Glyphs are outlined
+(no font needed), backgrounds are transparent, and the viewBoxes are tight to
+the artwork.
+
+| File | What | Use on |
+| --- | --- | --- |
+| `mellen-mark.svg` | Pink flower, no text | white, lavender, navy |
+| `mellen-mark-navy.svg` | Navy flower | pink; otherwise one-color navy |
+| `mellen-mark-white.svg` | White flower | one-color white (dark photos) |
+| `mellen-wordmark.svg` | Pink mark + navy "mellen" | **white or lavender** (default) |
+| `mellen-wordmark-on-pink.svg` | Navy mark + white "mellen" | **hot pink** |
+| `mellen-wordmark-on-navy.svg` | Pink mark + lavender "mellen" | **navy** |
+| `mellen-wordmark-mono-navy.svg` | All navy | one-color print, light photos |
+| `mellen-wordmark-mono-white.svg` | All white | one-color print, dark photos |
+| `mellen-lockup.svg` | Mark + wordmark + tagline (navy, pink "&") | white or lavender |
+| `mellen-lockup-on-navy.svg` | Same, lavender text | navy |
+
+**Approved colorways** (from the source artboards; tokens `logo-on-*`):
+
+1. Pink mark + navy text on **white or lavender**.
+2. Navy mark + white text on **pink**.
+3. Pink mark + lavender text on **navy**.
+
+Any other pairing (pink text, a navy mark on navy, the logo on butter, coral,
+mint or sky, the logo in cream) is off-brand. The mono files are for
+one-color reproduction only. White on pink measures 3.65:1. That is fine for
+the logo: logotypes are exempt from WCAG text contrast. It doesn't make white
+on pink OK for running text.
+
+**Clear space.** Let **X** be the height of the flower mark. The mark is the
+full height of every logo file, so X = the height you render the SVG at. Keep
+at least **½X** clear on every side: one petal, since each petal is a circle
+½X across. Nothing else (text, edges, other logos) goes in that zone. The
+built-in gap between the mark and "mellen" is ≈0.27X; never tighten it.
+
+**Minimum size** (height of the artwork; X in px):
+
+| Artwork | Min height | ≈ Min width | Why |
+| --- | --- | --- | --- |
+| Mark | 24px (16px for favicons only) | same | The four petals must still read as separate circles. |
+| Wordmark | 20px | 98px | The "mellen" letters are 74% of the height (≈15px). |
+| Lockup | 64px | 310px | The tagline is only 18% of the height; below 64px it drops under ~11px. Use the wordmark instead. |
+
+The ratios come from the viewBoxes: mark 1:1, wordmark 4.89:1, lockup
+4.84:1. Always scale proportionally.
+
+**Logo fonts.** The wordmark is set in **Ohno Blazeface (12 Point)** and the
+tagline in **Neue Machina** (Regular / Ultrabold). Both are commercial and
+are **not** web fonts on this site — don't add them. The logo is fixed,
+outlined artwork. Site text stays in Instrument Serif / Poppins / Kalam.
+**Never typeset "mellen" (or the tagline) in a site font as a stand-in for
+the logo** — use the SVG.
+
+**Don't** recolor, outline, rotate, skew, stretch, add shadows to, animate
+the letters of, or rearrange the logo. The flower mark alone may spin or
+float like the other sparkles (a slow 18s `spin-slow` is fine). The
+wordmark text never moves.
+
 ## Colors
 
 Lavender paper, navy ink, one hot-pink marker, and a handful of pastel
 "stickers".
 
-- **Hot Pink (`primary`, #FF1493):** The accent and the "sabor". Italic
+Pink, navy and lavender are **the logo's colors** (`public/brand/*.svg`).
+Before the logo, the site used `#FF1493` and `#D9D0F5`, which differ
+imperceptibly. `--color-hot-pink` and `--color-lavender`, the OG constants,
+`theme-color` and every literal copy were aligned to the logo values
+(`#FF1392`, `#D9CFF4`). `src/lib/brand.test.ts` fails if they drift apart
+again.
+
+- **Hot Pink (`primary`, #FF1392):** The logo flower, and the accent and the "sabor". Italic
   emphasis words in headlines (*Melissa*, *Caribbean warmth*, *love letter*),
   hover states, the contact section, the pink badge, the hand-drawn underline
   (`global.css:71`). Use it on one or two words per headline, not whole lines.
-- **Navy (`secondary`, #1A2B4A):** The ink. All body text, primary buttons,
+- **Navy (`secondary`, #1A2B4A):** The logo's "mellen", and the ink. All body text, primary buttons,
   footer. Shadows are navy at low alpha, never black. Muted text is navy at
   45–80% opacity (`text-navy/70`, `/60`, `/50`), not grey.
 - **Butter (`tertiary`, #FFE484):** Tape, stamps, sparkles, the hover of
   secondary buttons, the stat card. Tape is butter at 90%
   (`rgba(255,228,132,.9)`, `global.css:81`, `play.css:112`).
-- **Lavender (`neutral`, #D9D0F5):** The page background (`bg-lavender`,
+- **Lavender (`neutral`, #D9CFF4):** The logo's text color on navy, and the page background (`bg-lavender`,
   `PublicLayout.astro:120`), the browser `theme-color`
   (`PublicLayout.astro:95`) and the OG card background (`og.ts:168`).
 - **Cream (`surface`, #FFF5EC):** Paper: cards, header, polaroid, postcard,
-  badges. Text on pink and navy is cream, never pure white.
+  badges. Site text on pink and navy is cream, never pure white.
+- **White (`logo-white`, #FFFFFF):** Logo artwork only (the text of the
+  on-pink wordmark, the mono-white files). Don't use it for site UI or text,
+  and don't swap it for cream inside the logo.
 - **Coral (#FF7F50), Mint (#B8E6D0), Sky (#B8D7FF):** Sticker colors for
   tiles, stat cards, sparkles and the status dot. The archive tiles cycle
   butter → coral → mint → sky (`index.astro:32`); the draggable sparkles
@@ -367,18 +467,21 @@ Lavender paper, navy ink, one hot-pink marker, and a handful of pastel
   (`global.css:92-100`, `play.css:232`). It is the frame of the postcard.
 
 Contrast notes: navy on cream/lavender/butter/mint/sky passes AA easily. Cream
-on hot pink is 3.38:1 and pink on butter (stamp lettering, envelope seal) is
-2.89:1 — both below WCAG AA for normal text (4.5:1). The site uses cream on
+on hot pink is 3.39:1 and pink on butter (stamp lettering, envelope seal) is
+2.90:1 — both below WCAG AA for normal text (4.5:1). The site uses cream on
 pink for large headlines, but also for 12–14px buttons, badges and chips.
 `npx @google/design.md lint` flags these as warnings on purpose: the tokens
 mirror the code. For new work, keep text on pink large, or use navy.
 
 ## Typography
 
-Three families, each with one job (`global.css:13-15`):
+Three families, each with one job (`global.css:13-15`). The logo's fonts
+(Ohno Blazeface, Neue Machina) are not among them: they exist only as
+outlines in the logo files (see Logo).
 
-- **Instrument Serif** (`font-display`) — every headline, the wordmark, the
-  marquee. Regular weight only; the *italic* is the expressive move (the pink
+- **Instrument Serif** (`font-display`) — every headline and the marquee.
+  (Today it also sets the header's "mellen". That is a stand-in to be
+  replaced by the logo SVG, not a pattern to copy.) Regular weight only; the *italic* is the expressive move (the pink
   italic "*Melissa*" in the hero and the OG card is the signature look).
   Tight leading (0.95) and -0.02em tracking on big sizes. Headlines get huge:
   152px on desktop for the hero.
@@ -386,7 +489,8 @@ Three families, each with one job (`global.css:13-15`):
   500 (`font-medium`) for UI, 600 only for the small featured badge and
   counters. Body leading is generous (1.55–1.7).
 - **Kalam** (`font-hand`) — the handwritten voice: asides, captions, the
-  postcard form, the "mellen.do" signature on OG cards. Always lowercase-ish
+  postcard form, the "mellen.do" signature on OG cards (to be replaced by the
+  logo, see "What still needs updating" #3). Always lowercase-ish
   and conversational. Never for long paragraphs.
 
 Pages are responsive by stepping sizes per breakpoint (e.g. hero
@@ -410,7 +514,9 @@ the rest.
   a 2–3 line serif headline with one pink italic word, Poppins subtitle
   bottom-left in navy at 75%, Kalam "mellen.do" in pink bottom-right, and a
   cluster of sparkles (pink star, butter sparkle, coral dashed circle, coral
-  star) on the right (`og.ts:79-95`).
+  star) on the right (`og.ts:79-95`). For new cards and social posts, sign
+  with `mellen-wordmark.svg` (≥ 20px tall, ½X clear space) instead of Kalam
+  text.
 
 ## Elevation & Depth
 
@@ -447,7 +553,7 @@ Two easing curves (`global.css:23-26`):
 | Hover `lift` | 500ms back, -6px and -0.5° | `global.css:63-64` |
 | Wave 👋🏽 | 2.4s loop | `global.css:43-51` |
 | Floating sparkles | 6s / 8s / 9s loops | `global.css:53-58` |
-| Spinning star logo | 18s linear | `global.css:60-61` |
+| Spinning header star (`spin-slow`; should move to the flower mark) | 18s linear | `global.css:60-61` |
 | Marquee | 30s linear | `global.css:68-69` |
 | Color hovers | 200ms | `play.css:20, 78` |
 | Postcard flip | 850ms back, 3D rotateY | `play.css:144-154` |
@@ -491,11 +597,21 @@ pink underline, dashed navy rules, perforated stamp edges.
   an underlined "Read the case study →" link. Archive tiles: square, 24px
   radius, colored backgrounds cycling butter/coral/mint/sky, lifting on
   hover.
-- **Header.** Floating cream/80 pill with blur, spinning pink star + serif
-  "mellen" wordmark, Poppins nav, navy "Say hola ✦" button.
+- **Header.** Floating cream/80 pill with blur, Poppins nav, navy "Say hola
+  ✦" button. The logo slot should hold `mellen-wordmark.svg` (cream counts as
+  a light background), about 24–28px tall. Today it still shows a spinning
+  5-point star with "mellen" in Instrument Serif (see "What still needs
+  updating" #1).
 
 ## Do's and Don'ts
 
+- Do use the logo SVGs from `public/brand/` as-is, in one of the three
+  approved colorways, with ½X clear space and at or above the minimum size.
+- Don't typeset "mellen" or "art direction & branding" in Instrument Serif,
+  Poppins or Kalam to imitate the logo, and don't add Blazeface or Neue
+  Machina as web fonts.
+- Don't recolor, stretch, rotate or rearrange the logo. Only the flower mark
+  may spin or float.
 - Do start from lavender + cream + navy, and spend hot pink on one or two
   words or one action per view.
 - Do put the emotional word of a headline in *Instrument Serif italic*, often
@@ -507,37 +623,59 @@ pink underline, dashed navy rules, perforated stamp edges.
 - Do give every animation a reduced-motion fallback.
 - Don't use pure black, pure white or grey for text — use navy and its
   opacities, and cream on dark/pink.
-- Don't put small body text in cream on hot pink (3.38:1).
+- Don't put small body text in cream on hot pink (low contrast, see Colors).
 - Don't introduce new fonts or colors; if a new value is truly needed, add it
   to `@theme` in `src/styles/global.css` first and then here.
 - Don't set long paragraphs in Kalam or in italics.
 
-## Known inconsistencies
+## What still needs updating
 
-The code has more than one value for a few things. They are recorded as-is
-above; nothing was silently picked. Decide and fix in code, then update this
-file.
+The 2026 logo landed after the site was built. This is the audit of what
+doesn't use it yet, plus the remaining places where the code disagrees with
+itself. Nothing here is implemented yet, except the pink/lavender alignment
+(done, see Colors). Fix it in code, then update this file.
 
-1. **Case-study OG card uses its own palette** (`src/lib/og.ts:251-260`):
-   accent bar `#FF2E88` instead of hot pink `#FF1493`; title/subtitle
-   `#FFF9F0` instead of cream `#FFF5EC`; the gradient shade is
-   `rgba(15,20,36,…)` (#0F1424) instead of navy `#1A2B4A`.
-2. **Colors are duplicated as literals** outside `@theme`: `og.ts:7-12`,
-   `SPARKLE_PALETTE` in `src/lib/play/toys.ts:41`, inline SVG fills in
-   `index.astro`, `work/index.astro`, `404.astro`, `PublicLayout.astro:126`,
-   and the airmail stripes in `global.css:92-100` / `play.css:232`. Values
-   match today, but they can drift.
-3. **Envelope lavenders are untokenized** — `#C9BDF0`, `#C3B6EE`, `#D2C7F3`
-   (`play.css:210, 217, 238`) are hand-picked darker lavenders not in
-   `@theme`.
-4. **Headline leading**: the site uses 0.95 (`leading-[0.95]`) but the OG
-   site card uses 0.98 (`og.ts:178`).
-5. **Featured badge** is 11px semibold (`index.astro:222`) while every other
-   badge is 12px medium.
-6. **/links uses white cards** (`bg-white`, `border-white`,
-   `src/pages/links.astro:46, 48, 62`) instead of cream, plus third-party brand
-   colors for the Instagram gradient and LinkedIn blue
-   (`links.astro:16, 23`).
-7. **Favicon**: `PublicLayout.astro:96` links `/favicon.svg`, which is not in
-   `public/` on `main` yet. A site icon is in progress elsewhere; not
-   documented here until it lands.
+1. **Header logo** (`src/layouts/PublicLayout.astro:124-129`): a 5-point star
+   in hot pink with "mellen" set in Instrument Serif (`font-display
+   text-[22px]`). Replace it with `mellen-wordmark.svg`; the `spin-slow`
+   animation can move to the flower mark.
+2. **Favicon / app icons** (PR #19, session s-16, still open): generated from
+   an Instrument Serif "M". They should come from `mellen-mark.svg`. PR #19's
+   `site.webmanifest` already uses lavender `#D9CFF4`.
+3. **OG cards** (`src/lib/og.ts`): the site card signs with "mellen.do" in
+   Kalam pink (`og.ts:187`); use the wordmark or the mark instead. The
+   case-study card has a stray accent `#FF2E88` (`og.ts:254`); use the palette
+   tokens.
+4. **JSON-LD** (`PublicLayout.astro:23-64`): neither `Person` nor `WebSite`
+   has a `logo`/`image` for the brand. Add a `logo` pointing at a PNG export
+   of the lockup (crawlers don't reliably take SVG).
+5. **Positioning — needs Melissa's call.** The logo tagline says **"art
+   direction & branding"**. The site says **"Art Director & Head of Design"**
+   (JSON-LD `jobTitle` and description, `PublicLayout.astro:14, 28, 30`;
+   `/links`, `links.astro:38, 51`; OG subtitle, `og/[page].png.ts:18`; PR
+   #19's manifest) and **"Art Director & Designer"** (home `<title>`,
+   `index.astro:42`). Not resolved here on purpose.
+6. **Off-palette strays to fold into tokens:**
+   - `#FF2E88`: case-study OG accent (`og.ts:254`), vs pink `#FF1392`.
+   - `#FFF9F0`: case-study OG title/subtitle (`og.ts:257, 260`), vs cream
+     `#FFF5EC`.
+   - `#D2C7F3` (`play.css:238`) and `#C9BDF0` (`play.css:210`): envelope
+     lavenders, plus `#C3B6EE` (`play.css:217`).
+   - `rgba(15,20,36,…)` (#0F1424): case-study OG gradient (`og.ts:251`), vs
+     navy.
+
+Smaller inconsistencies, recorded as-is:
+
+7. **Colors duplicated as literals** outside `@theme`: `og.ts:7-12`,
+   `SPARKLE_PALETTE` (`src/lib/play/toys.ts:41`), inline SVG fills in
+   `index.astro`, `work/index.astro`, `404.astro` and `PublicLayout.astro:126`,
+   and the airmail stripes (`global.css:92-100`, `play.css:232`). They match
+   today; `src/lib/brand.test.ts` guards pink and lavender.
+8. **Headline leading**: 0.95 on the site (`leading-[0.95]`), 0.98 on the OG
+   site card (`og.ts:178`).
+9. **Featured badge** is 11px semibold (`index.astro:222`); every other badge
+   is 12px medium.
+10. **/links uses white cards** (`bg-white`, `border-white`,
+    `src/pages/links.astro:46, 48, 62`) instead of cream, plus third-party
+    brand colors for the Instagram gradient and LinkedIn blue
+    (`links.astro:16, 23`).

@@ -14,19 +14,19 @@ description: >-
 # Source of truth for colors: the 2026 logo (public/brand/*.svg fills) for
 # pink, navy, lavender and white; the Tailwind v4 @theme block in
 # src/styles/global.css (lines 3-21) for the rest. The OG renderer repeats
-# them as constants in src/lib/og.ts (lines 7-12). Pink and lavender were
+# them as constants in src/lib/og-cards.ts (lines 7-11). Pink and lavender were
 # #FF1493 / #D9D0F5 before the logo; they now match it exactly
 # (src/lib/brand.test.ts keeps them in sync).
 colors:
-  primary: "#FF1392"          # logo pink, public/brand/mellen-mark.svg · --color-hot-pink global.css:7 · HOT_PINK og.ts:10
-  secondary: "#1A2B4A"        # logo navy, public/brand/mellen-wordmark.svg · --color-navy global.css:6 · NAVY og.ts:7
-  tertiary: "#FFE484"         # --color-butter, global.css:9 · BUTTER og.ts:12
-  neutral: "#D9CFF4"          # logo lavender, public/brand/mellen-wordmark-on-navy.svg · --color-lavender global.css:4 · LAVENDER og.ts:8 · theme-color PublicLayout.astro:95
+  primary: "#FF1392"          # logo pink, public/brand/mellen-mark.svg · --color-hot-pink global.css:7 · HOT_PINK og-cards.ts:10
+  secondary: "#1A2B4A"        # logo navy, public/brand/mellen-wordmark.svg · --color-navy global.css:6 · NAVY og-cards.ts:7
+  tertiary: "#FFE484"         # --color-butter, global.css:9
+  neutral: "#D9CFF4"          # logo lavender, public/brand/mellen-wordmark-on-navy.svg · --color-lavender global.css:4 · LAVENDER og-cards.ts:8 · theme-color PublicLayout.astro:95
   logo-white: "#FFFFFF"       # logo white, public/brand/mellen-wordmark-on-pink.svg, -mono-white, mellen-mark-white.svg (logo only)
-  surface: "#FFF5EC"          # --color-cream, global.css:5 · CREAM og.ts:9
+  surface: "#FFF5EC"          # --color-cream, global.css:5 · CREAM og-cards.ts:9
   on-surface: "#1A2B4A"       # body text-navy, PublicLayout.astro:120
   on-primary: "#FFF5EC"       # bg-hot-pink text-cream, index.astro:62, 289
-  coral: "#FF7F50"            # --color-coral, global.css:8 · CORAL og.ts:11
+  coral: "#FF7F50"            # --color-coral, global.css:8 · CORAL og-cards.ts:11
   mint: "#B8E6D0"             # --color-mint, global.css:10
   sky: "#B8D7FF"              # --color-sky, global.css:11
   envelope-back: "#C9BDF0"    # hard-coded, play.css:210
@@ -34,15 +34,14 @@ colors:
   envelope-flap: "#D2C7F3"    # hard-coded, play.css:238
   # Case-study OG card only — these DISAGREE with the theme, see "What
   # still needs updating" below. Kept here so the file mirrors the code.
-  og-case-pink: "#FF2E88"     # og.ts:254 (accent bar) vs hot-pink #FF1392
-  og-case-cream: "#FFF9F0"    # og.ts:257, 260 (title, subtitle) vs cream #FFF5EC
-  og-case-shade: "#0F1424"    # rgba(15,20,36,…) gradient, og.ts:251 vs navy #1A2B4A
+  og-case-cream: "#FFF9F0"    # og-cards.ts:207, 211 (title, subtitle) vs cream #FFF5EC
+  og-case-shade: "#0F1424"    # rgba(15,20,36,…) gradient, og-cards.ts:201 vs navy #1A2B4A
 
 # Fonts are loaded from Google Fonts in PublicLayout.astro:104-107
 # (Instrument Serif 400 + italic, Poppins 300/400/500/600, Kalam 300/400/700)
 # and mapped in global.css:13-15 (--font-display / --font-sans / --font-hand).
-# The OG renderer loads Instrument Serif 400 + italic, Poppins 500, Kalam 400
-# (og.ts:43-55).
+# The OG renderer loads Instrument Serif 400 + italic and Poppins 500
+# (og.ts:43-54).
 # The logo's own fonts (Ohno Blazeface, Neue Machina) are deliberately NOT
 # tokens: they are commercial, not web fonts, and live only as outlines in
 # public/brand/*.svg. See "Logo".
@@ -118,17 +117,17 @@ typography:
     fontFamily: Kalam
     fontSize: 18px
     fontWeight: 400
-  og-headline:                # OG site card headline, og.ts:170-171, 178; size per card in og/[page].png.ts (96-160px)
+  og-headline:                # OG site card headline, og-cards.ts:137-138, 145; size per card in og/[page].png.ts (96-160px)
     fontFamily: Instrument Serif
     fontSize: 104px
     fontWeight: 400
     lineHeight: 0.98
     letterSpacing: -0.02em
-  og-badge:                   # OG badge, og.ts:125-126
+  og-badge:                   # OG badge, og-cards.ts:94-95
     fontFamily: Poppins
     fontSize: 20px
     fontWeight: 500
-  og-subtitle:                # OG subtitle, og.ts:184
+  og-subtitle:                # OG subtitle, og-cards.ts:151
     fontFamily: Poppins
     fontSize: 24px
     fontWeight: 500
@@ -146,10 +145,10 @@ spacing:
   gutter-lg: 40px             # lg:gap-10, index.astro:75
   card: 24px                  # p-6 on cards, index.astro:155, 165
   grid-columns: 12            # grid-cols-12, index.astro:75, 111, 209
-  og-width: 1200px            # og.ts:4
-  og-height: 630px            # og.ts:5
-  og-padding-y: 56px          # og.ts:169 ('56px 72px')
-  og-padding-x: 72px          # og.ts:169
+  og-width: 1200px            # og-cards.ts:4
+  og-height: 630px            # og-cards.ts:5
+  og-padding-y: 56px          # og-cards.ts:136 ('56px 72px')
+  og-padding-x: 72px          # og-cards.ts:136
 
 rounded:
   caption: 4px                # polaroid caption label, play.css:99
@@ -210,7 +209,7 @@ components:
   button-pink-hover:          # hover:bg-navy
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.surface}"
-  badge-cream:                # "Open for 2026 projects", index.astro:58 · og.ts:121-122; coral dot index.astro:59, og.ts:129
+  badge-cream:                # "Open for 2026 projects", index.astro:58 · og-cards.ts:90-91; coral dot index.astro:59, og-cards.ts:98
     backgroundColor: "{colors.surface}"
     textColor: "{colors.on-surface}"
     typography: "{typography.label-sm}"
@@ -220,7 +219,7 @@ components:
     backgroundColor: "{colors.coral}"
     size: 8px
     rounded: "{rounded.full}"
-  badge-pink:                 # "10 years designing", index.astro:62 · og.ts:121-122
+  badge-pink:                 # "10 years designing", index.astro:62 · og-cards.ts:90-91
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
     typography: "{typography.label-sm}"
@@ -315,17 +314,17 @@ components:
   contact-section:            # index.astro:289
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
-  og-site-card:               # og.ts:156-190
+  og-site-card:               # og-cards.ts:125-158 (flowers og-cards.ts:53-58, wordmark :154)
     backgroundColor: "{colors.neutral}"
     textColor: "{colors.on-surface}"
     typography: "{typography.og-headline}"
     width: 1200px
     height: 630px
-  og-case-card:               # og.ts:215-262 (photo + dark gradient)
+  og-case-card:               # og-cards.ts:167-217 (photo + dark gradient, on-navy wordmark :212)
     backgroundColor: "{colors.og-case-shade}"
     textColor: "{colors.og-case-cream}"
-  og-case-accent:             # og.ts:254
-    backgroundColor: "{colors.og-case-pink}"
+  og-case-accent:             # og-cards.ts:204
+    backgroundColor: "{colors.primary}"
     width: 88px
     height: 8px
 ---
@@ -452,7 +451,7 @@ again.
   (`rgba(255,228,132,.9)`, `global.css:81`, `play.css:112`).
 - **Lavender (`neutral`, #D9CFF4):** The logo's text color on navy, and the page background (`bg-lavender`,
   `PublicLayout.astro:120`), the browser `theme-color`
-  (`PublicLayout.astro:95`) and the OG card background (`og.ts:168`).
+  (`PublicLayout.astro:95`) and the OG card background (`og-cards.ts:135`).
 - **Cream (`surface`, #FFF5EC):** Paper: cards, header, polaroid, postcard,
   badges. Site text on pink and navy is cream, never pure white.
 - **White (`logo-white`, #FFFFFF):** Logo artwork only (the text of the
@@ -489,8 +488,8 @@ outlines in the logo files (see Logo).
   500 (`font-medium`) for UI, 600 only for the small featured badge and
   counters. Body leading is generous (1.55–1.7).
 - **Kalam** (`font-hand`) — the handwritten voice: asides, captions, the
-  postcard form, the "mellen.do" signature on OG cards (to be replaced by the
-  logo, see "What still needs updating" #3). Always lowercase-ish
+  postcard form. Never a logo stand-in (the OG cards used to sign "mellen.do"
+  in Kalam; they now use the wordmark). Always lowercase-ish
   and conversational. Never for long paragraphs.
 
 Pages are responsive by stepping sizes per breakpoint (e.g. hero
@@ -512,11 +511,19 @@ the rest.
   on content.
 - **OG cards** are 1200×630, lavender, 56/72px padding: badges top-left,
   a 2–3 line serif headline with one pink italic word, Poppins subtitle
-  bottom-left in navy at 75%, Kalam "mellen.do" in pink bottom-right, and a
-  cluster of sparkles (pink star, butter sparkle, coral dashed circle, coral
-  star) on the right (`og.ts:79-95`). For new cards and social posts, sign
-  with `mellen-wordmark.svg` (≥ 20px tall, ½X clear space) instead of Kalam
-  text.
+  bottom-left in navy at 75%, and the **wordmark** (`mellen-wordmark.svg`,
+  40px tall) bottom-right. Decoration on the right is Melissa's flower, not
+  generic sparkles: a small navy flower (`mellen-mark-navy.svg`, 56px) at the
+  top, a big pink flower (`mellen-mark.svg`, 128px) in the middle, and the
+  coral dashed ring (`og-cards.ts:53-58`). The SVG files are inlined at
+  build time (`og.ts` imports them with `?raw`) and drawn as `<img>` data
+  URIs; the shape is never redrawn.
+- **Case-study OG cards** put the project photo under a dark gradient, a
+  palette-pink accent bar, the serif title, and the on-navy wordmark
+  (`mellen-wordmark-on-navy.svg`, 36px) bottom-right.
+- For social posts and anything new, follow the same recipe: sign with the
+  wordmark SVG (≥ 20px tall, ½X clear space), and decorate with the flower
+  mark, never a typeset "mellen".
 
 ## Elevation & Depth
 
@@ -618,7 +625,9 @@ pink underline, dashed navy rules, perforated stamp edges.
   in pink.
 - Do mix English and Spanish the way the site does ("¡Hola!", "Say hola",
   "sabor", "hecho con ♥ en Santo Domingo").
-- Do use ✦ as the sparkle/separator and the 4-point star as decoration.
+- Do use ✦ as the sparkle/separator. On share cards, social posts and new
+  brand assets, the decoration is the flower mark (from `public/brand/`); the
+  site pages still use the 4-point star for now.
 - Do tint shadows navy and keep rotations small (±1–6°).
 - Do give every animation a reduced-motion fallback.
 - Don't use pure black, pure white or grey for text — use navy and its
@@ -642,10 +651,10 @@ itself. Nothing here is implemented yet, except the pink/lavender alignment
 2. **Favicon / app icons** (PR #19, session s-16, still open): generated from
    an Instrument Serif "M". They should come from `mellen-mark.svg`. PR #19's
    `site.webmanifest` already uses lavender `#D9CFF4`.
-3. **OG cards** (`src/lib/og.ts`): the site card signs with "mellen.do" in
-   Kalam pink (`og.ts:187`); use the wordmark or the mark instead. The
-   case-study card has a stray accent `#FF2E88` (`og.ts:254`); use the palette
-   tokens.
+3. ~~**OG cards**~~ — **done.** The cards now sign with the wordmark SVG
+   instead of "mellen.do" in Kalam. The generic sparkles became the flower
+   mark. The case-study accent bar is palette pink instead of `#FF2E88`
+   (`src/lib/og-cards.ts`).
 4. **JSON-LD** (`PublicLayout.astro:23-64`): neither `Person` nor `WebSite`
    has a `logo`/`image` for the brand. Add a `logo` pointing at a PNG export
    of the lockup (crawlers don't reliably take SVG).
@@ -656,23 +665,23 @@ itself. Nothing here is implemented yet, except the pink/lavender alignment
    #19's manifest) and **"Art Director & Designer"** (home `<title>`,
    `index.astro:42`). Not resolved here on purpose.
 6. **Off-palette strays to fold into tokens:**
-   - `#FF2E88`: case-study OG accent (`og.ts:254`), vs pink `#FF1392`.
-   - `#FFF9F0`: case-study OG title/subtitle (`og.ts:257, 260`), vs cream
+   - ~~`#FF2E88`~~: case-study OG accent. Done, now `#FF1392`.
+   - `#FFF9F0`: case-study OG title/subtitle (`og-cards.ts:207, 211`), vs cream
      `#FFF5EC`.
    - `#D2C7F3` (`play.css:238`) and `#C9BDF0` (`play.css:210`): envelope
      lavenders, plus `#C3B6EE` (`play.css:217`).
-   - `rgba(15,20,36,…)` (#0F1424): case-study OG gradient (`og.ts:251`), vs
+   - `rgba(15,20,36,…)` (#0F1424): case-study OG gradient (`og-cards.ts:201`), vs
      navy.
 
 Smaller inconsistencies, recorded as-is:
 
-7. **Colors duplicated as literals** outside `@theme`: `og.ts:7-12`,
+7. **Colors duplicated as literals** outside `@theme`: `og-cards.ts:7-11`,
    `SPARKLE_PALETTE` (`src/lib/play/toys.ts:41`), inline SVG fills in
    `index.astro`, `work/index.astro`, `404.astro` and `PublicLayout.astro:126`,
    and the airmail stripes (`global.css:92-100`, `play.css:232`). They match
    today; `src/lib/brand.test.ts` guards pink and lavender.
 8. **Headline leading**: 0.95 on the site (`leading-[0.95]`), 0.98 on the OG
-   site card (`og.ts:178`).
+   site card (`og-cards.ts:145`).
 9. **Featured badge** is 11px semibold (`index.astro:222`); every other badge
    is 12px medium.
 10. **/links uses white cards** (`bg-white`, `border-white`,

@@ -40,14 +40,21 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 .d-300 { animation-delay: 300ms; }
 .d-400 { animation-delay: 400ms; }
 
-.wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2.4s ease-in-out infinite; }
+/* The hello hand: one wave (~1.4 s) every 6 s, then it rests. Hovering it gets
+   a small, slower sway instead, for as long as the pointer stays. */
+.wave { display: inline-block; transform-origin: 70% 70%; animation: wave 6s ease-in-out infinite; }
+.wave:hover { animation: wave-sway 1.6s ease-in-out infinite; }
 @keyframes wave {
-  0%, 60%, 100% { transform: rotate(0); }
-  10% { transform: rotate(14deg); }
-  20% { transform: rotate(-8deg); }
-  30% { transform: rotate(14deg); }
-  40% { transform: rotate(-4deg); }
-  50% { transform: rotate(10deg); }
+  0%, 24%, 100% { transform: rotate(0); }
+  4% { transform: rotate(14deg); }
+  8% { transform: rotate(-8deg); }
+  12% { transform: rotate(14deg); }
+  16% { transform: rotate(-4deg); }
+  20% { transform: rotate(10deg); }
+}
+@keyframes wave-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(6deg); }
 }
 
 .float-a { animation: float-a 6s ease-in-out infinite; }
@@ -128,6 +135,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
    El giro: every 9 s a 90° quarter turn on a damped spring (ζ 0.55, 1.25 Hz),
    1.2 s of motion then 7.8 s still; the mark is 4-fold symmetric, so 90° = 0°.
    El toque: on hover/focus a flick, damped sine 9°, 1.5 Hz, τ 0.42 s, 1.8 s. */
+.site-logo svg { overflow: visible; } /* the turning flower overhangs its tight viewBox */
 .site-logo .mark {
   transform-box: fill-box;
   transform-origin: center;

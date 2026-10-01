@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
 import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../../lib/img';
+import { projectAlt } from '../../lib/alt';
 import { DISCIPLINES, findDiscipline, matchesDiscipline } from '../../lib/disciplines';
 
 export const prerender = false;
@@ -198,7 +199,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                         src={imgSrc(thumb.imageLKey, 1200)}
                         srcset={imgSrcset(thumb.imageLKey)}
                         sizes="(max-width: 768px) 100vw, 66vw"
-                        alt={thumb.altL}
+                        alt={projectAlt(thumb.altL, s.title)}
                         loading={idx === 0 ? 'eager' : 'lazy'}
                         decoding="async"
                       />
@@ -258,7 +259,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
                             src={thumbSrc(thumb.imageLKey, 800, 4 / 5)}
                             srcset={thumbSrcset(thumb.imageLKey, 4 / 5)}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                            alt={thumb.altL}
+                            alt={projectAlt(thumb.altL, s.title)}
                             loading="lazy"
                             decoding="async"
                           />

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import SiteIcons from "../components/SiteIcons.astro";
 
 interface Props {
   title: string;
@@ -93,7 +94,7 @@ const websiteSchema = {
     <meta name="twitter:image:alt" content={title} />
 
     <meta name="theme-color" content="#D9CFF4" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <SiteIcons />
 
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />

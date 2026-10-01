@@ -97,6 +97,20 @@ export function initPostcard(root: HTMLElement): void {
     });
   });
 
+  // The email is always shown in plain text; "copy" only appears where the clipboard works.
+  if (navigator.clipboard) {
+    root.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        void navigator.clipboard.writeText(btn.dataset.copyEmail ?? '').then(() => {
+          btn.textContent = 'copied ✦';
+          if (status) status.textContent = 'Email address copied.';
+          setTimeout(() => (btn.textContent = 'copy'), 2000);
+        });
+      });
+    });
+  }
+
   againBtn.addEventListener('click', () => {
     root.classList.remove(...STATES);
     sent.hidden = true;

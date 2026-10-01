@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
 import { imgSrc, imgSrcset } from '../../lib/img';
+import { projectAlt } from '../../lib/alt';
 
 export const prerender = false;
 
@@ -124,15 +125,15 @@ if (isDraft) {
           b.layout === 'pair' && b.imageRKey ? (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
               <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-                <img class="w-full h-auto block" src={imgSrc(b.imageLKey, 800)} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={b.altL} loading="lazy" decoding="async" />
+                <img class="w-full h-auto block" src={imgSrc(b.imageLKey, 800)} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={projectAlt(b.altL, study.title)} loading="lazy" decoding="async" />
               </div>
               <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-                <img class="w-full h-auto block" src={imgSrc(b.imageRKey, 800)} srcset={imgSrcset(b.imageRKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={b.altR ?? ''} loading="lazy" decoding="async" />
+                <img class="w-full h-auto block" src={imgSrc(b.imageRKey, 800)} srcset={imgSrcset(b.imageRKey)} sizes="(max-width: 768px) 100vw, 50vw" alt={projectAlt(b.altR, study.title)} loading="lazy" decoding="async" />
               </div>
             </div>
           ) : (
             <div class="rounded-xxl overflow-hidden bg-cream border border-navy/10">
-              <img class="w-full h-auto block" src={imgSrc(b.imageLKey, 1600)} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 1280px) 100vw, 1200px" alt={b.altL} loading="lazy" decoding="async" />
+              <img class="w-full h-auto block" src={imgSrc(b.imageLKey, 1600)} srcset={imgSrcset(b.imageLKey)} sizes="(max-width: 1280px) 100vw, 1200px" alt={projectAlt(b.altL, study.title)} loading="lazy" decoding="async" />
             </div>
           )
         ))}

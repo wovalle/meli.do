@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import { caseStudies, blocks } from '../../db/schema';
 import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../../lib/img';
+import { DISCIPLINES, findDiscipline, matchesDiscipline } from '../../lib/disciplines';
 
 export const prerender = false;
 
@@ -27,8 +28,15 @@ const firstBlocks = studyIds.length
   : [];
 const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
 
-const featured = published.filter((s) => s.featured);
-const rest = published.filter((s) => !s.featured);
+// ?d=<discipline> (linked from the home marquee) narrows the list. If nothing
+// matches we still show everything, with a note, rather than an empty page.
+const activeDiscipline = findDiscipline(Astro.url.searchParams.get('d'));
+const matching = activeDiscipline ? published.filter((s) => matchesDiscipline(s, activeDiscipline)) : published;
+const noMatches = activeDiscipline !== undefined && matching.length === 0;
+const shown = noMatches ? published : matching;
+
+const featured = shown.filter((s) => s.featured);
+const rest = shown.filter((s) => !s.featured);
 
 function fmtDate(ts: number | null): string {
   if (!ts) return '';
@@ -39,7 +47,7 @@ const site = (Astro.site ?? Astro.url).toString().replace(/\/$/, '');
 const itemListJson = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: 'Selected Work — Melissa Encarnación',
+  name: 'Selected Work | Melissa Encarnación',
   description: 'Brand and editorial design case studies by Melissa Encarnación, Dominican Art Director.',
   url: `${site}/work`,
   mainEntity: {
@@ -60,7 +68,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 ---
 
 <PublicLayout
-  title="Selected Work — Melissa Encarnación"
+  title="Selected Work | Melissa Encarnación"
   description="A curated selection of brand, editorial and digital design case studies by Dominican Art Director Melissa Encarnación."
   ogImage="/og/work.png"
   ogType="website"
@@ -86,7 +94,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
 
       <div class="grid grid-cols-12 gap-6 lg:gap-10 items-end">
         <div class="col-span-12 lg:col-span-7">
-          <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink soft-up">— selected work</div>
+          <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink soft-up">selected work</div>
           <h1 class="font-display text-[56px] sm:text-[88px] lg:text-[120px] leading-[0.92] tracking-[-0.02em] mt-2 soft-up d-100">
             <span class="italic">a tiny</span> archive ✦
           </h1>
@@ -95,15 +103,31 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           <p>
             {published.length === 0
               ? "New case studies are baking in the studio. While the archive fills up, peek at sketches, snippets, and unreleased bits over on Behance and Instagram."
-              : `${published.length} project${published.length === 1 ? '' : 's'} — brand systems, editorial, and digital work shaped over the last decade. Pick one and dig in.`}
+              : `${published.length} project${published.length === 1 ? '' : 's'}: brand systems, editorial, and digital work shaped over the last decade. Pick one and dig in.`}
           </p>
           {published.length > 0 && (
-            <div class="mt-5 flex flex-wrap items-center gap-3 text-[12px] uppercase tracking-wider text-navy/60">
-              <span class="bg-cream rounded-pill px-3 py-1">Brand</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Editorial</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Digital</span>
-              <span class="bg-cream rounded-pill px-3 py-1">Art Direction</span>
-            </div>
+            <nav aria-label="Filter by discipline" class="mt-5 flex flex-wrap items-center gap-2 text-[12px] uppercase tracking-wider">
+              {DISCIPLINES.map((d) => {
+                const on = d.slug === activeDiscipline?.slug;
+                return (
+                  <a
+                    href={on ? '/work' : `/work?d=${d.slug}`}
+                    aria-current={on ? 'true' : undefined}
+                    class={`rounded-pill px-3 py-1 transition ${on ? 'bg-hot-pink text-cream' : 'bg-cream text-navy/60 hover:bg-butter hover:text-navy'}`}
+                  >
+                    {d.label}{on && <span aria-hidden="true"> ✕</span>}
+                  </a>
+                );
+              })}
+            </nav>
+          )}
+          {activeDiscipline && (
+            <p class="mt-4 font-hand text-[18px] lg:text-[20px] text-hot-pink">
+              {noMatches
+                ? `nothing tagged ${activeDiscipline.label} yet, so here's everything`
+                : `${shown.length} in ${activeDiscipline.label}`}
+              <a href="/work" class="ml-2 text-navy/60 hover:text-hot-pink underline underline-offset-4">show all</a>
+            </p>
           )}
         </div>
       </div>
@@ -135,7 +159,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           </div>
 
           <div class="text-center max-w-[44ch] mx-auto">
-            <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink">— in the studio</div>
+            <div class="font-hand text-[28px] lg:text-[36px] text-hot-pink">in the studio</div>
             <h2 class="font-display text-[36px] lg:text-[56px] leading-[1] mt-2">
               Case studies are <span class="italic">brewing</span>.
             </h2>
@@ -154,7 +178,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
   ) : (
     <>
 
-      {/* Featured spotlight — large alternating */}
+      {/* Featured spotlight, large alternating */}
       {featured.length > 0 && (
         <section class="pb-12 lg:pb-20">
           <div class="max-w-shell mx-auto px-6 lg:px-10 space-y-12 lg:space-y-20">
@@ -208,13 +232,13 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         </section>
       )}
 
-      {/* The rest — editorial grid */}
+      {/* The rest, editorial grid */}
       {rest.length > 0 && (
         <section class="pb-24 lg:pb-32">
           <div class="max-w-shell mx-auto px-6 lg:px-10">
             {featured.length > 0 && (
               <div class="flex items-center gap-4 mb-8 lg:mb-12">
-                <div class="font-hand text-[24px] lg:text-[28px] text-hot-pink">— more from the archive</div>
+                <div class="font-hand text-[24px] lg:text-[28px] text-hot-pink">more from the archive</div>
                 <div class="flex-1 h-px bg-navy/15"></div>
                 <div class="text-[12px] uppercase tracking-wider text-navy/50">{rest.length} project{rest.length === 1 ? '' : 's'}</div>
               </div>
@@ -280,7 +304,7 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
           <path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill="#FFE484" />
         </svg>
         <div class="max-w-shell mx-auto px-6 lg:px-10 text-center relative">
-          <div class="font-hand text-[24px] lg:text-[28px] opacity-90">— like what you see?</div>
+          <div class="font-hand text-[24px] lg:text-[28px] opacity-90">like what you see?</div>
           <h2 class="font-display italic text-[44px] lg:text-[80px] leading-[0.95] mt-3">let's make<br/>something next ✦</h2>
           <a href="mailto:hola@mellen.do" class="mt-8 inline-block bg-cream text-hot-pink rounded-pill px-7 py-3.5 text-[14px] font-semibold hover:bg-navy hover:text-cream transition">
             Write me →

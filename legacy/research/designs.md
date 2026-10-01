@@ -1,4 +1,4 @@
-# meli.do — Portfolio Design Explorations
+# meli.do, Portfolio Design Explorations
 
 Six static HTML prototypes for Melissa Encarnacion's portfolio landing page. Two style directions (Editorial + Y2K), with multiple variations per direction. Each design is a single-file HTML + Tailwind (CDN) + Google Fonts prototype, desktop-first and mobile-responsive, using real Behance-sourced imagery for Estelar and Alkasa.
 
@@ -43,11 +43,11 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 
 ---
 
-## Direction A — Editorial
+## Direction A, Editorial
 
 **Feel:** serious, confident, "creative director who reads." Ink-dominant palette, heavy display type, generous white space.
 
-### A1 — `editorial-dashboard.html`
+### A1, `editorial-dashboard.html`
 
 **Palette**
 | Token | Hex | Use |
@@ -59,9 +59,9 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | mustard | `#FFB800` | Marker / pointer |
 
 **Type**
-- Display: **Archivo Black** — 64/96/148 px
-- Body: **Inter** — 16/20/28 px, weight 300–500
-- Meta: **JetBrains Mono** — 11 px uppercase, tracking 0.18em
+- Display: **Archivo Black**, 64/96/148 px
+- Body: **Inter**, 16/20/28 px, weight 300–500
+- Meta: **JetBrains Mono**, 11 px uppercase, tracking 0.18em
 
 **Layout**
 - 12-col, max 1440
@@ -81,12 +81,12 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | Case card hover | Image scale 1 → 1.06, arrow translate | 900ms / 400ms, `ease-out-quint` | CSS transitions |
 | Images | Fade on `load` | 600ms | `.lazy-fade.loaded` class toggle |
 
-### A2 — `editorial-zine.html`
+### A2, `editorial-zine.html`
 
-**Palette** — same ink/bone base + **rust `#B8431E`** as primary accent, **mustard** secondary, **cream `#EFE7DA`** for essay bleed.
+**Palette**, same ink/bone base + **rust `#B8431E`** as primary accent, **mustard** secondary, **cream `#EFE7DA`** for essay bleed.
 
 **Type**
-- Display: **Fraunces** (variable, opsz 144, weight 300) — drives every headline, italics are hero
+- Display: **Fraunces** (variable, opsz 144, weight 300), drives every headline, italics are hero
 - Body: **Fraunces** opsz 14 weight 400 for long-form
 - Meta: **JetBrains Mono** 11 px
 
@@ -111,11 +111,11 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 
 ---
 
-## Direction B — Y2K-influenced warmth
+## Direction B, Y2K-influenced warmth
 
 **Feel:** Melissa as a person. Warmer palettes, rounded forms, playful ornaments, more "brand-forward" treatment.
 
-### B1 — `y2k-illustrated.html`
+### B1, `y2k-illustrated.html`
 
 **Palette**
 | Token | Hex | Use |
@@ -129,9 +129,9 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | mint / sky | `#B8E6D0` / `#B8D7FF` | Chip backgrounds |
 
 **Type**
-- Display: **Instrument Serif** (regular + italic) — 40/64/152 px
-- Body: **Poppins** — 13/15/18/22 px
-- Handwritten: **Caveat** — 22/28/36 px (hand-drawn captions + section kickers)
+- Display: **Instrument Serif** (regular + italic), 40/64/152 px
+- Body: **Poppins**, 13/15/18/22 px
+- Handwritten: **Caveat**, 22/28/36 px (hand-drawn captions + section kickers)
 
 **Layout**
 - Floating pill nav with glassy backdrop
@@ -155,7 +155,7 @@ Goal: pick a direction, then port to the production stack (likely Next.js + Tail
 | Hand-drawn underline | Inline SVG background image, pre-rendered | static | Upgrade: Rough.js at runtime OR Lottie stroke-in on view |
 | Contact star rotators | `spin-slow` 18s, one reversed | infinite | CSS |
 
-### B1.b — `y2k-illustrated-v2.html` — *scrapbook*
+### B1.b, `y2k-illustrated-v2.html`, *scrapbook*
 
 Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose palette and reorganized as a scrapbook/letter. Centered polaroid hero with orbiting sticky-notes; case studies as taped polaroids; About section as a handwritten letter; Contact as a literal postcard.
 
@@ -173,15 +173,15 @@ Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose pa
 | cherry | `#C44569` | Reserved |
 
 **Type**
-- Display: **Instrument Serif** (italic-heavy) — 40/56/96/136 px
-- Handwritten: **Caveat** — 20/22/26/32 px (heavier use than B1 — structural, not decorative)
-- Body: **Poppins** — 14/16/18 px
+- Display: **Instrument Serif** (italic-heavy), 40/56/96/136 px
+- Handwritten: **Caveat**, 20/22/26/32 px (heavier use than B1, structural, not decorative)
+- Body: **Poppins**, 14/16/18 px
 
 **Layout beats**
 - Centered polaroid portrait with rotated yellow-tape corners
 - 4 sticky-note cards float around portrait (stats as handwritten notes)
 - Two case studies as taped polaroid cards, alternating rotations
-- "What I'm on this month" — a personality widget (listening / reading / eating / sketching)
+- "What I'm on this month", a personality widget (listening / reading / eating / sketching)
 - About as an illustrated letter with "Dear reader, … con cariño, Melissa"
 - Contact as a literal postcard with stamp, address field, dashed divider
 
@@ -198,7 +198,7 @@ Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose pa
 
 ---
 
-### B2 — `y2k-maximalist.html`
+### B2, `y2k-maximalist.html`
 
 **Palette**
 | Token | Hex | Use |
@@ -212,9 +212,9 @@ Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose pa
 | lime | `#C7FF5B` | Reserved |
 
 **Type**
-- Display: **DM Serif Display** (regular + italic) — 56/120/224 px
-- Sans: **Space Grotesk** — 11/14/16/18 px, weight 400–700
-- Accent: **Righteous** — 22/26/28 px uppercase for logo + footer marquee
+- Display: **DM Serif Display** (regular + italic), 56/120/224 px
+- Sans: **Space Grotesk**, 11/14/16/18 px, weight 400–700
+- Accent: **Righteous**, 22/26/28 px uppercase for logo + footer marquee
 
 **Layout**
 - Top ticker banner + sticky nav with sticker CTA
@@ -241,21 +241,21 @@ Same warm y2k feeling as B1, shifted from lavender/cream to a peach/sage/rose pa
 | Text outline | `-webkit-text-stroke` on display | n/a | CSS (fallback: SVG) |
 | Ticker blink | .blink on "NEW" dot | 1s infinite | CSS |
 
-### B2.b — `y2k-maximalist-pink.html` — *bubblegum*
+### B2.b, `y2k-maximalist-pink.html`, *bubblegum*
 
 Structurally identical to B2 (same stickers, marquees, noise, text-outline serifs) with the primary color swapped from hot-red `#E63946` to bubblegum `#FF3E9D` and a deeper magenta `#D400A8` replacing the electric-blue case-study section. Feels femme-loud instead of punk-loud.
 
 **Palette**
 | Token | Hex | Use |
 |---|---|---|
-| bubble | `#FF3E9D` | **Primary** — hero gradient stop, case 01, CTAs |
+| bubble | `#FF3E9D` | **Primary**, hero gradient stop, case 01, CTAs |
 | magenta | `#D400A8` | Case 02 bg, hero gradient mid |
 | cotton | `#FFB3D9` | About bg, archive chip |
 | blush | `#FFDAE9` | Stat card row |
 | ink-navy | `#0F1B3D` | Text, dark surfaces |
 | cream | `#FFF8F3` | Background |
 | volt | `#F5FF00` | Offsets, marquees, stickers |
-| elec-blue | `#00B4FF` | Reserved (unused here — was case 02 in B2) |
+| elec-blue | `#00B4FF` | Reserved (unused here, was case 02 in B2) |
 
 **Palette diff vs B2**
 - Hero gradient: `hot-red → navy` → now `bubble → magenta → navy`
@@ -264,7 +264,7 @@ Structurally identical to B2 (same stickers, marquees, noise, text-outline serif
 - About bg: `neon-pink` → `cotton` (softer)
 - `-webkit-text-stroke` outline: `#0F1B3D` still; added `.outline-text-bubble` variant
 
-**Animation intent** — identical to B2 (mask reveal, sticker hover offset, dual marquees, spinning stars, noise overlay, blinking dot). Nothing structurally changed, only color tokens.
+**Animation intent**, identical to B2 (mask reveal, sticker hover offset, dual marquees, spinning stars, noise overlay, blinking dot). Nothing structurally changed, only color tokens.
 
 **When to pick this over B2**
 - Brand feels more "beauty · lifestyle · feminine" than "punk · editorial"
@@ -290,14 +290,14 @@ For production: proxy + optimize via Next.js `<Image>` or Cloudflare Images; all
 Recommended stack: **Next.js 15 (App Router) + Tailwind v4 + Framer Motion + Sanity/Payload CMS**. Each design converts cleanly:
 
 1. **Lift Tailwind tokens** from the inline `tailwind.config` into `tailwind.config.ts` or `@theme` block.
-2. **Page sections → React components** — `<Hero/>`, `<CaseCard/>`, `<Marquee/>`, `<StickerPill/>`, `<Colophon/>`.
+2. **Page sections → React components**, `<Hero/>`, `<CaseCard/>`, `<Marquee/>`, `<StickerPill/>`, `<Colophon/>`.
 3. **Animations → Framer Motion variants.** Most CSS keyframes here map 1:1:
    - `mask-reveal` → `motion.span` with `initial={{ y: '105%' }}` + `whileInView`
    - Card `lift` → `whileHover={{ y: -6, rotate: -0.5 }}`
    - Marquees → `motion.div` with `animate={{ x: ['0%','-50%'] }}` + `repeat: Infinity`
-4. **Lottie where CSS tops out** — hand-drawn underline stroke-in, scribble star, animated salami illustration for case hero.
+4. **Lottie where CSS tops out**, hand-drawn underline stroke-in, scribble star, animated salami illustration for case hero.
 5. **Content → CMS.** Case studies + bio + stats are all editable. 13 projects already catalogued in `.context/` with copy + image refs.
-6. **Accessibility pass** — all four designs use real semantic HTML (`article`, `figure`, `dl`, `nav`, `header`, `footer`, `aside`), but color-contrast on `y2k-illustrated` (lavender bg) needs check for body copy; `y2k-maximalist` has `-webkit-text-stroke` which doesn't always pass AA.
+6. **Accessibility pass**, all four designs use real semantic HTML (`article`, `figure`, `dl`, `nav`, `header`, `footer`, `aside`), but color-contrast on `y2k-illustrated` (lavender bg) needs check for body copy; `y2k-maximalist` has `-webkit-text-stroke` which doesn't always pass AA.
 
 ---
 
@@ -315,9 +315,9 @@ Then resize to 375 × 812 in devtools for mobile check.
 
 ## Open questions for Melissa
 
-1. Which direction — A (editorial/serious) or B (y2k/warm)?
+1. Which direction, A (editorial/serious) or B (y2k/warm)?
 2. Between the two variations of the chosen direction: which feels more **you**?
 3. Are the two case studies (Estelar + Alkasa) the right pair for the landing page, or should Humano Seguros / Banco Popular 60 swap in?
 4. Do we want a dedicated `/work` page with all 13 projects, or keep everything on the landing?
-5. Portrait photo — provide a high-res portrait? All 4 designs have a placeholder waiting for it.
-6. Resume PDF link — attach, or skip in favor of LinkedIn?
+5. Portrait photo, provide a high-res portrait? All 4 designs have a placeholder waiting for it.
+6. Resume PDF link, attach, or skip in favor of LinkedIn?

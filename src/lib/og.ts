@@ -16,7 +16,7 @@ const CACHE_HEADERS = {
   'cache-control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
 };
 
-// Per-isolate font cache — Google Fonts fetches are slow and fonts never change.
+// Per-isolate font cache, Google Fonts fetches are slow and fonts never change.
 const fontCache = new Map<string, Promise<ArrayBuffer>>();
 
 /** Fetch a TTF from Google Fonts. `spec` is a css2 family spec, e.g. "Poppins:wght@500". */
@@ -184,7 +184,7 @@ export async function renderSiteCard({ badges, lines, fontSize, subtitle }: Site
           { display: 'flex', fontFamily: 'Poppins', fontSize: 24, color: 'rgba(26, 43, 74, 0.75)', letterSpacing: 0 },
           subtitle,
         ),
-        el('div', { display: 'flex', fontFamily: 'Kalam', fontSize: 30, color: HOT_PINK, letterSpacing: 0 }, '— mellen.do'),
+        el('div', { display: 'flex', fontFamily: 'Kalam', fontSize: 30, color: HOT_PINK, letterSpacing: 0 }, 'mellen.do'),
       ]),
     ],
   );

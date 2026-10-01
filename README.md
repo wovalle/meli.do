@@ -2,7 +2,7 @@
 
 Portfolio CMS for Melissa Encarnacion (Art Director). Astro 6 + Cloudflare (Workers + D1 + R2 + Access).
 
-Status: **Phase 1 — Kickstart** (scaffold only; CRUD lands in P2).
+Status: **Phase 1, Kickstart** (scaffold only; CRUD lands in P2).
 
 ## Stack
 
@@ -96,7 +96,7 @@ npx wrangler secret put DEPLOY_HOOK_URL
 npm run deploy                   # astro build && wrangler deploy
 ```
 
-Or push to `main` — Workers Builds runs `npm run build` and deploys.
+Or push to `main`, Workers Builds runs `npm run build` and deploys.
 
 ## Verifying P1
 

@@ -10,6 +10,11 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	// Production lives on the custom domain only; non-main branches (Workers
+	// Builds) and `wrangler versions upload` get a *-meli-do.wovalle.workers.dev
+	// preview URL.
+	"workers_dev": false,
+	"preview_urls": true,
 	"routes": [
 		{ "pattern": "mellen.do", "custom_domain": true }
 	],

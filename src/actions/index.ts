@@ -232,9 +232,9 @@ export const server = {
           caseStudyId: z.string().min(1),
           layout: z.enum(['single', 'pair']),
           fileL: z.instanceof(File),
-          altL: z.string().min(1, 'Alt text required'),
+          altL: z.string().trim().min(1, 'Alt text required'),
           fileR: z.instanceof(File).optional(),
-          altR: z.string().optional(),
+          altR: z.string().trim().optional(),
         })
         .superRefine((data, ctx) => {
           if (data.layout === 'pair') {
@@ -344,8 +344,8 @@ export const server = {
       accept: 'form',
       input: z.object({
         id: z.string().min(1),
-        altL: z.string().min(1, 'Alt text required'),
-        altR: z.string().optional(),
+        altL: z.string().trim().min(1, 'Alt text required'),
+        altR: z.string().trim().optional(),
       }),
       handler: async ({ id, altL, altR }) => {
         const db = getDb();

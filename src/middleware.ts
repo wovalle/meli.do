@@ -3,6 +3,7 @@ import { defineMiddleware } from 'astro:middleware';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
 import { env } from 'cloudflare:workers';
 import { supportsImageTransforms, withImageTransforms } from './lib/img-transforms';
+import { canonicalRedirect, withSecurityHeaders } from './lib/security';
 
 const PROTECTED_PREFIXES = ['/admin', '/api'];
 
@@ -23,9 +24,13 @@ function isProtected(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
-export const onRequest = defineMiddleware((context, next) =>
-  withImageTransforms(supportsImageTransforms(new URL(context.request.url).hostname), () => handle(context, next)),
-);
+export const onRequest = defineMiddleware(async (context, next) => {
+  const url = new URL(context.request.url);
+  const redirect = canonicalRedirect(url);
+  if (redirect) return withSecurityHeaders(new Response(null, { status: 301, headers: { location: redirect } }));
+  const response = await withImageTransforms(supportsImageTransforms(url.hostname), () => handle(context, next));
+  return withSecurityHeaders(response);
+});
 
 const handle: MiddlewareHandler = async (context, next) => {
   try {

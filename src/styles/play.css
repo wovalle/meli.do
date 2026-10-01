@@ -30,7 +30,7 @@
   margin: 0;
   appearance: none;
   -webkit-appearance: none;
-  background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 40 3, 80 3, 118 6 S 180 9, 198 5' stroke='%23FF1493' stroke-opacity='0.55' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 8px;
+  background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 40 3, 80 3, 118 6 S 180 9, 198 5' stroke='%23FF1392' stroke-opacity='0.55' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 8px;
   cursor: pointer;
   touch-action: pan-y;
 }
@@ -229,7 +229,7 @@ svg[data-sparkle].is-held { cursor: grabbing; animation-play-state: paused; }
 .envelope-pocket::after { /* airmail stripe along the bottom */
   content: "";
   position: absolute; left: 0; right: 0; bottom: 0; height: 10px;
-  background: repeating-linear-gradient(-45deg, #FF1493 0 8px, #FFF5EC 8px 16px, #1A2B4A 16px 24px, #FFF5EC 24px 32px);
+  background: repeating-linear-gradient(-45deg, #FF1392 0 8px, #FFF5EC 8px 16px, #1A2B4A 16px 24px, #FFF5EC 24px 32px);
   border-radius: 0 0 14px 14px;
 }
 .envelope-flap {

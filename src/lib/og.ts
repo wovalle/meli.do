@@ -5,9 +5,9 @@ const WIDTH = 1200;
 const HEIGHT = 630;
 
 const NAVY = '#1A2B4A';
-const LAVENDER = '#D9D0F5';
+const LAVENDER = '#D9CFF4';
 const CREAM = '#FFF5EC';
-const HOT_PINK = '#FF1493';
+const HOT_PINK = '#FF1392';
 const CORAL = '#FF7F50';
 const BUTTER = '#FFE484';
 

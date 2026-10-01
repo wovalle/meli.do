@@ -339,7 +339,11 @@ to use them. **Agents: read this before you generate anything for mellen.do**
 everything here already lives in the logo files or the code, and the YAML
 comments say where.
 
-Lint it with `npx @google/design.md lint DESIGN.md`.
+Lint it with `npx @google/design.md lint DESIGN.md`. Current result: **0 errors,
+8 warnings, 1 info**. All 8 warnings are `contrast-ratio` findings on pink pairs
+the site really uses (cream on pink 3.39:1, pink/butter 2.90:1, and the
+logo-on-pink colorway at 3.65:1, which is exempt as a logotype). They are
+explained under Colors and kept on purpose so the tokens mirror the code.
 
 ## Overview
 

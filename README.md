@@ -4,6 +4,16 @@ Portfolio CMS for Melissa Encarnacion (Art Director). Astro 6 + Cloudflare (Work
 
 Status: **Phase 1, Kickstart** (scaffold only; CRUD lands in P2).
 
+## Design system
+
+[`DESIGN.md`](./DESIGN.md) is the source of truth for the brand: colors, type, spacing, radii, shadows, motion, components and voice, in Google's [DESIGN.md](https://github.com/google-labs-code/design.md) format. **Agents: read it before generating anything** (OG cards, social posts, new pages). Every value points back to where it lives in the code; if you change a token in `src/styles/global.css` or `src/lib/og.ts`, update `DESIGN.md` too.
+
+The 2026 logo (mark, wordmark, lockup, in the approved colorways) is in [`public/brand/`](./public/brand/) as outlined SVG. Use those files; never retype "mellen" in a site font. Usage rules (colorways, clear space, minimum sizes) are in the Logo section of `DESIGN.md`.
+
+```sh
+npx @google/design.md lint DESIGN.md
+```
+
 ## Stack
 
 - **Astro 6** with `@astrojs/cloudflare` adapter, `output: 'server'`

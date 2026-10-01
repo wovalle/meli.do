@@ -96,7 +96,7 @@ test('polaroid cycles captions; with one photo the photo stays put', () => {
 });
 
 test('double-tapped sparkles walk the palette and wrap', () => {
-  assert.equal(nextSparkleColor('#ff1493'), SPARKLE_PALETTE[1]);
+  assert.equal(nextSparkleColor('#ff1392'), SPARKLE_PALETTE[1]);
   assert.equal(nextSparkleColor(SPARKLE_PALETTE[SPARKLE_PALETTE.length - 1]), SPARKLE_PALETTE[0]);
   assert.equal(nextSparkleColor('rebeccapurple'), SPARKLE_PALETTE[0]);
 });

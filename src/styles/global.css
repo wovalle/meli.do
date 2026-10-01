@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-lavender: #D9D0F5;
+  --color-lavender: #D9CFF4;
   --color-cream: #FFF5EC;
   --color-navy: #1A2B4A;
-  --color-hot-pink: #FF1493;
+  --color-hot-pink: #FF1392;
   --color-coral: #FF7F50;
   --color-butter: #FFE484;
   --color-mint: #B8E6D0;
@@ -69,7 +69,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 @keyframes mq { to { transform: translateX(-50%); } }
 
 .hand-underline {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'><path d='M2 8 C 40 2, 80 2, 118 6 S 180 10, 198 5' stroke='%23FF1493' stroke-width='3' fill='none' stroke-linecap='round'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'><path d='M2 8 C 40 2, 80 2, 118 6 S 180 10, 198 5' stroke='%23FF1392' stroke-width='3' fill='none' stroke-linecap='round'/></svg>");
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 100% 12px;
@@ -92,7 +92,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 .airmail-frame {
   background: repeating-linear-gradient(
     -45deg,
-    #FF1493 0 10px,
+    #FF1392 0 10px,
     #FFF5EC 10px 20px,
     #1A2B4A 20px 30px,
     #FFF5EC 30px 40px

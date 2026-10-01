@@ -38,7 +38,7 @@ export function nextPolaroidShot(current: PolaroidShot, photoCount: number, capt
 
 /* ---------- sparkles ---------- */
 
-export const SPARKLE_PALETTE = ['#FF1493', '#FFE484', '#FF7F50', '#B8E6D0', '#B8D7FF', '#1A2B4A'] as const;
+export const SPARKLE_PALETTE = ['#FF1392', '#FFE484', '#FF7F50', '#B8E6D0', '#B8D7FF', '#1A2B4A'] as const;
 
 export function nextSparkleColor(current: string): string {
   const i = SPARKLE_PALETTE.findIndex((c) => c.toLowerCase() === current.trim().toLowerCase());

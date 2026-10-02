@@ -1,5 +1,6 @@
 // Home page toys. Everything here is progressive enhancement: without JS (or
 // with prefers-reduced-motion) the page still reads and every link still works.
+import { initIdle } from './idle';
 import { initMarquee } from './marquee';
 import { initPolaroid } from './polaroid';
 import { initPostcard } from './postcard';
@@ -8,6 +9,8 @@ import { initScatter } from './scatter';
 import { initSparkles } from './sparkles';
 
 export function initHomePlay(): void {
+  initIdle();
+
   const postcard = document.querySelector<HTMLElement>('[data-postcard]');
   if (postcard) initPostcard(postcard);
 

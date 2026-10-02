@@ -84,6 +84,7 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
   const show = (value: number): void => {
     if (value === shown) return;
     shown = value;
+    root.classList.toggle('is-calm', value === 0);
     dial.value = String(value);
     onSpeed(saborFromDial(value).marqueeSpeed);
   };

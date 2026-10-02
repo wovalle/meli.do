@@ -126,6 +126,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
   filter: drop-shadow(0 4px 6px rgba(26,43,74,.18));
 }
 
+/* off screen = paused (src/scripts/play/idle.ts), so the page can actually rest */
+.is-offscreen, .is-offscreen .sabor-spark > svg { animation-play-state: paused !important; }
+
 @media (prefers-reduced-motion: reduce) {
   .soft-up, .wave, .float-a, .float-b, .float-c, .spin-slow, .marquee {
     animation: none !important;
@@ -134,58 +137,57 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 }
 
 /* Header logo motion (artifacts.willy.im/a/dfiz10Yj). Only the flower moves.
-   El giro: every 9 s a 90° quarter turn on a damped spring (ζ 0.55, 1.25 Hz),
-   1.2 s of motion then 7.8 s still; the mark is 4-fold symmetric, so 90° = 0°.
+   El giro: a 90° quarter turn on a damped spring (ζ 0.55, 1.25 Hz), 1.2 s.
+   SiteLogo.astro adds .is-turning every 9 s and drops it on animationend, so
+   nothing animates in between (a 9 s loop that mostly holds still keeps the
+   frame pipeline running). The mark is 4-fold symmetric: ending at 90° and
+   snapping back to 0° looks the same.
    El toque: on hover/focus a flick, damped sine 9°, 1.5 Hz, τ 0.42 s, 1.8 s. */
 .site-logo svg { overflow: visible; } /* the turning flower overhangs its tight viewBox */
 .site-logo .mark {
   transform-box: fill-box;
   transform-origin: center;
-  animation: mark-spin 9s linear infinite;
 }
-.site-logo:hover .mark,
-.site-logo:focus-visible .mark {
-  animation: mark-flick 1.8s linear 1;
-}
+.site-logo.is-turning .mark { animation: mark-spin 1.2s linear 1; }
+.site-logo:is(:hover, :focus-visible) .mark { animation: mark-flick 1.8s linear 1; }
 @keyframes mark-spin {
   0.000% { transform: rotate(0.00deg) }
-  0.370% { transform: rotate(2.79deg) }
-  0.741% { transform: rotate(10.05deg) }
-  1.111% { transform: rotate(20.23deg) }
-  1.481% { transform: rotate(31.99deg) }
-  1.852% { transform: rotate(44.24deg) }
-  2.222% { transform: rotate(56.14deg) }
-  2.593% { transform: rotate(67.06deg) }
-  2.963% { transform: rotate(76.61deg) }
-  3.333% { transform: rotate(84.57deg) }
-  3.704% { transform: rotate(90.85deg) }
-  4.074% { transform: rotate(95.51deg) }
-  4.444% { transform: rotate(98.68deg) }
-  4.815% { transform: rotate(100.54deg) }
-  5.185% { transform: rotate(101.31deg) }
-  5.556% { transform: rotate(101.22deg) }
-  5.926% { transform: rotate(100.49deg) }
-  6.296% { transform: rotate(99.32deg) }
-  6.667% { transform: rotate(97.89deg) }
-  7.037% { transform: rotate(96.35deg) }
-  7.407% { transform: rotate(94.82deg) }
-  7.778% { transform: rotate(93.39deg) }
-  8.148% { transform: rotate(92.11deg) }
-  8.519% { transform: rotate(91.03deg) }
-  8.889% { transform: rotate(90.16deg) }
-  9.259% { transform: rotate(89.50deg) }
-  9.630% { transform: rotate(89.03deg) }
-  10.000% { transform: rotate(88.74deg) }
-  10.370% { transform: rotate(88.59deg) }
-  10.741% { transform: rotate(88.57deg) }
-  11.111% { transform: rotate(88.63deg) }
-  11.481% { transform: rotate(88.76deg) }
-  11.852% { transform: rotate(88.93deg) }
-  12.222% { transform: rotate(89.13deg) }
-  12.593% { transform: rotate(89.32deg) }
-  12.963% { transform: rotate(89.51deg) }
-  13.333% { transform: rotate(90.00deg) }
-  100% { transform: rotate(90.00deg) }
+  2.775% { transform: rotate(2.79deg) }
+  5.558% { transform: rotate(10.05deg) }
+  8.333% { transform: rotate(20.23deg) }
+  11.108% { transform: rotate(31.99deg) }
+  13.890% { transform: rotate(44.24deg) }
+  16.665% { transform: rotate(56.14deg) }
+  19.448% { transform: rotate(67.06deg) }
+  22.223% { transform: rotate(76.61deg) }
+  24.998% { transform: rotate(84.57deg) }
+  27.780% { transform: rotate(90.85deg) }
+  30.555% { transform: rotate(95.51deg) }
+  33.330% { transform: rotate(98.68deg) }
+  36.113% { transform: rotate(100.54deg) }
+  38.888% { transform: rotate(101.31deg) }
+  41.670% { transform: rotate(101.22deg) }
+  44.445% { transform: rotate(100.49deg) }
+  47.220% { transform: rotate(99.32deg) }
+  50.003% { transform: rotate(97.89deg) }
+  52.778% { transform: rotate(96.35deg) }
+  55.553% { transform: rotate(94.82deg) }
+  58.335% { transform: rotate(93.39deg) }
+  61.110% { transform: rotate(92.11deg) }
+  63.893% { transform: rotate(91.03deg) }
+  66.668% { transform: rotate(90.16deg) }
+  69.443% { transform: rotate(89.50deg) }
+  72.225% { transform: rotate(89.03deg) }
+  75.000% { transform: rotate(88.74deg) }
+  77.775% { transform: rotate(88.59deg) }
+  80.558% { transform: rotate(88.57deg) }
+  83.333% { transform: rotate(88.63deg) }
+  86.108% { transform: rotate(88.76deg) }
+  88.890% { transform: rotate(88.93deg) }
+  91.665% { transform: rotate(89.13deg) }
+  94.448% { transform: rotate(89.32deg) }
+  97.223% { transform: rotate(89.51deg) }
+  100.000% { transform: rotate(90.00deg) }
 }
 @keyframes mark-flick {
   0.000% { transform: rotate(0.00deg) }

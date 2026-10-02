@@ -38,10 +38,17 @@ export function initMarquee(root: HTMLElement): MarqueeControl {
     applyRate();
   };
 
-  // the CSS loop covers loopWidth px in its duration; scale it to `speed` px/s
+  // the CSS loop covers loopWidth px in its duration; scale it to `speed` px/s.
+  // Stopped is pause(), never a playbackRate of 0: Safari snaps a composited
+  // animation back by ~100px when its rate reaches 0.
   function applyRate(): void {
     const a = loop();
     if (!a || loopWidth <= 0) return;
+    if (throttle === 0) {
+      if (a.playState !== 'paused') a.pause();
+      return;
+    }
+    if (a.playState === 'paused') a.play();
     const rate = ((speed * loopMs(a)) / 1000 / loopWidth) * throttle;
     if (Math.abs(a.playbackRate - rate) > 1e-3) a.updatePlaybackRate(rate);
   }

@@ -41,12 +41,16 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
     parts.push([el, SABOR_KEYFRAMES.sparkGrow]);
   });
 
-  // Held: paused Web Animations at the dial's value. They sit above the CSS
-  // scroll-driven ones (script animations win), so letting go = cancelling them.
+  // Held: paused Web Animations at the dial's value. The CSS scroll-driven
+  // ones are switched off meanwhile (.is-held): stacked on top, the script
+  // animation wins in getComputedStyle, but Chrome keeps compositing the
+  // scroll-driven transform/opacity, so the thumb and the sparks never moved
+  // on screen. Letting go = cancelling them and switching the scroll back on.
   let held: Animation[] | null = null;
   let glideTimer: ReturnType<typeof setTimeout> | undefined;
   const hold = (value: number): void => {
     clearTimeout(glideTimer);
+    root.classList.add('is-held');
     held ??= parts.map(([el, kf]) => el.animate(kf, { duration: 100 * MS_PER_STEP, fill: 'both' }));
     for (const a of held) {
       a.pause();
@@ -57,6 +61,7 @@ export function initSabor(dial: HTMLInputElement, onSpeed: (pxPerSecond: number)
     clearTimeout(glideTimer);
     held?.forEach((a) => a.cancel());
     held = null;
+    root.classList.remove('is-held');
   };
   // back to the scroll: run the held animations to where the page is, then hand over
   const glideTo = (value: number): void => {

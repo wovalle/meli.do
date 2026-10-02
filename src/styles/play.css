@@ -95,6 +95,8 @@
     .sabor.is-scroll-driven .sabor-ink-pink { animation-name: sabor-pink; }
     .sabor.is-scroll-driven .sabor-sparks { animation-name: sabor-sparks; }
     .sabor.is-scroll-driven .sabor-thumb-rail { animation-name: sabor-thumb; }
+    /* a hand on the dial: sabor.ts's held Web Animations are the only ones (see hold()) */
+    .sabor.is-scroll-driven.is-held :is(.sabor-word, .sabor-ink, .sabor-ink-pink, .sabor-sparks, .sabor-spark, .sabor-thumb-rail) { animation: none; }
     /* each spark: switch on at its own level (--on), and grow with the whole range */
     .sabor.is-scroll-driven .sabor-spark {
       animation-name: sabor-spark-on, sabor-spark-grow;

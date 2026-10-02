@@ -21,18 +21,20 @@ test('header wordmark is inline with the flower wrapped in .mark', () => {
   assert.match(svg, /^<svg class="h-7 w-auto" role="img" aria-label="mellen"/);
 });
 
-test('El giro: idle quarter turn every 9 s on a spring, one ~11° overshoot', () => {
-  assert.match(css, /\.site-logo \.mark \{[^}]*animation: mark-spin 9s linear infinite/);
+test('El giro: a 1.2 s quarter turn on a spring, one ~11° overshoot, restarted every 9 s', () => {
+  assert.match(css, /\.site-logo\.is-turning \.mark \{ animation: mark-spin 1\.2s linear 1; \}/);
   const f = frames('mark-spin');
   const peak = Math.max(...f.map(([, d]) => d));
   assert.ok(peak > 100 && peak < 102, `overshoot peak ${peak}`);
-  const settle = f.find(([, d]) => d === 90)![0];
-  assert.ok(Math.abs((settle / 100) * 9 - 1.2) < 0.01, 'moves for 1.2 s of the 9 s');
-  assert.deepEqual(f.at(-1), [100, 90]); // 90° = 0° for the 4-fold mark: seamless loop
+  assert.deepEqual(f[0], [0, 0]);
+  assert.deepEqual(f.at(-1), [100, 90]); // 90° = 0° for the 4-fold mark: the snap back is invisible
+  const logo = read('../components/SiteLogo.astro');
+  assert.match(logo, /setInterval\(turn, 9000\)/);
+  assert.match(logo, /prefers-reduced-motion: reduce/);
 });
 
 test('El toque: hover/focus flick is a damped sine (9°, 1.5 Hz, τ 0.42 s, 1.8 s)', () => {
-  assert.match(css, /\.site-logo:hover \.mark,\s*\.site-logo:focus-visible \.mark \{\s*animation: mark-flick 1\.8s linear 1/);
+  assert.match(css, /\.site-logo:is\(:hover, :focus-visible\) \.mark \{ animation: mark-flick 1\.8s linear 1; \}/);
   const f = frames('mark-flick');
   for (const [p, d] of f.slice(0, -1)) {
     const t = (p / 100) * 1.8;

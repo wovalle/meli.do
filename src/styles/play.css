@@ -38,6 +38,8 @@
 .sabor-spark > .sabor-twinkle-a { animation-name: sabor-twinkle-a; }
 .sabor-spark > .sabor-twinkle-b { animation-name: sabor-twinkle-b; }
 .sabor-spark > .sabor-twinkle-c { animation-name: sabor-twinkle-c; }
+/* at sabor 0 the pool is invisible: don't keep twinkling under it (sabor.ts sets .is-calm) */
+.sabor.is-calm .sabor-spark > svg { animation-play-state: paused; }
 @keyframes sabor-twinkle-a {
   0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(-40deg); }
   30% { opacity: 1; transform: translate(6px, -8px) scale(1.15) rotate(0deg); }

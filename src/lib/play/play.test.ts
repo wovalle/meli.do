@@ -1,8 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { buildLoveLetterMailto, isServiceValue, loveLetterBody, postmarkDate, servicesLabel } from './postcard.ts';
 import { isSettled, rotatedOverhang, scatterTargets, seededRandom, stepSpring, type SpringState } from './motion.ts';
-import { nextPolaroidShot, nextSparkleColor, saborFromDial, saborFromScroll, SPARKLE_PALETTE, MARQUEE_BASE_SPEED, POLAROID_CAPTIONS } from './toys.ts';
+import {
+  nextPolaroidShot, nextSparkleColor, saborFromDial, saborFromScroll, saborSparkPool, sparkOnAt, sparkOnKeyframes,
+  SABOR_KEYFRAMES, SABOR_SKEW_DEG, SABOR_SPARK_COUNT, SABOR_SPARK_FADE, SABOR_SPARK_FROM, SPARKLE_PALETTE, MARQUEE_BASE_SPEED, POLAROID_CAPTIONS,
+} from './toys.ts';
 
 test('mailto goes to hola@mellen.do with subject and body prefilled', () => {
   const url = buildLoveLetterMailto({ name: 'Ana & Co', project: 'A rebrand for my café', services: ['packaging', 'branding'] });
@@ -107,4 +111,64 @@ test('more sabor = more level and a faster marquee; input is clamped', () => {
   assert.equal(saborFromDial(250).level, 1);
   assert.equal(saborFromDial(-5).level, 0);
   assert.ok(saborFromDial(80).marqueeSpeed > saborFromDial(20).marqueeSpeed);
+});
+
+/* ---------- sabor, compositor-only ---------- */
+
+const ALL_SABOR_KEYFRAMES = [...Object.values(SABOR_KEYFRAMES), ...Array.from({ length: SABOR_SPARK_COUNT }, (_, i) => sparkOnKeyframes(i))];
+
+test('sabor only ever animates transform and opacity (nothing that repaints or relayouts)', () => {
+  for (const kf of ALL_SABOR_KEYFRAMES) {
+    for (const frame of kf) {
+      for (const prop of Object.keys(frame)) assert.ok(['transform', 'opacity', 'offset'].includes(prop), `animates ${prop}`);
+    }
+  }
+});
+
+test('sabor keyframe offsets are in order, inside 0..1 (Web Animations throws otherwise)', () => {
+  for (const kf of ALL_SABOR_KEYFRAMES) {
+    let last = 0;
+    for (const frame of kf) {
+      if (frame.offset == null) continue;
+      assert.ok(typeof frame.offset === 'number' && frame.offset >= last && frame.offset <= 1, `offset ${String(frame.offset)}`);
+      last = frame.offset;
+    }
+  }
+});
+
+test('the ✦ pool is fixed, seeded, and lights up one by one as sabor rises', () => {
+  const pool = saborSparkPool(seededRandom(7));
+  assert.equal(pool.length, SABOR_SPARK_COUNT);
+  assert.deepEqual(saborSparkPool(seededRandom(7)), pool);
+  for (const [i, s] of pool.entries()) {
+    assert.ok(s.left >= -6 && s.left <= 102 && s.top >= -12 && s.top <= 84);
+    assert.ok(s.delayMs <= 0 && -s.delayMs <= s.durationMs);
+    assert.equal(s.on, sparkOnAt(i));
+    if (i > 0) assert.ok(s.on > sparkOnAt(i - 1));
+  }
+  assert.equal(sparkOnAt(0), SABOR_SPARK_FROM);
+  assert.ok(sparkOnAt(SABOR_SPARK_COUNT - 1) < 1);
+});
+
+test('play.css scroll-driven keyframes match the ones the dial holds', () => {
+  const css = readFileSync(new URL('../../styles/play.css', import.meta.url), 'utf8');
+  assert.match(css, new RegExp(`@keyframes sabor-word \\{ from \\{ transform: skewX\\(0deg\\); \\} to \\{ transform: skewX\\(-${SABOR_SKEW_DEG}deg\\); \\} \\}`));
+  assert.match(css, /@keyframes sabor-pink \{ from \{ opacity: 0; \} to \{ opacity: 1; \} \}/);
+  assert.match(css, /@keyframes sabor-thumb \{ from \{ transform: translateX\(0%\); \} to \{ transform: translateX\(100%\); \} \}/);
+  assert.match(css, /@keyframes sabor-spark-grow \{ from \{ transform: scale\(0\.6\); \} to \{ transform: scale\(1\.3\); \} \}/);
+  assert.deepEqual(SABOR_KEYFRAMES.sparkGrow, [{ transform: 'scale(0.6)' }, { transform: 'scale(1.3)' }]);
+  // each spark's CSS range is its --on level plus the same fade
+  assert.match(css, new RegExp(`\\(var\\(--on\\) \\+ ${SABOR_SPARK_FADE}\\)`));
+  // the word never transitions or animates its colour again
+  assert.doesNotMatch(css, /\.sabor-word[^}]*(color-mix|transition: color)/);
+});
+
+test('marquee and sabor never write styles per frame', () => {
+  const marquee = readFileSync(new URL('../../scripts/play/marquee.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(marquee, /requestAnimationFrame|animate\(|style\.transform/);
+  assert.match(marquee, /updatePlaybackRate/);
+  const sabor = readFileSync(new URL('../../scripts/play/sabor.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(sabor, /createElement|--sabor'|text-shadow/);
+  // the easing loop is only the fallback for browsers without scroll-driven animations
+  assert.match(sabor, /if \(scrollDriven\) \{\n\s+\/\/ the CSS animation follows on its own/);
 });

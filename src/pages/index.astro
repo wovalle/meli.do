@@ -7,7 +7,8 @@ import { caseStudies, blocks } from '../db/schema';
 import { imgSrc, imgSrcset, thumbSrc, thumbSrcset } from '../lib/img';
 import { projectAlt } from '../lib/alt';
 import { DISCIPLINES } from '../lib/disciplines';
-import { POLAROID_PHOTOS, POLAROID_CAPTIONS, SABOR_DEFAULT } from '../lib/play/toys';
+import { POLAROID_PHOTOS, POLAROID_CAPTIONS, SABOR_DEFAULT, saborSparkPool } from '../lib/play/toys';
+import { seededRandom } from '../lib/play/motion';
 import { SERVICES, CONTACT_EMAIL } from '../lib/play/postcard';
 import '../styles/play.css';
 
@@ -31,6 +32,8 @@ const firstBlocks = studyIds.length
 const thumbByStudy = new Map(firstBlocks.map((b) => [b.caseStudyId, b]));
 
 const cardColors = ['butter', 'coral', 'mint', 'sky'];
+
+const saborSparks = saborSparkPool(seededRandom(7));
 
 const polaroidPhotos = POLAROID_PHOTOS.map((p) => ({
   src: thumbSrc(p.key, 800, 4 / 5),
@@ -67,10 +70,14 @@ Astro.response.headers.set('cache-control', 'public, max-age=60, s-maxage=300, s
         ¡Hola! <span class="wave inline-block">👋🏽</span><br/>
         I'm <span class="italic text-hot-pink">Melissa</span>,<br/>
         an <span class="hand-underline">art director</span><br/>
-        who loves <span class="sabor"><em class="sabor-word font-display">sabor</em><input
+        who loves <span class="sabor"><em class="sabor-word font-display"><span class="sabor-ink">sabor</span><span class="sabor-ink-pink" aria-hidden="true">sabor</span></em><span class="sabor-sparks" aria-hidden="true">{saborSparks.map((p) => (
+          <span class="sabor-spark" style={`left:${p.left}%;top:${p.top}%;width:${p.size}px;height:${p.size}px;--on:${p.on}`}><svg
+            viewBox="0 0 48 48" class={`sabor-twinkle-${p.path}`} style={`animation-duration:${p.durationMs}ms;animation-delay:${p.delayMs}ms`}
+          ><path d="M24 2 L28 20 L46 24 L28 28 L24 46 L20 28 L2 24 L20 20 Z" fill={p.color === 'butter' ? '#FFE484' : '#FF1392'} stroke="rgba(26,43,74,0.2)" stroke-width="1.2" stroke-linejoin="round" /></svg></span>
+        ))}</span><input
           type="range" min="0" max="100" value={SABOR_DEFAULT} step="1" hidden data-sabor-dial
           class="sabor-dial" aria-label="Sabor: slide for more italic, hotter pink and a faster marquee"
-        /></span>.
+        /><span class="sabor-thumb-rail" aria-hidden="true"><span class="sabor-thumb"></span></span></span>.
       </h1>
 
       <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-10 items-end">

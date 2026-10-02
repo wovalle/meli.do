@@ -2,23 +2,117 @@
    fallback under prefers-reduced-motion at the bottom. */
 
 /* ---------- sabor dial ---------- */
-:root { --sabor: 0; }
-@media (prefers-reduced-motion: reduce) { :root { --sabor: 0.25; } }
+/* Everything here animates transform and opacity only, so the compositor can
+   run it without the main thread. One progress (0 = navy and upright, 1 = hot
+   pink, fully leaning, sparks out) drives the word, its pink copy, the ✦ pool
+   and the drawn thumb: a scroll-driven animation from the page top until the
+   line has left the screen (below), or a paused Web Animation at the dial's
+   value (sabor.ts, keyframes in src/lib/play/toys.ts: keep the two in step). */
 
 .sabor { position: relative; display: inline-block; }
 .sabor-word {
+  position: relative;
   display: inline-block;
   /* Italic glyphs overhang their advance box (the entry of the "s", the tail
-     of the "r"). Outside a transformed box that overhang wasn't repainted when
-     the colour changed, leaving pink slivers at sabor 0. Pad the box so the
-     ink is inside it, and give the room back with a negative margin. */
+     of the "r"). Pad the box so the ink is inside it (a transformed or
+     composited box clips to it), and give the room back with a negative margin. */
   padding: 0 0.14em;
   margin: 0 -0.14em;
-  transform: skewX(calc(var(--sabor) * -14deg));
   transform-origin: 50% 100%;
-  color: color-mix(in oklab, var(--color-hot-pink) calc(var(--sabor) * 100%), var(--color-navy));
-  transition: color 200ms linear;
 }
+.sabor-ink { display: inline-block; }
+/* the same word in hot pink, stacked on the navy one: the colour change is a cross-fade, never a repaint */
+.sabor-ink-pink {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  color: var(--color-hot-pink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ✦ pool around the word: pre-rendered, each on an endless twinkle, shown by the level */
+.sabor-sparks { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; font-style: normal; }
+.sabor-spark { position: absolute; display: block; opacity: 0; transform: scale(0.6); }
+.sabor-spark > svg { display: block; width: 100%; height: 100%; overflow: visible; animation: 1200ms var(--ease-out-quint) infinite both; }
+.sabor-spark > .sabor-twinkle-a { animation-name: sabor-twinkle-a; }
+.sabor-spark > .sabor-twinkle-b { animation-name: sabor-twinkle-b; }
+.sabor-spark > .sabor-twinkle-c { animation-name: sabor-twinkle-c; }
+@keyframes sabor-twinkle-a {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(-40deg); }
+  30% { opacity: 1; transform: translate(6px, -8px) scale(1.15) rotate(0deg); }
+  55% { opacity: 0.7; transform: translate(12px, -16px) scale(0.8) rotate(50deg); }
+  70% { opacity: 1; transform: translate(15px, -20px) scale(1) rotate(50deg); }
+  100% { opacity: 0; transform: translate(20px, -26px) scale(0.4) rotate(100deg); }
+}
+@keyframes sabor-twinkle-b {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(40deg); }
+  30% { opacity: 1; transform: translate(-8px, -4px) scale(1.15) rotate(0deg); }
+  55% { opacity: 0.7; transform: translate(-16px, -8px) scale(0.8) rotate(-60deg); }
+  70% { opacity: 1; transform: translate(-20px, -10px) scale(1) rotate(-60deg); }
+  100% { opacity: 0; transform: translate(-27px, -13px) scale(0.4) rotate(-120deg); }
+}
+@keyframes sabor-twinkle-c {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(-20deg); }
+  30% { opacity: 1; transform: translate(3px, 7px) scale(1.15) rotate(0deg); }
+  55% { opacity: 0.7; transform: translate(6px, 14px) scale(0.8) rotate(30deg); }
+  70% { opacity: 1; transform: translate(8px, 18px) scale(1) rotate(30deg); }
+  100% { opacity: 0; transform: translate(10px, 24px) scale(0.4) rotate(60deg); }
+}
+
+/* the dial's thumb is drawn here so it can follow the scroll without JS:
+   the rail is the track minus one thumb, so translateX(100%) is the far end */
+.sabor-thumb-rail { display: none; position: absolute; left: 0; top: calc(100% + 3px); width: calc(100% - 22px); height: 14px; pointer-events: none; }
+.sabor-dial:not([hidden]) ~ .sabor-thumb-rail { display: block; }
+.sabor-thumb {
+  display: block;
+  width: 22px; height: 14px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--color-cream); border-radius: 999px;
+  background: color-mix(in oklab, var(--color-hot-pink) 80%, var(--color-cream)) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 14'><path d='M9 4.5v5M13 4.5v5' stroke='%23FFF5EC' stroke-width='1.3' stroke-linecap='round'/></svg>") center / 100% 100% no-repeat;
+  box-shadow: 0 2px 5px -1px rgba(26, 43, 74, 0.3);
+}
+.sabor-dial:active ~ .sabor-thumb-rail .sabor-thumb { scale: 1.08; }
+
+/* Scroll-driven: sabor.ts adds .is-scroll-driven and measures --sabor-end
+   (the scrollY at which the line has left the top of the screen) on load and
+   resize only. A hand on the dial puts a Web Animation on top (it wins over
+   these), and lifts it again once the page scrolls on. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* one named timeline for the page scroll, shared by every part: an anonymous
+       scroll() per element is a timeline each, all serviced every frame */
+    :root { scroll-timeline: --sabor-page block; }
+    .sabor.is-scroll-driven :is(.sabor-word, .sabor-ink, .sabor-ink-pink, .sabor-sparks, .sabor-spark, .sabor-thumb-rail) {
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --sabor-page;
+      animation-range: 0px var(--sabor-end, 100vh);
+    }
+    .sabor.is-scroll-driven .sabor-word { animation-name: sabor-word; }
+    .sabor.is-scroll-driven .sabor-ink { animation-name: sabor-ink; }
+    .sabor.is-scroll-driven .sabor-ink-pink { animation-name: sabor-pink; }
+    .sabor.is-scroll-driven .sabor-sparks { animation-name: sabor-sparks; }
+    .sabor.is-scroll-driven .sabor-thumb-rail { animation-name: sabor-thumb; }
+    /* each spark: switch on at its own level (--on), and grow with the whole range */
+    .sabor.is-scroll-driven .sabor-spark {
+      animation-name: sabor-spark-on, sabor-spark-grow;
+      animation-timeline: --sabor-page, --sabor-page;
+      animation-range:
+        calc(var(--sabor-end, 100vh) * var(--on)) calc(var(--sabor-end, 100vh) * (var(--on) + 0.05)),
+        0px var(--sabor-end, 100vh);
+    }
+  }
+}
+@keyframes sabor-word { from { transform: skewX(0deg); } to { transform: skewX(-14deg); } }
+@keyframes sabor-ink { 0%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes sabor-pink { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sabor-sparks { 0%, 2% { opacity: 0; } 25%, 100% { opacity: 1; } }
+@keyframes sabor-spark-on { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sabor-spark-grow { from { transform: scale(0.6); } to { transform: scale(1.3); } }
+@keyframes sabor-thumb { from { transform: translateX(0%); } to { transform: translateX(100%); } }
+
 .sabor-dial {
   /* below the word, never on the glyphs: a 44px invisible hit area whose thin
      visible track sits ~10px under the letters */
@@ -35,46 +129,27 @@
   touch-action: pan-y;
 }
 .sabor-dial[hidden] { display: none; }
-
-
-/* ✦ that twinkle around "sabor" while the dial moves; more of them the higher it goes */
-.sabor-spark {
-  position: absolute;
-  z-index: 1;
-  font-style: normal;
-  font-family: var(--font-sans);
-  line-height: 1;
-  pointer-events: none;
-  text-shadow: 0 1px 4px rgba(26, 43, 74, 0.25);
-  animation: sabor-twinkle var(--dur, 900ms) var(--ease-out-quint) forwards;
-}
-@keyframes sabor-twinkle {
-  0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(-40deg); }
-  30% { opacity: 1; transform: translate(calc(var(--dx, 0px) * 0.3), calc(var(--dy, 0px) * 0.3)) scale(1.15) rotate(0deg); }
-  55% { opacity: 0.7; transform: translate(calc(var(--dx, 0px) * 0.6), calc(var(--dy, 0px) * 0.6)) scale(0.8) rotate(var(--spin, 20deg)); }
-  70% { opacity: 1; transform: translate(calc(var(--dx, 0px) * 0.75), calc(var(--dy, 0px) * 0.75)) scale(1) rotate(var(--spin, 20deg)); }
-  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.4) rotate(calc(var(--spin, 20deg) * 2)); }
-}
 .sabor-dial:focus-visible { outline: 2px dashed var(--color-hot-pink); outline-offset: 6px; border-radius: 8px; }
 .sabor-dial::-webkit-slider-runnable-track { height: 44px; background: transparent; }
 .sabor-dial::-moz-range-track { height: 44px; background: transparent; }
 .sabor-dial::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 22px; height: 14px; margin-top: 15px; border: 1.5px solid var(--color-cream); border-radius: 999px;
-  background: color-mix(in oklab, var(--color-hot-pink) 80%, var(--color-cream)) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 14'><path d='M9 4.5v5M13 4.5v5' stroke='%23FFF5EC' stroke-width='1.3' stroke-linecap='round'/></svg>") center / 100% 100% no-repeat;
-  box-shadow: 0 2px 5px -1px rgba(26, 43, 74, 0.3);
+  width: 22px; height: 14px; margin-top: 15px;
+  border: 0;
+  background: transparent;
+  opacity: 0;
   cursor: grab;
 }
-.sabor-dial:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.08); }
+.sabor-dial:active::-webkit-slider-thumb { cursor: grabbing; }
 .sabor-dial::-moz-range-thumb {
-  width: 19px; height: 11px; border: 1.5px solid var(--color-cream); border-radius: 999px;
-  background: color-mix(in oklab, var(--color-hot-pink) 80%, var(--color-cream)) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 14'><path d='M9 4.5v5M13 4.5v5' stroke='%23FFF5EC' stroke-width='1.3' stroke-linecap='round'/></svg>") center / 100% 100% no-repeat;
-  box-shadow: 0 2px 5px -1px rgba(26, 43, 74, 0.3);
+  width: 22px; height: 14px; border: 0;
+  background: transparent;
+  opacity: 0;
   cursor: grab;
 }
 
 /* ---------- marquee ---------- */
-.marquee.is-driven { animation: none; will-change: transform; }
+/* one CSS loop (global.css); marquee.ts only changes its playbackRate */
 .marquee a { text-decoration: none; transition: color 200ms; }
 .marquee a:hover, .marquee a:focus-visible { color: var(--color-hot-pink); }
 
@@ -276,9 +351,9 @@ svg[data-sparkle].is-held { cursor: grabbing; animation-play-state: paused; }
 
 /* ---------- quiet settings always take priority ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .sabor-word, .postcard-flipper, .postcard-mail, .envelope, .envelope-flap, .envelope-seal,
+  .postcard-flipper, .postcard-mail, .envelope, .envelope-flap, .envelope-seal,
   .postmark, [data-scatter-grid] [data-scatter-tile] { transition: none !important; }
-  .sabor-spark { display: none; }
+  .sabor-sparks { display: none; }
   .polaroid-caption.is-new, .postcard-scene.is-sent .postcard-sent > * { animation: none !important; }
   /* no 3D spin: swap faces in place */
   .postcard-back { transform: none; }

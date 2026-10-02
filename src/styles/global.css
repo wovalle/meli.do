@@ -72,8 +72,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 
 .glassy { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 
-.marquee { animation: mq 30s linear infinite; }
-@keyframes mq { to { transform: translateX(-50%); } }
+/* the track holds the list twice: one loop = one list + the gap after it (gap-10),
+   i.e. half the max-content track plus half a gap. marquee.ts only sets its playbackRate. */
+.marquee { width: max-content; animation: mq 30s linear infinite; }
+@keyframes mq { to { transform: translateX(calc(-50% - 1.25rem)); } }
 
 .hand-underline {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'><path d='M2 8 C 40 2, 80 2, 118 6 S 180 10, 198 5' stroke='%23FF1392' stroke-width='3' fill='none' stroke-linecap='round'/></svg>");

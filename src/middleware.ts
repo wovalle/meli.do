@@ -4,6 +4,7 @@ import { jwtVerify, createRemoteJWKSet } from 'jose';
 import { env } from 'cloudflare:workers';
 import { supportsImageTransforms, withImageTransforms } from './lib/img-transforms';
 import { canonicalRedirect, withSecurityHeaders } from './lib/security';
+import { shortcutTarget } from './lib/links';
 
 const PROTECTED_PREFIXES = ['/admin', '/api'];
 
@@ -28,6 +29,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url);
   const redirect = canonicalRedirect(url);
   if (redirect) return withSecurityHeaders(new Response(null, { status: 301, headers: { location: redirect } }));
+  // Short paths (mellen.do/cv, /linkedin): 302, not 301, so changing a target is not stuck in browser caches.
+  const shortcut = shortcutTarget(url.pathname);
+  if (shortcut) return withSecurityHeaders(new Response(null, { status: 302, headers: { location: shortcut } }));
   const response = await withImageTransforms(supportsImageTransforms(url.hostname), () => handle(context, next));
   return withSecurityHeaders(response);
 });

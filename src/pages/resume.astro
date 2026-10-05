@@ -7,6 +7,8 @@ import { RESUME, telHref } from "../lib/resume";
 // (header, summary box, Experience | Education + skills, contact footer),
 // in the site's fonts, colors and cards. Content lives in src/lib/resume.ts.
 const { name, title, summary, experience, education, skills, programs, contact } = RESUME;
+// Lets the long LinkedIn URL wrap after its last "/" on a phone instead of mid-word.
+const linkedinCut = contact.linkedin.lastIndexOf("/") + 1;
 ---
 
 <PublicLayout
@@ -29,8 +31,8 @@ const { name, title, summary, experience, education, skills, programs, contact }
       </a>
     </div>
 
-    <article class="resume-sheet soft-up max-w-[1040px] mx-auto bg-cream text-navy rounded-xxl border border-navy/10 shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] p-5 sm:p-10">
-      <header class="flex flex-col-reverse items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+    <article class="resume-sheet soft-up max-w-[1040px] mx-auto bg-cream text-navy rounded-xxl border border-navy/10 shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] p-4 sm:p-10">
+      <header class="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
         <img src="/brand/mellen-lockup.svg" alt="mellen, art direction & branding" width="310" height="64" class="resume-lockup hidden sm:block h-16 w-auto" />
         <img src="/brand/mellen-wordmark.svg" alt="mellen" width="118" height="24" class="resume-wordmark sm:hidden h-6 w-auto" />
         <div class="sm:text-right">
@@ -101,23 +103,23 @@ const { name, title, summary, experience, education, skills, programs, contact }
         </div>
       </div>
 
-      <footer class="mt-6 sm:mt-8 flex items-end justify-between gap-6">
+      <footer class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6">
         <div class="min-w-0">
           <p class="font-display text-hot-pink text-[30px] sm:text-[34px] leading-none">
             Portfolio: <a href="/" class="italic hover:underline underline-offset-4">{contact.portfolio}</a>
           </p>
           <p class="mt-3 text-[14px] leading-relaxed text-navy/80">
-            <a href={`mailto:${contact.email}`} class="hover:text-hot-pink transition break-all">{contact.email}</a>
-            <span class="text-hot-pink/60" aria-hidden="true"> | </span>
+            <a href={`mailto:${contact.email}`} class="block sm:inline hover:text-hot-pink transition">{contact.email}</a>
+            <span class="hidden sm:inline text-hot-pink/60" aria-hidden="true"> | </span>
             <a href={telHref(contact.phone)} class="hover:text-hot-pink transition whitespace-nowrap">{contact.phone}</a>
             <span class="text-hot-pink/60" aria-hidden="true"> | </span>
             <span class="whitespace-nowrap">{contact.location}</span>
           </p>
           <p class="text-[14px] leading-relaxed text-navy/80">
-            LinkedIn Profile: <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-hot-pink transition break-all">{contact.linkedin}</a>
+            LinkedIn Profile: <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-hot-pink transition">{contact.linkedin.slice(0, linkedinCut)}<wbr />{contact.linkedin.slice(linkedinCut)}</a>
           </p>
         </div>
-        <img src="/brand/mellen-mark.svg" alt="" width="56" height="56" class="spin-slow flex-none w-12 h-12 sm:w-14 sm:h-14" />
+        <img src="/brand/mellen-mark.svg" alt="" width="56" height="56" class="spin-slow flex-none self-end w-12 h-12 sm:w-14 sm:h-14" />
       </footer>
     </article>
   </main>
@@ -134,7 +136,7 @@ const { name, title, summary, experience, education, skills, programs, contact }
     .resume-sheet {
       max-width: none; margin: 0; padding: 0;
       border: 0; border-radius: 0; box-shadow: none; background: #fff;
-      zoom: 0.74;
+      zoom: 0.8;
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
     .resume-cols { grid-template-columns: 4fr 5fr; }

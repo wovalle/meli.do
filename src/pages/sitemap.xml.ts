@@ -8,7 +8,7 @@ export const prerender = false;
 
 const SITE = 'https://mellen.do';
 
-const STATIC_PATHS = ['/', '/work', '/links'];
+const STATIC_PATHS = ['/', '/work', '/resume', '/links'];
 
 export const GET: APIRoute = async () => {
   const db = drizzle((env as { db: D1Database }).db);

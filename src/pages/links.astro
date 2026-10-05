@@ -1,5 +1,5 @@
 ---
-import { linkedin, instagram } from "../lib/links";
+import { linkedin, instagram, resume } from "../lib/links";
 import PublicLayout from "../layouts/PublicLayout.astro";
 
 const links = [
@@ -9,6 +9,13 @@ const links = [
     href: "/",
     accent: "bg-navy",
     svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5 text-white"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+  },
+  {
+    label: "Resume",
+    handle: "mellen.do/resume",
+    href: resume,
+    accent: "bg-coral",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><polyline points="14,3 14,8 19,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`,
   },
   {
     label: "Instagram",

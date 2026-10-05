@@ -1,5 +1,5 @@
 ---
-import { linkedin, instagram, behance } from "../lib/links";
+import { linkedin, instagram, behance, resume } from "../lib/links";
 import "../styles/global.css";
 import SiteIcons from "../components/SiteIcons.astro";
 import SiteLogo from "../components/SiteLogo.astro";
@@ -124,7 +124,7 @@ const websiteSchema = {
   </head>
   <body class="bg-lavender text-navy font-sans antialiased overflow-x-hidden">
 
-    <header class="sticky top-4 z-50 px-4 lg:px-8">
+    <header class="sticky top-4 z-50 px-4 lg:px-8 print:hidden">
       <div class="max-w-shell mx-auto bg-cream/80 glassy rounded-pill border border-navy/10 flex items-center justify-between px-6 py-3 shadow-[0_12px_32px_-20px_rgba(26,43,74,.25)]">
         <SiteLogo />
         <nav class="hidden md:flex gap-8 text-[14px] font-medium">
@@ -140,11 +140,12 @@ const websiteSchema = {
 
     <slot />
 
-    <footer class="bg-navy text-cream">
+    <footer class="bg-navy text-cream print:hidden">
       <div class="max-w-shell mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between gap-6 text-[12px]">
         <div>© 2026 Melissa Encarnación · hecho con ♥ en Santo Domingo</div>
         <div class="flex gap-6 opacity-70">
           <a href="/work" class="hover:text-hot-pink transition">Work</a>
+          <a href={resume} class="hover:text-hot-pink transition">Resume</a>
           <a href="/links" class="hover:text-hot-pink transition">Links</a>
           <a href="/terms" class="hover:text-hot-pink transition">Terms</a>
           <a href="mailto:hola@mellen.do" class="hover:text-hot-pink transition">hola@mellen.do</a>

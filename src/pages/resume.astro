@@ -1,0 +1,146 @@
+---
+import PublicLayout from "../layouts/PublicLayout.astro";
+import { linkedin, resumePdf } from "../lib/links";
+import { RESUME, telHref } from "../lib/resume";
+
+// The PDF (public/resume.pdf) translated into the site: same one-page layout
+// (header, summary box, Experience | Education + skills, contact footer),
+// in the site's fonts, colors and cards. Content lives in src/lib/resume.ts.
+const { name, title, summary, experience, education, skills, programs, contact } = RESUME;
+---
+
+<PublicLayout
+  title="Resume | Melissa Encarnación"
+  description="Resume of Melissa Encarnación, Head of Design and Art Director in Santo Domingo: experience, education and skills. Download it as a PDF."
+  ogImage="/og/resume.png"
+>
+  <main class="resume-main px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
+    <div class="max-w-[1040px] mx-auto flex items-center justify-between gap-4 mb-6 print:hidden">
+      <p class="font-hand text-[18px] sm:text-[22px] text-hot-pink">my resume ✦</p>
+      <a
+        href={resumePdf}
+        download="Melissa-Encarnacion-Resume.pdf"
+        class="inline-flex items-center gap-2 bg-navy text-cream rounded-pill px-5 sm:px-6 py-3 text-[14px] font-medium hover:bg-hot-pink transition"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true">
+          <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+        </svg>
+        Download PDF
+      </a>
+    </div>
+
+    <article class="resume-sheet soft-up max-w-[1040px] mx-auto bg-cream text-navy rounded-xxl border border-navy/10 shadow-[0_30px_60px_-30px_rgba(26,43,74,.3)] p-5 sm:p-10">
+      <header class="flex flex-col-reverse items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <img src="/brand/mellen-lockup.svg" alt="mellen, art direction & branding" width="310" height="64" class="resume-lockup hidden sm:block h-16 w-auto" />
+        <img src="/brand/mellen-wordmark.svg" alt="mellen" width="118" height="24" class="resume-wordmark sm:hidden h-6 w-auto" />
+        <div class="sm:text-right">
+          <h1 class="font-display text-hot-pink text-[44px] sm:text-[52px] leading-[0.95] tracking-[-0.02em]">{name}</h1>
+          <p class="mt-1 font-semibold text-[18px] sm:text-[22px] leading-tight">{title}</p>
+        </div>
+      </header>
+
+      <p class="resume-box mt-6 sm:mt-8 rounded-xxl border border-hot-pink/25 px-5 sm:px-12 py-4 sm:py-5 sm:text-center text-[15px] leading-relaxed text-navy/80">
+        {summary}
+      </p>
+
+      <div class="resume-cols mt-4 grid gap-4 md:grid-cols-[4fr_5fr]">
+        <section class="resume-box rounded-xxl border border-hot-pink/25 p-5 sm:p-7" aria-labelledby="experience">
+          <h2 id="experience" class="font-display text-hot-pink text-[36px] sm:text-[40px] leading-none">Experience</h2>
+          <ul class="mt-4 space-y-5">
+            {experience.map((job) => (
+              <li class="resume-entry">
+                <h3 class="font-semibold text-[15px] leading-snug">{job.org}</h3>
+                {job.kind && (
+                  <span class="inline-block mt-1 bg-lavender rounded-pill px-3 py-0.5 text-[12px] font-medium">{job.kind}</span>
+                )}
+                <ul class="mt-1 space-y-0.5 text-[15px]">
+                  {job.roles.map((role) => (
+                    <li class="flex flex-wrap justify-between gap-x-3">
+                      <span>{role.title}</span>
+                      {role.dates && <span class="text-navy/60 tabular-nums">{role.dates}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div class="grid gap-4 content-start">
+          <section class="resume-box rounded-xxl border border-hot-pink/25 p-5 sm:p-7" aria-labelledby="education">
+            <h2 id="education" class="font-display text-hot-pink text-[36px] sm:text-[40px] leading-none">Education</h2>
+            <ul class="mt-4 space-y-4 text-[15px] leading-snug">
+              {education.map((study) => (
+                <li class="resume-entry">
+                  <p class="text-navy/70">{study.school}</p>
+                  <h3 class="font-semibold">{study.program}</h3>
+                  <p class="text-navy/60">
+                    {study.detail.map((part, i) => (
+                      <>{i > 0 && <span class="text-hot-pink/60" aria-hidden="true"> | </span>}{part}</>
+                    ))}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section class="resume-box rounded-xxl border border-hot-pink/25 p-5 sm:p-7 grid grid-cols-1 min-[400px]:grid-cols-2 gap-5" aria-labelledby="skills">
+            <div>
+              <h2 id="skills" class="font-display text-hot-pink text-[36px] sm:text-[40px] leading-none">skills</h2>
+              <ul class="mt-3 flex flex-wrap gap-1.5">
+                {skills.map((s) => <li class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">{s}</li>)}
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-semibold text-[15px] min-[400px]:mt-3">Design Programs</h3>
+              <ul class="mt-3 flex flex-wrap gap-1.5">
+                {programs.map((p) => <li class="bg-lavender rounded-pill px-3 py-1 text-[12px] font-medium">{p}</li>)}
+              </ul>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="mt-6 sm:mt-8 flex items-end justify-between gap-6">
+        <div class="min-w-0">
+          <p class="font-display text-hot-pink text-[30px] sm:text-[34px] leading-none">
+            Portfolio: <a href="/" class="italic hover:underline underline-offset-4">{contact.portfolio}</a>
+          </p>
+          <p class="mt-3 text-[14px] leading-relaxed text-navy/80">
+            <a href={`mailto:${contact.email}`} class="hover:text-hot-pink transition break-all">{contact.email}</a>
+            <span class="text-hot-pink/60" aria-hidden="true"> | </span>
+            <a href={telHref(contact.phone)} class="hover:text-hot-pink transition whitespace-nowrap">{contact.phone}</a>
+            <span class="text-hot-pink/60" aria-hidden="true"> | </span>
+            <span class="whitespace-nowrap">{contact.location}</span>
+          </p>
+          <p class="text-[14px] leading-relaxed text-navy/80">
+            LinkedIn Profile: <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-hot-pink transition break-all">{contact.linkedin}</a>
+          </p>
+        </div>
+        <img src="/brand/mellen-mark.svg" alt="" width="56" height="56" class="spin-slow flex-none w-12 h-12 sm:w-14 sm:h-14" />
+      </footer>
+    </article>
+  </main>
+</PublicLayout>
+
+<style is:global>
+  /* Cmd/Ctrl+P: the sheet alone on one Letter page, like public/resume.pdf.
+     The layout's header and footer are print:hidden; the page keeps its colors. */
+  @page { size: letter; margin: 0.4in; }
+  @media print {
+    html, body { background: #fff !important; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .resume-main { padding: 0 !important; }
+    .resume-sheet {
+      max-width: none; margin: 0; padding: 0;
+      border: 0; border-radius: 0; box-shadow: none; background: #fff;
+      zoom: 0.74;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .resume-cols { grid-template-columns: 4fr 5fr; }
+    .resume-lockup { display: block; }
+    .resume-wordmark { display: none; }
+    .resume-box, .resume-entry { break-inside: avoid; }
+    .resume-sheet a { text-decoration: none; }
+  }
+</style>

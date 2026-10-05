@@ -36,6 +36,12 @@ const CARDS: Record<string, SiteCard> = {
     fontSize: 160,
     subtitle: 'Links, socials & contact by Melissa Encarnación',
   },
+  resume: {
+    badges: [{ text: 'Melissa Encarnación', variant: 'pink' }],
+    lines: [['Head of'], [{ text: 'design', pink: true, italic: true }, '.']],
+    fontSize: 140,
+    subtitle: 'Resume · Art Director, Santo Domingo',
+  },
   terms: {
     badges: [{ text: 'Melissa Encarnación', variant: 'pink' }],
     lines: [['Términos del'], [{ text: 'servicio', pink: true, italic: true }, '.']],

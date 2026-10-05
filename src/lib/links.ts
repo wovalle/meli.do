@@ -9,11 +9,12 @@ export const linkedin = 'https://www.linkedin.com/in/melissa-encarnación-108ab4
 export const instagram = 'https://instagram.com/mell.en';
 export const behance = 'https://www.behance.net/melissaencaa0c';
 
-/** The CV, a static file in `public/`. Replace the file to update it; the shortcuts keep working. */
-export const resume = '/resume.pdf';
+/** The CV as a page (src/pages/resume.astro, content in src/lib/resume.ts). */
+export const resume = '/resume';
+/** The same CV as a PDF, a static file in `public/`. Replace the file to update it. */
+export const resumePdf = '/resume.pdf';
 
 export const SHORTCUTS: Readonly<Record<string, string>> = {
-  '/resume': resume,
   '/cv': resume,
   '/linkedin': linkedin,
 };
